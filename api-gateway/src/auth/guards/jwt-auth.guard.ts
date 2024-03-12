@@ -6,12 +6,14 @@ import { Observable } from 'rxjs';
 import { IS_PUBLIC_KEY } from 'src/common/decorators/public.decorator';
 import { ROLES_KEY } from 'src/common/decorators/role.decorator';
 import { Role } from 'src/user/constants/user.enum';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
   constructor(
     private reflector: Reflector,
     private jwtService: JwtService,
+    private userService: UserService,
   ) {
     super();
   }
@@ -40,6 +42,11 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
     // TODO. Require Role(ADMIN, USER) ADD
     const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [context.getHandler(), context.getClass()]);
+    if (requiredRoles) {
+      const userId = decoded['sub'];
+
+      return this.userService.checkUserIsAdmin(userId);
+    }
 
     return super.canActivate(context);
   }

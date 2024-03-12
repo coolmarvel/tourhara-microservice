@@ -5,9 +5,9 @@ export interface IAuthService {
 
   refresh(token: string, userId: string): Promise<IRefreshResponse>;
 
-  generateAccessToken(userId: string): Promise<string>;
+  generateAccessToken(userId: string): string;
 
-  generateRefreshToken(userId: string): Promise<string>;
+  generateRefreshToken(userId: string): string;
 
   generateRefreshTokenUsingByUser(userId: string, refreshToken: string): Promise<void>;
 }

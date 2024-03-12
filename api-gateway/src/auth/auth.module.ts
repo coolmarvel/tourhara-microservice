@@ -9,9 +9,11 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RefreshToken } from './entities/refresh-token.entity';
 import { AuthController } from './controllers/auth.controller';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
+    UserModule,
     PassportModule,
     TypeOrmModule.forFeature([RefreshToken]),
     JwtModule.registerAsync({
