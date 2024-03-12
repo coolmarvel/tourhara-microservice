@@ -1,9 +1,10 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
-import { ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe, VersioningType } from '@nestjs/common';
 import * as basicAuth from 'express-basic-auth';
 import { DocumentBuilder, SwaggerCustomOptions, SwaggerModule } from '@nestjs/swagger';
+import { useContainer } from 'class-validator';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,9 +12,14 @@ async function bootstrap() {
   const configService: ConfigService = app.get(ConfigService);
   const port = 3000;
 
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
+
   app.enableCors({ origin: true, methods: 'GET,HEAD,PUT,PATH,POST,DELETE,OPTIONS', credentials: true });
+  app.enableShutdownHooks();
+  app.enableVersioning({ type: VersioningType.URI });
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   app.use(['/docs', '/docs-json'], basicAuth({ challenge: true, users: { [configService.get('swagger.username')]: configService.get('swagger.password') } }));
 
