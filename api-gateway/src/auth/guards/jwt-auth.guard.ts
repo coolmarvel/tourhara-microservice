@@ -3,6 +3,9 @@ import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { Observable } from 'rxjs';
+import { IS_PUBLIC_KEY } from 'src/common/decorators/public.decorator';
+import { ROLES_KEY } from 'src/common/decorators/role.decorator';
+import { Role } from 'src/user/constants/user.enum';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -14,8 +17,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
-    // TODO. Public Request ADD
-    
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [context.getHandler(), context.getClass()]);
+    if (isPublic) return true;
+
     const http = context.switchToHttp();
     const { url, headers } = http.getRequest<Request>();
 
@@ -35,6 +39,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     }
 
     // TODO. Require Role(ADMIN, USER) ADD
+    const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [context.getHandler(), context.getClass()]);
 
     return super.canActivate(context);
   }

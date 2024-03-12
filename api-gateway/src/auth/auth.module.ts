@@ -8,6 +8,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RefreshToken } from './entities/refresh-token.entity';
+import { AuthController } from './controllers/auth.controller';
 
 @Module({
   imports: [
@@ -21,5 +22,6 @@ import { RefreshToken } from './entities/refresh-token.entity';
     }),
   ],
   providers: [AuthService, JwtAuthStrategy, { provide: APP_GUARD, useClass: JwtAuthGuard }],
+  controllers: [AuthController],
 })
 export class AuthModule {}
