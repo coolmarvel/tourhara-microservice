@@ -12,15 +12,15 @@ export class OrderService implements IOrderService {
   }
 
   async retrieveAnOrder_stag(order_id: string) {
-    const pattern = { cmd: 'retrieveAnOrderStag' };
-    const payload = { id: order_id };
+    const pattern = { cmd: 'retrieveAnOrder_stag' };
+    const payload = { order_id };
     const order = await firstValueFrom(this.client.send(pattern, payload));
 
     return order;
   }
 
   async listAllOrders_stag(page: number, size: number) {
-    const pattern = { cmd: 'listAllOrdersStag' };
+    const pattern = { cmd: 'listAllOrders_stag' };
     const payload = { page, size };
     const orders = await firstValueFrom(this.client.send(pattern, payload));
 
@@ -28,14 +28,14 @@ export class OrderService implements IOrderService {
   }
 
   async updateAnOrder_stag(order_id: string): Promise<void> {
-    const pattern = { cmd: 'updateAnOrderStag' };
-    const payload = { id: order_id };
+    const pattern = { cmd: 'updateAnOrder_stag' };
+    const payload = { order_id };
     await firstValueFrom(this.client.send(pattern, payload));
   }
 
   async deleteAnOrder_stag(order_id: string): Promise<void> {
-    const pattern = { cmd: 'deleteAnOrderStag' };
-    const payload = { id: order_id };
+    const pattern = { cmd: 'deleteAnOrder_stag' };
+    const payload = { order_id };
     await firstValueFrom(this.client.send(pattern, payload));
   }
 
@@ -54,7 +54,7 @@ export class OrderService implements IOrderService {
   updateAnOrder_prod(order_id: string): Promise<void> {
     throw new Error('Method not implemented.');
   }
-  
+
   deleteAnOrder_prod(order_id: string): Promise<void> {
     throw new Error('Method not implemented.');
   }
