@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { IUserService } from './interfaces/user.interface';
+import { IUserService } from '../interfaces/user.interface';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable()

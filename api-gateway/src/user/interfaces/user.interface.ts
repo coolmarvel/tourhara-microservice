@@ -5,5 +5,5 @@ export interface IUserService {
 
   signup(email: string, password: string): Promise<string>;
 
-  validateUser(email: string, password): Promise<string>;
+  validateUser(email: string, password: string): Promise<string>;
 }

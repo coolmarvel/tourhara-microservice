@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { IS_PUBLIC_KEY } from 'src/common/decorators/public.decorator';
 import { ROLES_KEY } from 'src/common/decorators/role.decorator';
 import { Role } from 'src/user/constants/user.enum';
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'src/user/services/user.service';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { UserService } from './user.service';
+import { UserService } from './services/user.service';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 
 @Module({
