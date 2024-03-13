@@ -35,6 +35,7 @@ export class OrderService implements IOrderService {
     });
   }
 
+  // WooCommerce Staging Order APIs
   async createAnOrder_stag(payment: object, billing: object, shipping: object, line_items: object, shipping_lines: object): Promise<any> {
     throw new Error('Method not implemented.');
   }
@@ -76,6 +77,7 @@ export class OrderService implements IOrderService {
     return order;
   }
 
+  // WooCommerce Production Order APIs
   async createAnOrder_prod(payment: object, billing: object, shipping: object, line_items: object, shipping_lines: object): Promise<any> {
     throw new Error('Method not implemented.');
   }
