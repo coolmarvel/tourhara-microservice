@@ -7,7 +7,8 @@ import { firstValueFrom } from 'rxjs';
 export class OrderService implements IOrderService {
   constructor(@Inject('ORDER_SERVICE') private client: ClientProxy) {}
 
-  async createAnOrder_stag(payment: object, billing: object, shipping: object, line_items: object, shipping_lines: object): Promise<void> {
+  // WooCommerce Staging Order APIs
+  async createAnOrder_stag(payment: object, billing: object, shipping: object, line_items: object, shipping_lines: object): Promise<any> {
     throw new Error('Method not implemented.');
   }
 
@@ -27,35 +28,48 @@ export class OrderService implements IOrderService {
     return orders;
   }
 
-  async updateAnOrder_stag(order_id: string): Promise<void> {
+  async updateAnOrder_stag(order_id: string): Promise<any> {
     const pattern = { cmd: 'updateAnOrder_stag' };
     const payload = { order_id };
     await firstValueFrom(this.client.send(pattern, payload));
   }
 
-  async deleteAnOrder_stag(order_id: string): Promise<void> {
+  async deleteAnOrder_stag(order_id: string): Promise<any> {
     const pattern = { cmd: 'deleteAnOrder_stag' };
     const payload = { order_id };
     await firstValueFrom(this.client.send(pattern, payload));
   }
 
-  createAnOrder_prod(payment: object, billing: object, shipping: object, line_items: object, shipping_lines: object): Promise<void> {
+  // WooCommerce Production Order APIs
+  async createAnOrder_prod(payment: object, billing: object, shipping: object, line_items: object, shipping_lines: object): Promise<any> {
     throw new Error('Method not implemented.');
   }
 
-  retrieveAnOrder_prod(order_id: string): Promise<any> {
-    throw new Error('Method not implemented.');
+  async retrieveAnOrder_prod(order_id: string): Promise<any> {
+    const pattern = { cmd: 'retrieveAnOrder_prod' };
+    const payload = { order_id };
+    const order = await firstValueFrom(this.client.send(pattern, payload));
+
+    return order;
   }
 
-  listAllOrders_prod(page: number, size: number): Promise<any> {
-    throw new Error('Method not implemented.');
+  async listAllOrders_prod(page: number, size: number): Promise<any> {
+    const pattern = { cmd: 'listAllOrders_prod' };
+    const payload = { page, size };
+    const orders = await firstValueFrom(this.client.send(pattern, payload));
+
+    return orders;
   }
 
-  updateAnOrder_prod(order_id: string): Promise<void> {
-    throw new Error('Method not implemented.');
+  async updateAnOrder_prod(order_id: string): Promise<any> {
+    const pattern = { cmd: 'updateAnOrder_prod' };
+    const payload = { order_id };
+    await firstValueFrom(this.client.send(pattern, payload));
   }
 
-  deleteAnOrder_prod(order_id: string): Promise<void> {
-    throw new Error('Method not implemented.');
+  async deleteAnOrder_prod(order_id: string): Promise<any> {
+    const pattern = { cmd: 'deleteAnOrder_prod' };
+    const payload = { order_id };
+    await firstValueFrom(this.client.send(pattern, payload));
   }
 }
