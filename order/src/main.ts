@@ -17,6 +17,6 @@ async function bootstrap() {
 
   await app.listen();
 
-  console.log(`🚀 USER-SERVICE is listening on http://localhost:${port} for TCP`);
+  console.log(`🚀 ORDER-SERVICE is listening on http://localhost:${port} for TCP`);
 }
 bootstrap();

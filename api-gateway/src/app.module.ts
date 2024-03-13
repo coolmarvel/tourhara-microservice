@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import config from './config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { OrderModule } from './order/order.module';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { OrderModule } from './order/order.module';
     UserModule,
     AuthModule,
     OrderModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [AppService],
