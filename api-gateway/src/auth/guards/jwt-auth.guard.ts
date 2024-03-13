@@ -40,7 +40,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       throw error;
     }
 
-    // TODO. Require Role(ADMIN, USER) ADD
     const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [context.getHandler(), context.getClass()]);
     if (requiredRoles) {
       const userId = decoded['sub'];
