@@ -91,8 +91,8 @@ export class OrderService implements IOrderService {
     await queryRunner.startTransaction();
 
     try {
-      const exist = await queryRunner.manager.findOneBy(Order, { orderId: order_id });
-      if (!exist) {
+      const exist = await queryRunner.manager.findOneBy(Order, { id: Number(order_id) });
+      if (exist === null) {
         // Billing entity
         const billingEntity = queryRunner.manager.create(Billing, {
           firstName: order.billing.first_name,
@@ -136,9 +136,13 @@ export class OrderService implements IOrderService {
           }
           await queryRunner.manager.save(lineItemsMetadataEntities);
 
+          const nameMatch = item.name.match(/>(.*?)</);
+          const name = nameMatch ? nameMatch[1].trim() : item.name;
+
           const lineItemEntity = queryRunner.manager.create(LineItem, {
             id: item.id,
-            name: item.name,
+            name: name,
+            // name: item.name,
             quantity: item.quantity,
             total: item.total,
             subtotal: item.subtotal,
