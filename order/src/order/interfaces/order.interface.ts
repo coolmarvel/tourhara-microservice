@@ -15,7 +15,7 @@ export interface IOrderService {
 
   listAllOrders_prod(page: number, size: number): Promise<any>;
 
-  updateAnOrder_prod(order_id: string): Promise<any>;
+  updateAnOrder_prod(order_id: string, data: any): Promise<any>;
 
   deleteAnOrder_prod(order_id: string): Promise<any>;
 }
