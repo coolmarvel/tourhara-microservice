@@ -1,6 +1,8 @@
 import { ProductImage } from './product-image.entity';
 import { ProductAttribute } from './product-attribute.entity';
 import { Product } from './product.entity';
-import { Ticket } from './ticket.entity';
+import { ProductCategory } from './product-categoy.entity';
+import { ProductCategoryImage } from './product-category-image.entity';
+import { ProductTag } from './product-tag.entity';
 
-export default [ProductImage, Product, ProductAttribute, Ticket];
+export default [Product, ProductImage, ProductAttribute, ProductCategory, ProductCategoryImage, ProductTag];

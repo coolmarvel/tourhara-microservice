@@ -14,18 +14,6 @@ export class Product {
   @Column({ nullable: true })
   slug: string;
 
-  @Column({ name: 'date_created', nullable: true })
-  dateCreated: Date;
-
-  @Column({ name: 'date_created_gmt', nullable: true })
-  dateCreatedGmt: Date;
-
-  @Column({ name: 'date_midified', nullable: true })
-  dateModified: Date;
-
-  @Column({ name: 'date_midified_gmt', nullable: true })
-  dateModifiedGmt: Date;
-
   @Column({ nullable: true })
   type: string;
 
@@ -57,7 +45,7 @@ export class Product {
   purchasable: boolean;
 
   @Column({
-    name: 'category_id',
+    name: 'product_category_id',
     type: 'text',
     transformer: {
       to: (value: string[]): string => JSON.stringify(value),
@@ -65,10 +53,10 @@ export class Product {
     },
     nullable: true,
   })
-  categoryId: string[];
+  productCategoryId: string[];
 
   @Column({
-    name: 'image_id',
+    name: 'product_tag_id',
     type: 'text',
     transformer: {
       to: (value: string[]): string => JSON.stringify(value),
@@ -76,7 +64,51 @@ export class Product {
     },
     nullable: true,
   })
-  imageId: string[];
+  productTagId: string[];
+
+  @Column({
+    name: 'product_image_id',
+    type: 'text',
+    transformer: {
+      to: (value: string[]): string => JSON.stringify(value),
+      from: (value: string): string[] => JSON.parse(value),
+    },
+    nullable: true,
+  })
+  productImageId: string[];
+
+  @Column({
+    name: 'product_attribute_id',
+    type: 'text',
+    transformer: {
+      to: (value: string[]): string => JSON.stringify(value),
+      from: (value: string): string[] => JSON.parse(value),
+    },
+    nullable: true,
+  })
+  productAttributeId: string[];
+
+  @Column({
+    type: 'text',
+    transformer: {
+      to: (value: string[]): string => JSON.stringify(value),
+      from: (value: string): string[] => JSON.parse(value),
+    },
+    nullable: true,
+  })
+  variations: string[];
+
+  @Column({ name: 'date_created', nullable: true })
+  dateCreated: Date;
+
+  @Column({ name: 'date_created_gmt', nullable: true })
+  dateCreatedGmt: Date;
+
+  @Column({ name: 'date_midified', nullable: true })
+  dateModified: Date;
+
+  @Column({ name: 'date_midified_gmt', nullable: true })
+  dateModifiedGmt: Date;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

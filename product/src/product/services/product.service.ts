@@ -76,43 +76,4 @@ export class ProductService implements IProductService {
   async deleteAProduct_prod(product_id: string): Promise<any> {
     throw new Error('Method not implemented.');
   }
-
-  // Database Migrate
-  async insertProduct(product: any) {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      const exist = await queryRunner.manager.findOneBy(Product, { id: product.id });
-      if (exist === null) {
-        const productEntity = queryRunner.manager.create(Product, {
-          id: product.id,
-          name: product.name,
-          slug: product.slug,
-          dateCreated: product.date_created,
-          dateCreatedGmt: product.date_created_gmt,
-          dateModified: product.date_modified,
-          dateModifiedGmt: product.date_modified_gmt,
-          type: product.type,
-          status: product.status,
-          featured: product.featured,
-          description: product.description,
-          shortDescription: product.short_description,
-          price: product.price,
-          regularPrice: product.regular_price,
-          onSale: product.on_sale,
-          salePrice: product.sale_price,
-          purchasable: product.purchasable,
-          categoryId: [],
-          imageId: [],
-        });
-      }
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-      throw error;
-    } finally {
-      await queryRunner.release();
-    }
-  }
 }
