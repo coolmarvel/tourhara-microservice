@@ -1,8 +1,7 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Order } from './order.entity';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
-export class OrderMetaData {
+export class OrderMetadata {
   @PrimaryGeneratedColumn('uuid', { name: 'order_metadata_id' })
   orderMetadataId: string;
 
@@ -29,7 +28,12 @@ export class OrderMetaData {
   })
   value: string | object;
 
-  @ManyToOne(() => Order, (order) => order.metadata)
-  @JoinColumn({ name: 'order_id' })
-  order: Order;
+  @Column({ type: 'uuid', name: 'order_id' })
+  orderId: string;
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
 }

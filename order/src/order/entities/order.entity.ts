@@ -1,19 +1,15 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { OrderStatus } from '../constants/order.enum';
-import { Billing } from './billing.entity';
-import { Shipping } from './shipping.entity';
-import { OrderMetaData } from './order-metadata.entity';
-import { LineItem } from './line-item.entity';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { OrderStatus } from '../constants/order-status.enum';
 
 @Entity()
 export class Order {
   @PrimaryGeneratedColumn('uuid', { name: 'order_id' })
   orderId: string;
 
-  @Column()
+  @Column('bigint')
   id: number;
 
-  @Column({ type: 'enum', enum: OrderStatus })
+  @Column('enum', { enum: OrderStatus })
   status: OrderStatus;
 
   @Column({ nullable: true })
@@ -31,14 +27,6 @@ export class Order {
   @Column({ name: 'date_paid', nullable: true })
   datePaid: Date;
 
-  @OneToOne(() => Billing, (billing) => billing.order, { cascade: true })
-  @JoinColumn({ name: 'billing_id' })
-  billing: Billing;
-
-  @OneToOne(() => Shipping, (shipping) => shipping.order, { cascade: true })
-  @JoinColumn({ name: 'shipping_id' })
-  shipping: Shipping;
-
   @Column({ name: 'payment_method', nullable: true })
   paymentMethod: string;
 
@@ -48,11 +36,17 @@ export class Order {
   @Column({ name: 'transaction_id', nullable: true })
   transactionId: string;
 
-  @OneToMany(() => OrderMetaData, (orderMetadata) => orderMetadata.order, { cascade: true })
-  metadata: OrderMetaData[];
+  @Column({ type: 'uuid', name: 'billing_id' })
+  billingId: string;
 
-  @OneToMany(() => LineItem, (lineItem) => lineItem.order, { cascade: true })
-  lineItems: LineItem[];
+  @Column({ type: 'uuid', name: 'shipping_id' })
+  shippingId: string;
+
+  @Column('uuid', { name: 'metadata_id' })
+  metadataId: string;
+
+  @Column('uuid', { name: 'line_item_id' })
+  lineItemId: string;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

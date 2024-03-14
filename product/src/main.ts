@@ -13,7 +13,7 @@ async function bootstrap() {
   });
 
   const configService: ConfigService = app.get(ConfigService);
-  const port = 3002;
+  const port = 3003;
 
   await app.listen();
 

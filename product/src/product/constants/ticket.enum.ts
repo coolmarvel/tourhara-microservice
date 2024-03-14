@@ -1,0 +1,8 @@
+export enum TicketType {
+  EXPRESS = 'EXPRESS',
+  FLEX = 'FLEX',
+  REAL = 'REAL',
+  CODESEND = 'CODESEND',
+  UNNECESSARY = 'UNNECESSARY',
+  PICKUP = 'PICKUP',
+}

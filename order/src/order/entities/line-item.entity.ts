@@ -1,31 +1,37 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { LineItemMetaData } from './line-item-metadata.entity';
-import { Order } from './order.entity';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class LineItem {
   @PrimaryGeneratedColumn('uuid', { name: 'line_item_id' })
   lineItemId: string;
 
-  @Column()
+  @Column('bigint', { nullable: true })
   id: number;
 
-  @Column({ type: 'varchar', length: 500})
+  @Column({ nullable: true })
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   quantity: number;
 
-  @Column()
+  @Column({ nullable: true })
   total: string;
 
-  @Column()
+  @Column({ nullable: true })
   subtotal: string;
 
-  @OneToMany(() => LineItemMetaData, (metadata) => metadata.lineItem, { cascade: true })
-  metadata: LineItemMetaData[];
+  @Column('uuid', { name: 'metadata_id' })
+  metadataId: string;
 
-  @ManyToOne(() => Order, (order) => order.lineItems)
-  @JoinColumn({ name: 'order_id' })
-  order: Order;
+  @Column('uuid', { name: 'order_id' })
+  orderId: string;
+
+  @Column('uuid', { name: 'product_id' })
+  productId: string;
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
 }
