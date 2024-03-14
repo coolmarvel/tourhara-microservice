@@ -1,8 +1,7 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { LineItem } from './line-item.entity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class LineItemMetaData {
+export class LineItemMetadata {
   @PrimaryGeneratedColumn('uuid', { name: 'line_item_metadata_id' })
   lineItemMetadataId: string;
 
@@ -29,7 +28,10 @@ export class LineItemMetaData {
   })
   value: string | object;
 
-  @ManyToOne(() => LineItem, (lineItem) => lineItem.metadata)
-  @JoinColumn({ name: 'line_item_id' })
-  lineItem: LineItem;
+  // @ManyToOne(() => LineItem, (lineItem) => lineItem.metadata)
+  // @JoinColumn({ name: 'line_item_id' })
+  // lineItem: LineItem;
+
+  @Column({ type: 'uuid', name: 'line_item_id' })
+  lineItemId: string;
 }

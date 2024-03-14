@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { OrderModule } from './order/order.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { AdapterModule } from './adapter/adapter.module';
 import config from './config';
 
 @Module({
@@ -27,6 +28,7 @@ import config from './config';
       },
     }),
     OrderModule,
+    AdapterModule,
   ],
   controllers: [AppController],
   providers: [AppService],

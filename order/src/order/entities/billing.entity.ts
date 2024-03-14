@@ -1,24 +1,43 @@
-import { Column, CreateDateColumn, Entity, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { Order } from './order.entity';
+import { Column, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
-@Entity()
 export class Billing {
-  @PrimaryGeneratedColumn('uuid', { name: 'billing_id' })
-  billingId: string;
+  @PrimaryGeneratedColumn('uuid', { name: 'order_billing_id' })
+  orderBillingId: string;
 
-  @Column({ name: 'first_name', nullable: true })
+  @Column({ name: 'first_name' })
   firstName: string;
 
-  @Column({ name: 'last_name', nullable: true })
+  @Column({ name: 'last_name' })
   lastName: string;
+
+  @Column({ nullable: true })
+  email: string;
+
+  @Column({ nullable: true })
+  phone: string;
+
+  @Column({ nullable: true })
+  survey: string;
+
+  @Column({ name: 'kakao_id', nullable: true })
+  kakaoId: string;
+
+  @Column('uuid', { name: 'order_id' })
+  orderId: string;
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
 
   @Column({ nullable: true })
   company: string;
 
-  @Column({ name: 'address_1', nullable: true })
+  @Column({ nullable: true })
   address1: string;
 
-  @Column({ name: 'address_2', nullable: true })
+  @Column({ nullable: true })
   address2: string;
 
   @Column({ nullable: true })
@@ -32,22 +51,4 @@ export class Billing {
 
   @Column({ nullable: true })
   country: string;
-
-  @Column({ nullable: true })
-  email: string;
-
-  @Column({ nullable: true })
-  phone: string;
-
-  @Column({ nullable: true })
-  survey: string;
-
-  @OneToOne(() => Order, (order) => order.billing)
-  order: Order;
-
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
 }

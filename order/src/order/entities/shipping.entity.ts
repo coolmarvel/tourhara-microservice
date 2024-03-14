@@ -39,8 +39,8 @@ export class Shipping {
   @Column({ name: 'shipping_mobile', nullable: true })
   shippingMobile: string;
 
-  @OneToOne(() => Order, (order) => order.shipping)
-  order: Order;
+  @Column({ type: 'uuid', name: 'order_id' })
+  orderId: string;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
