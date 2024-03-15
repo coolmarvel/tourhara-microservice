@@ -29,34 +29,72 @@ export class ProductService implements IProductService {
     });
   }
 
-  // WooCommerce Staging Order APIs
+  // WooCommerce Staging Product APIs
   async createAnProduct_stag(name: string, type: string, regular_price: string, description: string, short_description: string, categories: object, images: object): Promise<any> {
-    throw new Error('Method not implemented.');
+    const data = { name, type, regular_price, description, short_description, categories, images };
+    const product = await this.wooCommerceStag
+      .post('products', data)
+      .then((response: any) => response.data)
+      .catch((error: any) => error.response.data);
+
+    return product;
   }
 
   async retrieveAnProduct_stag(product_id: string): Promise<any> {
-    throw new Error('Method not implemented.');
+    const product = await this.wooCommerceStag
+      .get(`products/${product_id}`)
+      .then((response: any) => response.data)
+      .catch((error: any) => error.response.data);
+
+    return product;
   }
 
   async listAllProducts_stag(page: number, size: number): Promise<any> {
-    throw new Error('Method not implemented.');
+    const params = { page, per_page: size };
+    const products = await this.wooCommerceStag
+      .get('products', params)
+      .then((response: any) => response.data)
+      .catch((error: any) => error.response.data);
+
+    return products;
   }
 
   async updateAProduct_stag(product_id: string, data: any): Promise<any> {
-    throw new Error('Method not implemented.');
+    const product = await this.wooCommerceStag
+      .put(`products/${product_id}`, data)
+      .then((response: any) => response.data)
+      .catch((error: any) => error.response.data);
+
+    return product;
   }
 
   async deleteAProduct_stag(product_id: string): Promise<any> {
-    throw new Error('Method not implemented.');
+    const product = await this.wooCommerceStag
+      .delete(`products/${product_id}`, { force: true })
+      .then((response: any) => response.data)
+      .catch((error: any) => error.response.data);
+
+    return product;
   }
 
-  // WooCommerce Production Order APIs
+  // WooCommerce Production Product APIs
   async createAnProduct_prod(name: string, type: string, regular_price: string, description: string, short_description: string, categories: object, images: object): Promise<any> {
-    throw new Error('Method not implemented.');
+    const data = { name, type, regular_price, description, short_description, categories, images };
+    const product = await this.wooCommerceProd
+      .post('products', data)
+      .then((response: any) => response.data)
+      .catch((error: any) => error.response.data);
+
+    return product;
   }
 
   async retrieveAnProduct_prod(product_id: string): Promise<any> {
-    throw new Error('Method not implemented.');
+    const product = await this.wooCommerceProd
+      .get(`products/${product_id}`)
+      .then((response: any) => response.data)
+      .catch((error: any) => error.response.data);
+
+    return product;
   }
 
   async listAllProducts_prod(page: number, size: number): Promise<any> {
@@ -70,10 +108,20 @@ export class ProductService implements IProductService {
   }
 
   async updateAProduct_prod(product_id: string, data: any): Promise<any> {
-    throw new Error('Method not implemented.');
+    const product = await this.wooCommerceProd
+      .put(`products/${product_id}`, data)
+      .then((response: any) => response.data)
+      .catch((error: any) => error.response.data);
+
+    return product;
   }
 
   async deleteAProduct_prod(product_id: string): Promise<any> {
-    throw new Error('Method not implemented.');
+    const product = await this.wooCommerceProd
+      .delete(`products/${product_id}`, { force: true })
+      .then((response: any) => response.data)
+      .catch((error: any) => error.response.data);
+
+    return product;
   }
 }
