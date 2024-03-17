@@ -14,16 +14,16 @@ export class ProductController {
   @Public()
   @Post('stag')
   @ApiOperation({ summary: '단일 상품 생성 API (스테이징)' })
-  async createAnProduct_stag(@Body() createProductDto) {
+  async createAProduct_stag(@Body() createProductDto) {
     const { name, type, regular_price, description, short_description, categories, images } = createProductDto;
-    return await this.productService.createAnProduct_stag(name, type, regular_price, description, short_description, categories, images);
+    return await this.productService.createAProduct_stag(name, type, regular_price, description, short_description, categories, images);
   }
 
   @Public()
   @Get('stag/:product_id')
   @ApiOperation({ summary: '단일 상품 조회 API (스테이징)' })
-  async retrieveAnProduct_stag(@Param() { product_id }: { product_id: string }) {
-    return await this.productService.retrieveAnProduct_stag(product_id);
+  async retrieveAProduct_stag(@Param() { product_id }: { product_id: string }) {
+    return await this.productService.retrieveAProduct_stag(product_id);
   }
 
   @Public()
@@ -51,16 +51,16 @@ export class ProductController {
   @Public()
   @Post('prod')
   @ApiOperation({ summary: '단일 상품 생성 API (프로덕션)' })
-  async createAnProduct_prod(@Body() createProductDto) {
+  async createAProduct_prod(@Body() createProductDto) {
     const { name, type, regular_price, description, short_description, categories, images } = createProductDto;
-    return await this.productService.createAnProduct_prod(name, type, regular_price, description, short_description, categories, images);
+    return await this.productService.createAProduct_prod(name, type, regular_price, description, short_description, categories, images);
   }
 
   @Public()
   @Get('prod/:product_id')
   @ApiOperation({ summary: '단일 상품 조회 API (프로덕션)' })
-  async retrieveAnProduct_prod(@Param() { product_id }: { product_id: string }) {
-    return await this.productService.retrieveAnProduct_prod(product_id);
+  async retrieveAProduct_prod(@Param() { product_id }: { product_id: string }) {
+    return await this.productService.retrieveAProduct_prod(product_id);
   }
 
   @Public()

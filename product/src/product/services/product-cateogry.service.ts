@@ -29,7 +29,7 @@ export class ProductCategoryService implements IProductCategoryService {
   }
 
   // WooCommerce Staging Product Category APIs
-  async createProductCategory_stag(name: string, image: any): Promise<any> {
+  async createAProductCategory_stag(name: string, image: any): Promise<any> {
     const data = { name, image };
     const category = await this.wooCommerceStag
       .post('products/categories', data)
@@ -39,7 +39,7 @@ export class ProductCategoryService implements IProductCategoryService {
     return category;
   }
 
-  async retrieveProductCategory_stag(category_id: string): Promise<any> {
+  async retrieveAProductCategory_stag(category_id: string): Promise<any> {
     const category = await this.wooCommerceStag
       .get(`products/categories/${category_id}`)
       .then((response: any) => response.data)
@@ -58,7 +58,7 @@ export class ProductCategoryService implements IProductCategoryService {
     return categories;
   }
 
-  async updateProductCategory_stag(category_id: string, data: any): Promise<any> {
+  async updateAProductCategory_stag(category_id: string, data: any): Promise<any> {
     const category = await this.wooCommerceStag
       .put(`products/categories/${category_id}`, data)
       .then((response: any) => response.data)
@@ -67,7 +67,7 @@ export class ProductCategoryService implements IProductCategoryService {
     return category;
   }
 
-  async deleteProductCategory_stag(category_id: string): Promise<any> {
+  async deleteAProductCategory_stag(category_id: string): Promise<any> {
     const category = await this.wooCommerceStag
       .delete(`products/categories/${category_id}`, { force: true })
       .then((response: any) => response.data)
@@ -77,7 +77,7 @@ export class ProductCategoryService implements IProductCategoryService {
   }
 
   // WooCommerce Production Product Category APIs
-  async createProductCategory_prod(name: string, image: any): Promise<any> {
+  async createAProductCategory_prod(name: string, image: any): Promise<any> {
     const data = { name, image };
     const category = await this.wooCommerceProd
       .post('products/categories', data)
@@ -87,7 +87,7 @@ export class ProductCategoryService implements IProductCategoryService {
     return category;
   }
 
-  async retrieveProductCategory_prod(category_id: string): Promise<any> {
+  async retrieveAProductCategory_prod(category_id: string): Promise<any> {
     const category = await this.wooCommerceProd
       .get(`products/categories/${category_id}`)
       .then((response: any) => response.data)
@@ -106,7 +106,7 @@ export class ProductCategoryService implements IProductCategoryService {
     return categories;
   }
 
-  async updateProductCategory_prod(category_id: string, data: any): Promise<any> {
+  async updateAProductCategory_prod(category_id: string, data: any): Promise<any> {
     const category = await this.wooCommerceProd
       .put(`products/categories/${category_id}`, data)
       .then((response: any) => response.data)
@@ -115,7 +115,7 @@ export class ProductCategoryService implements IProductCategoryService {
     return category;
   }
 
-  async deleteProductCategory_prod(category_id: string): Promise<any> {
+  async deleteAProductCategory_prod(category_id: string): Promise<any> {
     const category = await this.wooCommerceProd
       .delete(`products/categories/${category_id}`, { force: true })
       .then((response: any) => response.data)

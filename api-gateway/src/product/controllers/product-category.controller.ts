@@ -13,15 +13,15 @@ export class ProductCategoryController {
   @Public()
   @Post('stag')
   @ApiOperation({ summary: '단일 상품 카테고리 생성 API (스테이징)' })
-  async createProductCategory_stag(@Body() { name, image }: { name: string; image: any }) {
-    return await this.productCategoryService.createProductCategory_stag(name, image);
+  async createAProductCategory_stag(@Body() { name, image }: { name: string; image: any }) {
+    return await this.productCategoryService.createAProductCategory_stag(name, image);
   }
 
   @Public()
   @Get('stag/:category_id')
   @ApiOperation({ summary: '단일 상품 카테고리 조회 API (스테이징)' })
-  async retrieveProductCategory_stag(@Param() { category_id }: { category_id: string }) {
-    return await this.productCategoryService.retrieveProductCategory_stag(category_id);
+  async retrieveAProductCategory_stag(@Param() { category_id }: { category_id: string }) {
+    return await this.productCategoryService.retrieveAProductCategory_stag(category_id);
   }
 
   @Public()
@@ -34,50 +34,50 @@ export class ProductCategoryController {
   @Public()
   @Put('stag/:category_id')
   @ApiOperation({ summary: '단일 상품 카테고리 갱신 API (스테이징)' })
-  async updateProductCategory_stag(@Param() { category_id }: { category_id: string }, @Body() data: any) {
-    return await this.productCategoryService.updateProductCategory_stag(category_id, data);
+  async updateAProductCategory_stag(@Param() { category_id }: { category_id: string }, @Body() data: any) {
+    return await this.productCategoryService.updateAProductCategory_stag(category_id, data);
   }
 
   @Public()
   @Delete('stag/:category_id')
   @ApiOperation({ summary: '단일 상품 카테고리 삭제 API (스테이징)' })
-  async deleteProductCategory_stag(@Param() { category_id }: { category_id: string }) {
-    return await this.productCategoryService.deleteProductCategory_stag(category_id);
+  async deleteAProductCategory_stag(@Param() { category_id }: { category_id: string }) {
+    return await this.productCategoryService.deleteAProductCategory_stag(category_id);
   }
 
   // WooCommerce Production Product Category APIs
   @Public()
   @Post('prod')
   @ApiOperation({ summary: '단일 상품 카테고리 생성 API (프로덕션)' })
-  async createProductCategory_prod(@Body() { name, image }: { name: any; image: any }) {
-    return await this.productCategoryService.createProductCategory_prod(name, image);
+  async createAProductCategory_prod(@Body() { name, image }: { name: any; image: any }) {
+    return await this.productCategoryService.createAProductCategory_prod(name, image);
   }
 
   @Public()
   @Get('prod/:category_id')
   @ApiOperation({ summary: '단일 상품 카테고리 조회 API (프로덕션)' })
-  async retrieveProductCategory_prod(@Param() { category_id }: { category_id: string }) {
-    return await this.productCategoryService.retrieveProductCategory_prod(category_id);
+  async retrieveAProductCategory_prod(@Param() { category_id }: { category_id: string }) {
+    return await this.productCategoryService.retrieveAProductCategory_prod(category_id);
   }
 
   @Public()
   @Get('prod')
   @ApiOperation({ summary: '상품 카테고리 리스트 조회 API (프로덕션)' })
-  async listAllProducts_prod(@Query() { page, size }: PageReqDto) {
+  async listAllProductCategories_prod(@Query() { page, size }: PageReqDto) {
     return await this.productCategoryService.listAllProductCategories_prod(page, size);
   }
 
   @Public()
   @Put('prod/:category_id')
   @ApiOperation({ summary: '단일 상품 카테고리 갱신 API (프로덕션)' })
-  async updateProductCategory_prod(@Param() { category_id }: { category_id: string }, @Body() data: any) {
-    return await this.productCategoryService.updateProductCategory_prod(category_id, data);
+  async updateAProductCategory_prod(@Param() { category_id }: { category_id: string }, @Body() data: any) {
+    return await this.productCategoryService.updateAProductCategory_prod(category_id, data);
   }
 
   @Public()
   @Delete('prod/:category_id')
   @ApiOperation({ summary: '단일 상품 카테고리 삭제 API (프로덕션)' })
-  async deleteProductCategory_prod(@Param() { category_id }: { category_id: string }) {
-    return await this.productCategoryService.deleteProductCategory_prod(category_id);
+  async deleteAProductCategory_prod(@Param() { category_id }: { category_id: string }) {
+    return await this.productCategoryService.deleteAProductCategory_prod(category_id);
   }
 }

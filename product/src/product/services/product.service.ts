@@ -30,7 +30,7 @@ export class ProductService implements IProductService {
   }
 
   // WooCommerce Staging Product APIs
-  async createAnProduct_stag(name: string, type: string, regular_price: string, description: string, short_description: string, categories: object, images: object): Promise<any> {
+  async createAProduct_stag(name: string, type: string, regular_price: string, description: string, short_description: string, categories: object, images: object): Promise<any> {
     const data = { name, type, regular_price, description, short_description, categories, images };
     const product = await this.wooCommerceStag
       .post('products', data)
@@ -40,7 +40,7 @@ export class ProductService implements IProductService {
     return product;
   }
 
-  async retrieveAnProduct_stag(product_id: string): Promise<any> {
+  async retrieveAProduct_stag(product_id: string): Promise<any> {
     const product = await this.wooCommerceStag
       .get(`products/${product_id}`)
       .then((response: any) => response.data)
@@ -78,7 +78,7 @@ export class ProductService implements IProductService {
   }
 
   // WooCommerce Production Product APIs
-  async createAnProduct_prod(name: string, type: string, regular_price: string, description: string, short_description: string, categories: object, images: object): Promise<any> {
+  async createAProduct_prod(name: string, type: string, regular_price: string, description: string, short_description: string, categories: object, images: object): Promise<any> {
     const data = { name, type, regular_price, description, short_description, categories, images };
     const product = await this.wooCommerceProd
       .post('products', data)
@@ -88,7 +88,7 @@ export class ProductService implements IProductService {
     return product;
   }
 
-  async retrieveAnProduct_prod(product_id: string): Promise<any> {
+  async retrieveAProduct_prod(product_id: string): Promise<any> {
     const product = await this.wooCommerceProd
       .get(`products/${product_id}`)
       .then((response: any) => response.data)

@@ -7,14 +7,14 @@ export class ProductCateogryController {
   constructor(private readonly productCategoryService: ProductCategoryService) {}
 
   // WooCommerce Staging Product Category APIs
-  @MessagePattern({ cmd: 'createProductCategory_stag' })
-  async createProductCategory_stag({ name, image }: { name: string; image: any }) {
-    return await this.productCategoryService.createProductCategory_stag(name, image);
+  @MessagePattern({ cmd: 'createAProductCategory_stag' })
+  async createAProductCategory_stag({ name, image }: { name: string; image: any }) {
+    return await this.productCategoryService.createAProductCategory_stag(name, image);
   }
 
-  @MessagePattern({ cmd: 'retrieveProductCategory_stag' })
-  async retrieveProductCategory_stag({ category_id }: { category_id: string }) {
-    return await this.productCategoryService.retrieveProductCategory_stag(category_id);
+  @MessagePattern({ cmd: 'retrieveAProductCategory_stag' })
+  async retrieveAProductCategory_stag({ category_id }: { category_id: string }) {
+    return await this.productCategoryService.retrieveAProductCategory_stag(category_id);
   }
 
   @MessagePattern({ cmd: 'listAllProductCategories_stag' })
@@ -22,25 +22,25 @@ export class ProductCateogryController {
     return await this.productCategoryService.listAllProductCategories_stag(page, size);
   }
 
-  @MessagePattern({ cmd: 'updateProductCategory_stag' })
-  async updateProductCategory_stag({ category_id, data }: { category_id: string; data: any }) {
-    return await this.productCategoryService.updateProductCategory_stag(category_id, data);
+  @MessagePattern({ cmd: 'updateAProductCategory_stag' })
+  async updateAProductCategory_stag({ category_id, data }: { category_id: string; data: any }) {
+    return await this.productCategoryService.updateAProductCategory_stag(category_id, data);
   }
 
-  @MessagePattern({ cmd: 'deleteProductCategory_stag' })
-  async deleteProductCategory_stag({ category_id }: { category_id: string }) {
-    return await this.productCategoryService.deleteProductCategory_stag(category_id);
+  @MessagePattern({ cmd: 'deleteAProductCategory_stag' })
+  async deleteAProductCategory_stag({ category_id }: { category_id: string }) {
+    return await this.productCategoryService.deleteAProductCategory_stag(category_id);
   }
 
   // WooCommerce Production Product Category APIs
-  @MessagePattern({ cmd: 'createProductCategory_prod' })
-  async createProductCategory_prod({ name, image }: { name: string; image: any }) {
-    return await this.productCategoryService.createProductCategory_prod(name, image);
+  @MessagePattern({ cmd: 'createAProductCategory_prod' })
+  async createAProductCategory_prod({ name, image }: { name: string; image: any }) {
+    return await this.productCategoryService.createAProductCategory_prod(name, image);
   }
 
-  @MessagePattern({ cmd: 'retrieveProductCategory_prod' })
-  async retrieveProductCategory_prod({ category_id }: { category_id: string }) {
-    return await this.productCategoryService.retrieveProductCategory_prod(category_id);
+  @MessagePattern({ cmd: 'retrieveAProductCategory_prod' })
+  async retrieveAProductCategory_prod({ category_id }: { category_id: string }) {
+    return await this.productCategoryService.retrieveAProductCategory_prod(category_id);
   }
 
   @MessagePattern({ cmd: 'listAllProductCategories_prod' })
@@ -48,13 +48,13 @@ export class ProductCateogryController {
     return await this.productCategoryService.listAllProductCategories_prod(page, size);
   }
 
-  @MessagePattern({ cmd: 'updateProductCategory_prod' })
-  async updateProductCategory_prod({ category_id, data }: { category_id: string; data: any }) {
-    return await this.productCategoryService.updateProductCategory_prod(category_id, data);
+  @MessagePattern({ cmd: 'updateAProductCategory_prod' })
+  async updateAProductCategory_prod({ category_id, data }: { category_id: string; data: any }) {
+    return await this.productCategoryService.updateAProductCategory_prod(category_id, data);
   }
 
-  @MessagePattern({ cmd: 'deleteProductCategory_prod' })
-  async deleteProductCategory_prod({ category_id }: { category_id: string }) {
-    return await this.productCategoryService.deleteProductCategory_prod(category_id);
+  @MessagePattern({ cmd: 'deleteAProductCategory_prod' })
+  async deleteAProductCategory_prod({ category_id }: { category_id: string }) {
+    return await this.productCategoryService.deleteAProductCategory_prod(category_id);
   }
 }

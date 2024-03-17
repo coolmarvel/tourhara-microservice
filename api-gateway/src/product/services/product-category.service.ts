@@ -8,16 +8,16 @@ export class ProductCategoryService implements IProductCategoryService {
   constructor(@Inject('PRODUCT_SERVICE') private client: ClientProxy) {}
 
   // WooCommerce Staging Product Category APIs
-  async createProductCategory_stag(name: string, image: any): Promise<any> {
-    const pattern = { cmd: 'createProductCategory_stag' };
+  async createAProductCategory_stag(name: string, image: any): Promise<any> {
+    const pattern = { cmd: 'createAProductCategory_stag' };
     const payload = { name, image };
     const category = await firstValueFrom(this.client.send(pattern, payload));
 
     return category;
   }
 
-  async retrieveProductCategory_stag(category_id: string): Promise<any> {
-    const pattern = { cmd: 'retrieveProductCategory_stag' };
+  async retrieveAProductCategory_stag(category_id: string): Promise<any> {
+    const pattern = { cmd: 'retrieveAProductCategory_stag' };
     const payload = { category_id };
     const category = await firstValueFrom(this.client.send(pattern, payload));
 
@@ -32,16 +32,16 @@ export class ProductCategoryService implements IProductCategoryService {
     return categories;
   }
 
-  async updateProductCategory_stag(category_id: string, data: any): Promise<any> {
-    const pattern = { cmd: 'updateProductCategory_stag' };
+  async updateAProductCategory_stag(category_id: string, data: any): Promise<any> {
+    const pattern = { cmd: 'updateAProductCategory_stag' };
     const payload = { category_id, data };
     const category = await firstValueFrom(this.client.send(pattern, payload));
 
     return category;
   }
 
-  async deleteProductCategory_stag(category_id: string): Promise<any> {
-    const pattern = { cmd: 'deleteProductCategory_stag' };
+  async deleteAProductCategory_stag(category_id: string): Promise<any> {
+    const pattern = { cmd: 'deleteAProductCategory_stag' };
     const payload = { category_id };
     const category = await firstValueFrom(this.client.send(pattern, payload));
 
@@ -49,16 +49,16 @@ export class ProductCategoryService implements IProductCategoryService {
   }
 
   // WooCommerce Production Product Category APIs
-  async createProductCategory_prod(name: string, image: any): Promise<any> {
-    const pattern = { cmd: 'createProductCategory_prod' };
+  async createAProductCategory_prod(name: string, image: any): Promise<any> {
+    const pattern = { cmd: 'createAProductCategory_prod' };
     const payload = { name, image };
     const category = await firstValueFrom(this.client.send(pattern, payload));
 
     return category;
   }
 
-  async retrieveProductCategory_prod(category_id: string): Promise<any> {
-    const pattern = { cmd: 'retrieveProductCategory_prod' };
+  async retrieveAProductCategory_prod(category_id: string): Promise<any> {
+    const pattern = { cmd: 'retrieveAProductCategory_prod' };
     const payload = { category_id };
     const category = await firstValueFrom(this.client.send(pattern, payload));
 
@@ -73,16 +73,16 @@ export class ProductCategoryService implements IProductCategoryService {
     return categories;
   }
 
-  async updateProductCategory_prod(category_id: string, data: any): Promise<any> {
-    const pattern = { cmd: 'updateProductCategory_prod' };
+  async updateAProductCategory_prod(category_id: string, data: any): Promise<any> {
+    const pattern = { cmd: 'updateAProductCategory_prod' };
     const payload = { category_id, data };
     const category = await firstValueFrom(this.client.send(pattern, payload));
 
     return category;
   }
 
-  async deleteProductCategory_prod(category_id: string): Promise<any> {
-    const pattern = { cmd: 'deleteProductCategory_prod' };
+  async deleteAProductCategory_prod(category_id: string): Promise<any> {
+    const pattern = { cmd: 'deleteAProductCategory_prod' };
     const payload = { category_id };
     const category = await firstValueFrom(this.client.send(pattern, payload));
 
