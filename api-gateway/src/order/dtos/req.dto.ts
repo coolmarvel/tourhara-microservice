@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsString } from 'class-validator';
 
 export class CreateOrderReqDto {
   @ApiProperty({ required: true })
@@ -24,8 +23,6 @@ export class RetrieveOrderReqDto {
   @Transform((param) => String(param.value))
   order_id: string;
 }
-
-export class ListOrdersReqDto {}
 
 export class UpdateOrderReqDto {
   @ApiProperty({ required: true })

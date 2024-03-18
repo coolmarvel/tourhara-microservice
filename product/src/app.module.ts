@@ -5,6 +5,8 @@ import { ProductModule } from './product/product.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { CategoryModule } from './category/category.module';
+import { TagModule } from './tag/tag.module';
+import { AttributeModule } from './attribute/attribute.module';
 import config from './config';
 
 @Module({
@@ -29,6 +31,8 @@ import config from './config';
     }),
     ProductModule,
     CategoryModule,
+    TagModule,
+    AttributeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

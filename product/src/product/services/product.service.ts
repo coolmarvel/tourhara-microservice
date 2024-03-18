@@ -30,8 +30,7 @@ export class ProductService implements IProductService {
   }
 
   // WooCommerce Staging Product APIs
-  async createAProduct_stag(name: string, type: string, regular_price: string, description: string, short_description: string, categories: object, images: object): Promise<any> {
-    const data = { name, type, regular_price, description, short_description, categories, images };
+  async createAProduct_stag(data: any): Promise<any> {
     const product = await this.wooCommerceStag
       .post('products', data)
       .then((response: any) => response.data)
@@ -78,8 +77,7 @@ export class ProductService implements IProductService {
   }
 
   // WooCommerce Production Product APIs
-  async createAProduct_prod(name: string, type: string, regular_price: string, description: string, short_description: string, categories: object, images: object): Promise<any> {
-    const data = { name, type, regular_price, description, short_description, categories, images };
+  async createAProduct_prod(data: any): Promise<any> {
     const product = await this.wooCommerceProd
       .post('products', data)
       .then((response: any) => response.data)

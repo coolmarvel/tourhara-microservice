@@ -1,5 +1,5 @@
 export interface IProductService {
-  createAProduct_stag(name: string, type: string, regular_price: string, description: string, short_description: string, categories: object, images: object): Promise<any>;
+  createAProduct_stag(data: any): Promise<any>;
 
   retrieveAProduct_stag(product_id: string): Promise<any>;
 
@@ -9,7 +9,7 @@ export interface IProductService {
 
   deleteAProduct_stag(product_id: string): Promise<any>;
 
-  createAProduct_prod(name: string, type: string, regular_price: string, description: string, short_description: string, categories: object, images: object): Promise<any>;
+  createAProduct_prod(data: any): Promise<any>;
 
   retrieveAProduct_prod(product_id: string): Promise<any>;
 
