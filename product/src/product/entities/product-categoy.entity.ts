@@ -20,16 +20,8 @@ export class ProductCategory {
   @Column({ nullable: true })
   description: string;
 
-  @Column({
-    name: 'product_category_image_id',
-    type: 'text',
-    transformer: {
-      to: (value: string[]): string => JSON.stringify(value),
-      from: (value: string): string[] => JSON.parse(value),
-    },
-    nullable: true,
-  })
-  productCategoryImageId: string[];
+  @Column({ name: 'product_category_image_id', nullable: true })
+  productCategoryImageId: string;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

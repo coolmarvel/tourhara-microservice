@@ -57,4 +57,10 @@ export class ProductCateogryController {
   async deleteAProductCategory_prod({ category_id }: { category_id: string }) {
     return await this.productCategoryService.deleteAProductCategory_prod(category_id);
   }
+
+  // Database Insert
+  @MessagePattern({ cmd: 'insertProductCategories_prod' })
+  async insertProductCategories_prod() {
+    return await this.productCategoryService.insertProductCategories_prod();
+  }
 }

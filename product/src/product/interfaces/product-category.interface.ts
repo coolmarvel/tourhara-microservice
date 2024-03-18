@@ -18,4 +18,9 @@ export interface IProductCategoryService {
   updateAProductCategory_prod(category_id: string, data: any): Promise<any>;
 
   deleteAProductCategory_prod(category_id: string): Promise<any>;
+
+  // Database First Insert
+  insertProductCategories_stag(): Promise<any>;
+
+  insertProductCategories_prod(): Promise<any>;
 }
