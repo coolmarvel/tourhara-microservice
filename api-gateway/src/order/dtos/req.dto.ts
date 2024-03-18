@@ -24,12 +24,14 @@ export class RetrieveOrderReqDto {
   order_id: string;
 }
 
-export class UpdateOrderReqDto {
+export class UpdateOrderParamReqDto {
   @ApiProperty({ required: true })
   order_id: string;
+}
 
-  @ApiProperty({ required: true })
-  data: any;
+export class UpdateOrderBodyReqDto {
+  @ApiProperty({ required: true, example: 'completed' })
+  status: string;
 }
 
 export class DeleteOrderReqDto {

@@ -3,7 +3,7 @@ import { ProductTagService } from '../services/product-tag.service';
 import { Public } from 'src/common/decorators/public.decorator';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PageReqDto } from 'src/common/dtos/req.dto';
-import { CreateProductTagReqDto, DeleteProductTagReqDto, RetrieveProductTagReqDto } from '../dtos/req.dto';
+import { CreateProductTagReqDto, DeleteProductTagReqDto, RetrieveProductTagReqDto, UpdateProductTagBodyReqDto, UpdateProductTagParamReqDto } from '../dtos/req.dto';
 
 @Controller({ path: 'api/product/tag', version: VERSION_NEUTRAL })
 export class ProductTagController {
@@ -38,7 +38,7 @@ export class ProductTagController {
   @Put('stag/:tag_id')
   @ApiTags('Product-Tag')
   @ApiOperation({ summary: '단일 상품 태그 갱신 API (스테이징)' })
-  async updateAProductTag_stag(@Param() { tag_id }: { tag_id: string }, @Body() data: any) {
+  async updateAProductTag_stag(@Param() { tag_id }: UpdateProductTagParamReqDto, @Body() data: UpdateProductTagBodyReqDto) {
     return await this.productTagService.updateAProductTag_stag(tag_id, data);
   }
 
@@ -79,7 +79,7 @@ export class ProductTagController {
   @Put('prod/:tag_id')
   @ApiTags('Product-Tag')
   @ApiOperation({ summary: '단일 상품 태그 갱신 API (프로덕션)' })
-  async updateAProductTag_prod(@Param() { tag_id }: { tag_id: string }, @Body() data: any) {
+  async updateAProductTag_prod(@Param() { tag_id }: UpdateProductTagParamReqDto, @Body() data: UpdateProductTagBodyReqDto) {
     return await this.productTagService.updateAProductTag_prod(tag_id, data);
   }
 

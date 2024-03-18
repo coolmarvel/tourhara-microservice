@@ -3,7 +3,7 @@ import { ProductAttributeServcie } from '../services/product-attribute.service';
 import { Public } from 'src/common/decorators/public.decorator';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PageReqDto } from 'src/common/dtos/req.dto';
-import { CreateProductAttributeReqDto, DeleteProductAttributeReqDto, RetrieveProductAttributeReqDto } from '../dtos/req.dto';
+import { CreateProductAttributeReqDto, DeleteProductAttributeReqDto, RetrieveProductAttributeReqDto, UpdateProductAttributeBodyReqDto, UpdateProductAttributeParamReqDto } from '../dtos/req.dto';
 
 @Controller({ path: 'api/product/attribute', version: VERSION_NEUTRAL })
 export class ProductAttributeController {
@@ -38,7 +38,7 @@ export class ProductAttributeController {
   @Put('stag/:attribute_id')
   @ApiTags('Product-Attribute')
   @ApiOperation({ summary: '단일 상품 속성 갱신 API (스테이징)' })
-  async updateAProductAttribute_stag(@Param() { attribute_id }: { attribute_id: string }, @Body() data: any) {
+  async updateAProductAttribute_stag(@Param() { attribute_id }: UpdateProductAttributeParamReqDto, @Body() data: UpdateProductAttributeBodyReqDto) {
     return await this.productAttributeService.updateAProductAttribute_stag(attribute_id, data);
   }
 
@@ -79,7 +79,7 @@ export class ProductAttributeController {
   @Put('prod/:attribute_id')
   @ApiTags('Product-Attribute')
   @ApiOperation({ summary: '단일 상품 속성 갱신 API (프로덕션)' })
-  async updateAProductAttribute_prod(@Param() { attribute_id }: { attribute_id: string }, @Body() data: any) {
+  async updateAProductAttribute_prod(@Param() { attribute_id }: UpdateProductAttributeParamReqDto, @Body() data: UpdateProductAttributeBodyReqDto) {
     return await this.productAttributeService.updateAProductAttribute_prod(attribute_id, data);
   }
 

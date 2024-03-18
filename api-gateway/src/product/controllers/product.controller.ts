@@ -3,6 +3,7 @@ import { ProductService } from '../services/product.service';
 import { Public } from 'src/common/decorators/public.decorator';
 import { PageReqDto } from 'src/common/dtos/req.dto';
 import { ApiExtraModels, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CreateProductReqDto, DeleteProductReqDto, RetrieveProductReqDto, UpdateProductBodyReqDto, UpdateProductParamReqDto } from '../dtos/req.dto';
 
 @ApiTags('Product')
 @ApiExtraModels()
@@ -14,15 +15,14 @@ export class ProductController {
   @Public()
   @Post('stag')
   @ApiOperation({ summary: '단일 상품 생성 API (스테이징)' })
-  async createAProduct_stag(@Body() createProductDto) {
-    const { name, type, regular_price, description, short_description, categories, images } = createProductDto;
-    return await this.productService.createAProduct_stag(name, type, regular_price, description, short_description, categories, images);
+  async createAProduct_stag(@Body() data: CreateProductReqDto) {
+    return await this.productService.createAProduct_stag(data);
   }
 
   @Public()
   @Get('stag/:product_id')
   @ApiOperation({ summary: '단일 상품 조회 API (스테이징)' })
-  async retrieveAProduct_stag(@Param() { product_id }: { product_id: string }) {
+  async retrieveAProduct_stag(@Param() { product_id }: RetrieveProductReqDto) {
     return await this.productService.retrieveAProduct_stag(product_id);
   }
 
@@ -36,14 +36,14 @@ export class ProductController {
   @Public()
   @Put('stag/:product_id')
   @ApiOperation({ summary: '단일 상품 갱신 API (스테이징)' })
-  async updateAProduct_stag(@Param() { product_id }: { product_id: string }, @Body() data: any) {
+  async updateAProduct_stag(@Param() { product_id }: UpdateProductParamReqDto, @Body() data: UpdateProductBodyReqDto) {
     return await this.productService.updateAProduct_stag(product_id, data);
   }
 
   @Public()
   @Delete('stag/:product_id')
   @ApiOperation({ summary: '단일 상품 삭제 API (스테이징)' })
-  async deleteAProduct_stag(@Param() { product_id }: { product_id: string }) {
+  async deleteAProduct_stag(@Param() { product_id }: DeleteProductReqDto) {
     return await this.productService.deleteAProduct_stag(product_id);
   }
 
@@ -51,15 +51,14 @@ export class ProductController {
   @Public()
   @Post('prod')
   @ApiOperation({ summary: '단일 상품 생성 API (프로덕션)' })
-  async createAProduct_prod(@Body() createProductDto) {
-    const { name, type, regular_price, description, short_description, categories, images } = createProductDto;
-    return await this.productService.createAProduct_prod(name, type, regular_price, description, short_description, categories, images);
+  async createAProduct_prod(@Body() data: CreateProductReqDto) {
+    return await this.productService.createAProduct_prod(data);
   }
 
   @Public()
   @Get('prod/:product_id')
   @ApiOperation({ summary: '단일 상품 조회 API (프로덕션)' })
-  async retrieveAProduct_prod(@Param() { product_id }: { product_id: string }) {
+  async retrieveAProduct_prod(@Param() { product_id }: RetrieveProductReqDto) {
     return await this.productService.retrieveAProduct_prod(product_id);
   }
 
@@ -73,14 +72,14 @@ export class ProductController {
   @Public()
   @Put('prod/:product_id')
   @ApiOperation({ summary: '단일 상품 갱신 API (프로덕션)' })
-  async updateAProduct_prod(@Param() { product_id }: { product_id: string }, @Body() data: any) {
+  async updateAProduct_prod(@Param() { product_id }: UpdateProductParamReqDto, @Body() data: UpdateProductBodyReqDto) {
     return await this.productService.updateAProduct_prod(product_id, data);
   }
 
   @Public()
   @Delete('prod/:product_id')
   @ApiOperation({ summary: '단일 상품 삭제 API (프로덕션)' })
-  async deleteAProduct_prod(@Param() { product_id }: { product_id: string }) {
+  async deleteAProduct_prod(@Param() { product_id }: DeleteProductReqDto) {
     return await this.productService.deleteAProduct_prod(product_id);
   }
 }

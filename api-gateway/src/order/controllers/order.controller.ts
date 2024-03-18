@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query, VERSION_NEUTRAL
 import { ApiExtraModels, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { OrderService } from '../services/order.service';
 import { Public } from 'src/common/decorators/public.decorator';
-import { CreateOrderReqDto, DeleteOrderReqDto, RetrieveOrderReqDto, UpdateOrderReqDto } from '../dtos/req.dto';
+import { CreateOrderReqDto, DeleteOrderReqDto, RetrieveOrderReqDto, UpdateOrderBodyReqDto, UpdateOrderParamReqDto } from '../dtos/req.dto';
 import { PageReqDto } from 'src/common/dtos/req.dto';
 
 @ApiTags('Order')
@@ -38,8 +38,8 @@ export class OrderController {
   @Public()
   @Put('stag/:order_id')
   @ApiOperation({ summary: '단일 주문 갱신 API (스테이징)' })
-  async updateAnOrder_stag(@Param() { order_id }: UpdateOrderReqDto) {
-    return await this.orderService.updateAnOrder_stag(order_id);
+  async updateAnOrder_stag(@Param() { order_id }: UpdateOrderParamReqDto, @Body() data: UpdateOrderBodyReqDto) {
+    return await this.orderService.updateAnOrder_stag(order_id, data);
   }
 
   @Public()
@@ -76,8 +76,8 @@ export class OrderController {
   @Public()
   @Put('prod/:order_id')
   @ApiOperation({ summary: '단일 주문 갱신 API (프로덕션)' })
-  async updateAnOrder_prod(@Param() { order_id }: UpdateOrderReqDto) {
-    return await this.orderService.updateAnOrder_prod(order_id);
+  async updateAnOrder_prod(@Param() { order_id }: UpdateOrderParamReqDto, @Body() data: UpdateOrderBodyReqDto) {
+    return await this.orderService.updateAnOrder_prod(order_id, data);
   }
 
   @Public()

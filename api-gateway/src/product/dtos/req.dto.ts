@@ -1,5 +1,49 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+// Product
+export class CreateProductReqDto {
+  @ApiProperty({ required: true, example: 'Premium Quality' })
+  name: string;
+
+  @ApiProperty({ required: true, example: 'simple' })
+  type: string;
+
+  @ApiProperty({ required: true, example: '21.99' })
+  regular_price: string;
+
+  @ApiProperty({ required: true, example: 'description' })
+  description: string;
+
+  @ApiProperty({ required: true, example: 'short description' })
+  short_description: string;
+
+  @ApiProperty({ required: true, example: [{ id: 9 }, { id: 14 }] })
+  categories: object;
+
+  @ApiProperty({ required: true, example: [{ src: 'http://localhost:3000' }, { src: 'http://localhost:3000' }] })
+  images: object;
+}
+
+export class RetrieveProductReqDto {
+  @ApiProperty({ required: true })
+  product_id: string;
+}
+
+export class UpdateProductParamReqDto {
+  @ApiProperty({ required: true })
+  product_id: string;
+}
+
+export class UpdateProductBodyReqDto {
+  @ApiProperty({ required: true, example: '24.54' })
+  regular_price: string;
+}
+
+export class DeleteProductReqDto {
+  @ApiProperty({ required: true })
+  product_id: string;
+}
+
 // Product Category
 export class CreateProductCategoryReqDto {
   @ApiProperty({ required: true })
@@ -29,8 +73,8 @@ export class DeleteProductCateogryReqDto {
 
 // Product Tag
 export class CreateProductTagReqDto {
-  @ApiProperty({ required: true, example: { name: 'Leather Shoes' } })
-  data: object;
+  @ApiProperty({ required: true, example: 'Leather Shoes' })
+  name: string;
 }
 
 export class RetrieveProductTagReqDto {
@@ -38,12 +82,14 @@ export class RetrieveProductTagReqDto {
   tag_id: string;
 }
 
-export class UpdateProductTagReqDto {
+export class UpdateProductTagParamReqDto {
   @ApiProperty({ required: true })
   tag_id: string;
+}
 
-  @ApiProperty({ required: true, example: { description: 'Genuine Leather.' } })
-  data: object;
+export class UpdateProductTagBodyReqDto {
+  @ApiProperty({ required: true, example: 'Genuine Leather.' })
+  description: string;
 }
 
 export class DeleteProductTagReqDto {
@@ -53,8 +99,20 @@ export class DeleteProductTagReqDto {
 
 // Product Attribute
 export class CreateProductAttributeReqDto {
-  @ApiProperty({ required: true, example: { name: 'Color', slug: 'pa_color', type: 'select', order_by: 'menu_order', has_archives: true } })
-  data: object;
+  @ApiProperty({ required: true, example: 'Color' })
+  name: string;
+
+  @ApiProperty({ required: true, example: 'pa_color' })
+  slug: string;
+
+  @ApiProperty({ required: true, example: 'select' })
+  type: string;
+
+  @ApiProperty({ required: true, example: 'menu_order' })
+  order_by: string;
+
+  @ApiProperty({ required: true, example: true })
+  has_archives: boolean;
 }
 
 export class RetrieveProductAttributeReqDto {
@@ -62,12 +120,14 @@ export class RetrieveProductAttributeReqDto {
   attribute_id: string;
 }
 
-export class UpdateProductAttributeReqDto {
+export class UpdateProductAttributeParamReqDto {
   @ApiProperty({ required: true })
   attribute_id: string;
+}
 
-  @ApiProperty({ required: true, example: { order_by: 'name' } })
-  data: object;
+export class UpdateProductAttributeBodyReqDto {
+  @ApiProperty({ required: true, example: 'name' })
+  order_by: string;
 }
 
 export class DeleteProductAttributeReqDto {

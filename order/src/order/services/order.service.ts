@@ -82,54 +82,6 @@ export class OrderService implements IOrderService {
       .then((response: any) => response.data)
       .catch((error: any) => error.response.data);
 
-    // const queryRunner = this.dataSource.createQueryRunner();
-    // await queryRunner.connect();
-    // await queryRunner.startTransaction();
-
-    // try {
-    //   const exist = await queryRunner.manager.findOneBy(Order, { id: Number(order_id) });
-    //   if (exist === null) {
-    //     // Billing entity
-    //     const billingEntity = queryRunner.manager.create(Billing, {
-    //       firstName: order.billing.first_name,
-    //       email: order.billing.email,
-    //       phone: order.billing.phone,
-    //       survey: order.billing.survey,
-    //     });
-    //     await queryRunner.manager.save(billingEntity);
-
-    //     // Shipping entity
-    //     const shippingEntity = queryRunner.manager.create(Shipping, {
-    //       firstName: order.shipping.first_name,
-    //     });
-    //     await queryRunner.manager.save(shippingEntity);
-
-    //     // Order entity
-    //     const orderEntity = queryRunner.manager.create(Order, {
-    //       id: order.id,
-    //       status: order.status,
-    //       currency: order.currency,
-    //       dateCreated: new Date(order.date_created),
-    //       dateModified: new Date(order.date_modified),
-    //       dateCompleted: order.date_completed ? new Date(order.date_completed) : null,
-    //       datePaid: order.date_paid ? new Date(order.date_paid) : null,
-    //       billingId: billingEntity.billingId,
-    //       shippingId: shippingEntity.shippingId,
-    //       paymentMethod: order.payment_method,
-    //       paymentMethodTitle: order.payment_method_title,
-    //       transactionId: order.transaction_id,
-    //     });
-    //     await queryRunner.manager.save(orderEntity);
-
-    //     await queryRunner.commitTransaction();
-    //   }
-    // } catch (error) {
-    //   await queryRunner.rollbackTransaction();
-    //   throw error;
-    // } finally {
-    //   await queryRunner.release();
-    // }
-
     return order;
   }
 
@@ -161,3 +113,51 @@ export class OrderService implements IOrderService {
     return order;
   }
 }
+
+// const queryRunner = this.dataSource.createQueryRunner();
+// await queryRunner.connect();
+// await queryRunner.startTransaction();
+
+// try {
+//   const exist = await queryRunner.manager.findOneBy(Order, { id: Number(order_id) });
+//   if (exist === null) {
+//     // Billing entity
+//     const billingEntity = queryRunner.manager.create(Billing, {
+//       firstName: order.billing.first_name,
+//       email: order.billing.email,
+//       phone: order.billing.phone,
+//       survey: order.billing.survey,
+//     });
+//     await queryRunner.manager.save(billingEntity);
+
+//     // Shipping entity
+//     const shippingEntity = queryRunner.manager.create(Shipping, {
+//       firstName: order.shipping.first_name,
+//     });
+//     await queryRunner.manager.save(shippingEntity);
+
+//     // Order entity
+//     const orderEntity = queryRunner.manager.create(Order, {
+//       id: order.id,
+//       status: order.status,
+//       currency: order.currency,
+//       dateCreated: new Date(order.date_created),
+//       dateModified: new Date(order.date_modified),
+//       dateCompleted: order.date_completed ? new Date(order.date_completed) : null,
+//       datePaid: order.date_paid ? new Date(order.date_paid) : null,
+//       billingId: billingEntity.billingId,
+//       shippingId: shippingEntity.shippingId,
+//       paymentMethod: order.payment_method,
+//       paymentMethodTitle: order.payment_method_title,
+//       transactionId: order.transaction_id,
+//     });
+//     await queryRunner.manager.save(orderEntity);
+
+//     await queryRunner.commitTransaction();
+//   }
+// } catch (error) {
+//   await queryRunner.rollbackTransaction();
+//   throw error;
+// } finally {
+//   await queryRunner.release();
+// }

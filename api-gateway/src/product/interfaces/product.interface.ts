@@ -1,5 +1,7 @@
+import { CreateProductReqDto } from '../dtos/req.dto';
+
 export interface IProductService {
-  createAProduct_stag(name: string, type: string, regular_price: string, description: string, short_description: string, categories: object, images: object): Promise<any>;
+  createAProduct_stag(data: CreateProductReqDto): Promise<any>;
 
   retrieveAProduct_stag(product_id: string): Promise<any>;
 
@@ -9,7 +11,7 @@ export interface IProductService {
 
   deleteAProduct_stag(product_id: string): Promise<any>;
 
-  createAProduct_prod(name: string, type: string, regular_price: string, description: string, short_description: string, categories: object, images: object): Promise<any>;
+  createAProduct_prod(data: CreateProductReqDto): Promise<any>;
 
   retrieveAProduct_prod(product_id: string): Promise<any>;
 
