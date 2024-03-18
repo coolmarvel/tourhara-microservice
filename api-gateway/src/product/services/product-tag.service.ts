@@ -88,4 +88,12 @@ export class ProductTagService implements IProductTagService {
 
     return tag;
   }
+
+  async insertProductTag_prod() {
+    const pattern = { cmd: 'insertProductTag_prod' };
+    const payload = {};
+    const result = await firstValueFrom(this.client.send(pattern, payload));
+
+    return result;
+  }
 }

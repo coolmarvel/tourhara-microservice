@@ -48,19 +48,19 @@ export class Product {
     name: 'product_category_id',
     type: 'text',
     transformer: {
-      to: (value: string[]): string => JSON.stringify(value),
-      from: (value: string): string[] => JSON.parse(value),
+      to: (value: string[] | null): string | null => (value ? JSON.stringify(value) : null),
+      from: (value: string): string[] | null => (value ? JSON.parse(value) : null),
     },
     nullable: true,
   })
-  productCategoryId: string[];
+  productCategoryId: string[] | null;
 
   @Column({
     name: 'product_tag_id',
     type: 'text',
     transformer: {
-      to: (value: string[]): string => JSON.stringify(value),
-      from: (value: string): string[] => JSON.parse(value),
+      to: (value: string[] | null): string | null => (value ? JSON.stringify(value) : null),
+      from: (value: string): string[] | null => (value ? JSON.parse(value) : null),
     },
     nullable: true,
   })
@@ -70,33 +70,33 @@ export class Product {
     name: 'product_image_id',
     type: 'text',
     transformer: {
-      to: (value: string[]): string => JSON.stringify(value),
-      from: (value: string): string[] => JSON.parse(value),
+      to: (value: string[] | null): string | null => (value ? JSON.stringify(value) : null),
+      from: (value: string): string[] | null => (value ? JSON.parse(value) : null),
     },
     nullable: true,
   })
-  productImageId: string[];
+  productImageId: string[] | null;
 
   @Column({
     name: 'product_attribute_id',
     type: 'text',
     transformer: {
-      to: (value: string[]): string => JSON.stringify(value),
-      from: (value: string): string[] => JSON.parse(value),
+      to: (value: string[] | null): string | null => (value ? JSON.stringify(value) : null),
+      from: (value: string): string[] | null => (value ? JSON.parse(value) : null),
     },
     nullable: true,
   })
-  productAttributeId: string[];
+  productAttributeId: string[] | null;
 
   @Column({
     type: 'text',
     transformer: {
-      to: (value: string[]): string => JSON.stringify(value),
-      from: (value: string): string[] => JSON.parse(value),
+      to: (value: string[] | null): string | null => (value ? JSON.stringify(value) : null),
+      from: (value: string): string[] | null => (value ? JSON.parse(value) : null),
     },
     nullable: true,
   })
-  variations: string[];
+  variations: string[] | null;
 
   @Column({ name: 'date_created', nullable: true })
   dateCreated: Date;

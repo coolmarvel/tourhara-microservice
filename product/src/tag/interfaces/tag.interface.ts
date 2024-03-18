@@ -20,4 +20,8 @@ export interface ITagService {
   updateAProductTag_prod(tag_id: string, data: any): Promise<any>;
 
   deleteAProductTag_prod(tag_id: string): Promise<any>;
+
+  insertProductTag_stag(): Promise<any>;
+
+  insertProductTag_prod(): Promise<any>;
 }

@@ -92,7 +92,7 @@ export class ProductCategoryController {
   }
 
   // Database insert
-  @ApiTags('Database')
+  @ApiTags('Database-Product-Category')
   @Public()
   @Post('prod/insert-database')
   async insertProductCategories_prod() {

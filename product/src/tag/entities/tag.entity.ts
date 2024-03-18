@@ -14,6 +14,9 @@ export class ProductTag {
   @Column({ nullable: true })
   slug: string;
 
+  @Column({ nullable: true })
+  count: number;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

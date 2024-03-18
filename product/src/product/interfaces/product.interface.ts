@@ -18,4 +18,13 @@ export interface IProductService {
   updateAProduct_prod(product_id: string, data: any): Promise<any>;
 
   deleteAProduct_prod(product_id: string): Promise<any>;
+
+  // --
+  insertProduct_stag(): Promise<any>;
+
+  insertProduct_prod(): Promise<any>;
+
+  insertProductImage_stag(): Promise<any>;
+
+  insertProductImage_prod(): Promise<any>;
 }

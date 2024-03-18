@@ -82,4 +82,12 @@ export class ProductController {
   async deleteAProduct_prod(@Param() { product_id }: DeleteProductReqDto) {
     return await this.productService.deleteAProduct_prod(product_id);
   }
+
+  // --
+  @Public()
+  @ApiTags('Database-Product-Image')
+  @Post('prod/insert-image-database')
+  async insertProductImage_prod() {
+    return await this.productService.insertProductImage_prod();
+  }
 }

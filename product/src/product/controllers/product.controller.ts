@@ -57,4 +57,9 @@ export class ProductController {
   async deleteAProduct_prod({ product_id }: { product_id: string }) {
     return await this.productService.deleteAProduct_prod(product_id);
   }
+
+  @MessagePattern({ cmd: 'insertProductImage_prod' })
+  async insertProductImage_prod() {
+    return await this.productService.insertProductImage_prod();
+  }
 }

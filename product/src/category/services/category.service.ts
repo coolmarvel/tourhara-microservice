@@ -127,7 +127,7 @@ export class CategoryService implements ICategoryService {
   /**
    * Database Insert
    */
-  insertProductCategories_stag(): Promise<any> {
+  async insertProductCategories_stag(): Promise<any> {
     throw new Error('Method not implemented.');
   }
 
@@ -145,10 +145,8 @@ export class CategoryService implements ICategoryService {
           .then((response: any) => response.data)
           .catch((error: any) => error.response.data);
 
-        if (categories.length === 0) break; // No more categories to process, exit the loop.
-
+        if (categories.length === 0) break;
         for (const category of categories) {
-          // Initialize productCategoryImageEntity outside of the if block
           let productCategoryImageEntity: ProductCategoryImage | null = null; // Adjusted to correct entity type
 
           const image = category.image;

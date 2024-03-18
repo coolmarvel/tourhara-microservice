@@ -44,10 +44,7 @@ export class CreateOrderReqDto {
 
   @ApiProperty({
     required: true,
-    example: [
-      { product_id: 93, quantity: 2 },
-      { product_id: 23, variation_id: 23, quantity: 1 },
-    ],
+    example: [{ product_id: 21729, quantity: 2 }],
   })
   line_items: object;
 
