@@ -1,5 +1,6 @@
-export interface IProductCategoryService {
-  createAProductCategory_stag(name: string, image: any): Promise<any>;
+export interface ICategoryService {
+  // WooCommerce Staging Product Category APIs
+  createAProductCategory_stag(data: any): Promise<any>;
 
   retrieveAProductCategory_stag(category_id: string): Promise<any>;
 
@@ -9,7 +10,8 @@ export interface IProductCategoryService {
 
   deleteAProductCategory_stag(category_id: string): Promise<any>;
 
-  createAProductCategory_prod(name: string, image: any): Promise<any>;
+  // WooCommerce Production Product Category APIs
+  createAProductCategory_prod(data: any): Promise<any>;
 
   retrieveAProductCategory_prod(category_id: string): Promise<any>;
 
@@ -18,4 +20,9 @@ export interface IProductCategoryService {
   updateAProductCategory_prod(category_id: string, data: any): Promise<any>;
 
   deleteAProductCategory_prod(category_id: string): Promise<any>;
+
+  // Database First Insert
+  insertProductCategories_stag(): Promise<any>;
+
+  insertProductCategories_prod(): Promise<any>;
 }

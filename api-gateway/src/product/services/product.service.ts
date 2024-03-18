@@ -2,22 +2,23 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { IProductService } from '../interfaces/product.interface';
+import { CreateProductReqDto } from '../dtos/req.dto';
 
 @Injectable()
 export class ProductService implements IProductService {
   constructor(@Inject('PRODUCT_SERVICE') private client: ClientProxy) {}
 
   // WooCommerce Staging Product APIs
-  async createAnProduct_stag(name: string, type: string, regular_price: string, description: string, short_description: string, categories: object, images: object): Promise<any> {
-    const pattern = { cmd: 'createAnProduct_stag' };
-    const payload = { name, type, regular_price, description, short_description, categories, images };
+  async createAProduct_stag(data: CreateProductReqDto): Promise<any> {
+    const pattern = { cmd: 'createAProduct_stag' };
+    const payload = data;
     const product = await firstValueFrom(this.client.send(pattern, payload));
 
     return product;
   }
 
-  async retrieveAnProduct_stag(product_id: string): Promise<any> {
-    const pattern = { cmd: 'retrieveAnProduct_stag' };
+  async retrieveAProduct_stag(product_id: string): Promise<any> {
+    const pattern = { cmd: 'retrieveAProduct_stag' };
     const payload = { product_id };
     const product = await firstValueFrom(this.client.send(pattern, payload));
 
@@ -49,16 +50,16 @@ export class ProductService implements IProductService {
   }
 
   // WooCommerce Production Product APIs
-  async createAnProduct_prod(name: string, type: string, regular_price: string, description: string, short_description: string, categories: object, images: object): Promise<any> {
-    const pattern = { cmd: 'createAnProduct_prod' };
-    const payload = { name, type, regular_price, description, short_description, categories, images };
+  async createAProduct_prod(data: CreateProductReqDto): Promise<any> {
+    const pattern = { cmd: 'createAProduct_prod' };
+    const payload = data;
     const product = await firstValueFrom(this.client.send(pattern, payload));
 
     return product;
   }
 
-  async retrieveAnProduct_prod(product_id: string): Promise<any> {
-    const pattern = { cmd: 'retrieveAnProduct_prod' };
+  async retrieveAProduct_prod(product_id: string): Promise<any> {
+    const pattern = { cmd: 'retrieveAProduct_prod' };
     const payload = { product_id };
     const product = await firstValueFrom(this.client.send(pattern, payload));
 
@@ -87,5 +88,14 @@ export class ProductService implements IProductService {
     const product = await firstValueFrom(this.client.send(pattern, payload));
 
     return product;
+  }
+
+  // --
+  async insertProductImage_prod(): Promise<any> {
+    const pattern = { cmd: 'insertProductImage_prod' };
+    const payload = {};
+    const result = await firstValueFrom(this.client.send(pattern, payload));
+
+    return result;
   }
 }
