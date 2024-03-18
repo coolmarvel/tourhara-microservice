@@ -1,4 +1,4 @@
-export interface ITagService {
+export interface IProductTagService {
   // WooCommerce Staging Product Tags APIs
   createAProductTag_stag(data: any): Promise<any>;
 

@@ -4,11 +4,17 @@ import { ProductController } from './controllers/product.controller';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { ProductCategoryService } from './services/product-category.service';
 import { ProductCategoryController } from './controllers/product-category.controller';
+import { ProductTagController } from './controllers/product-tag.controller';
+import { ProductAttributeController } from './controllers/product-attribute.controller';
+import { ProductTagService } from './services/product-tag.service';
+import { ProductAttributeServcie } from './services/product-attribute.service';
 
 @Module({
   providers: [
     ProductService,
+    ProductTagService,
     ProductCategoryService,
+    ProductAttributeServcie,
     {
       provide: 'PRODUCT_SERVICE',
       useFactory: () => {
@@ -19,6 +25,6 @@ import { ProductCategoryController } from './controllers/product-category.contro
       },
     },
   ],
-  controllers: [ProductController, ProductCategoryController],
+  controllers: [ProductController, ProductCategoryController, ProductTagController, ProductAttributeController],
 })
 export class ProductModule {}
