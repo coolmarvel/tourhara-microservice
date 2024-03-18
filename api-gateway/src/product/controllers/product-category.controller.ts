@@ -3,7 +3,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ProductCategoryService } from '../services/product-category.service';
 import { Public } from 'src/common/decorators/public.decorator';
 import { PageReqDto } from 'src/common/dtos/req.dto';
-import { CreateProductCategoryReqDto, DeleteProductCateogryReqDto, RetrieveProductCategoryReqDto } from '../dtos/req.dto';
+import { CreateProductCategoryReqDto, DeleteProductCateogryReqDto, RetrieveProductCategoryReqDto, UpdateProductCategoryBodyReqDto, UpdateProductCategoryParamReqDto } from '../dtos/req.dto';
 
 @Controller({ path: 'api/product/category', version: VERSION_NEUTRAL })
 export class ProductCategoryController {
@@ -38,7 +38,7 @@ export class ProductCategoryController {
   @Put('stag/:category_id')
   @ApiTags('Product-Category')
   @ApiOperation({ summary: '단일 상품 카테고리 갱신 API (스테이징)' })
-  async updateAProductCategory_stag(@Param() { category_id }: { category_id: string }, @Body() data: any) {
+  async updateAProductCategory_stag(@Param() { category_id }: UpdateProductCategoryParamReqDto, @Body() data: UpdateProductCategoryBodyReqDto) {
     return await this.productCategoryService.updateAProductCategory_stag(category_id, data);
   }
 
@@ -79,7 +79,7 @@ export class ProductCategoryController {
   @Put('prod/:category_id')
   @ApiTags('Product-Category')
   @ApiOperation({ summary: '단일 상품 카테고리 갱신 API (프로덕션)' })
-  async updateAProductCategory_prod(@Param() { category_id }: { category_id: string }, @Body() data: any) {
+  async updateAProductCategory_prod(@Param() { category_id }: UpdateProductCategoryParamReqDto, @Body() data: UpdateProductCategoryBodyReqDto) {
     return await this.productCategoryService.updateAProductCategory_prod(category_id, data);
   }
 

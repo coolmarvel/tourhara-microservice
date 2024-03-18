@@ -2,15 +2,16 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IOrderService } from '../interfaces/order.interface';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
+import { CreateOrderReqDto } from '../dtos/req.dto';
 
 @Injectable()
 export class OrderService implements IOrderService {
   constructor(@Inject('ORDER_SERVICE') private client: ClientProxy) {}
 
   // WooCommerce Staging Order APIs
-  async createAnOrder_stag(payment: object, billing: object, shipping: object, line_items: object, shipping_lines: object): Promise<any> {
+  async createAnOrder_stag(data: CreateOrderReqDto): Promise<any> {
     const pattern = { cmd: 'createAnOrder_stag' };
-    const payload = {};
+    const payload = data;
     const order = await firstValueFrom(this.client.send(pattern, payload));
 
     return order;
@@ -45,9 +46,9 @@ export class OrderService implements IOrderService {
   }
 
   // WooCommerce Production Order APIs
-  async createAnOrder_prod(payment: object, billing: object, shipping: object, line_items: object, shipping_lines: object): Promise<any> {
+  async createAnOrder_prod(data: CreateOrderReqDto): Promise<any> {
     const pattern = { cmd: 'createAnOrder_prod' };
-    const payload = {};
+    const payload = data;
     const order = await firstValueFrom(this.client.send(pattern, payload));
 
     return order;

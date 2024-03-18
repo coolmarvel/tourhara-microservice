@@ -15,10 +15,8 @@ export class OrderController {
   @Public()
   @Post('stag')
   @ApiOperation({ summary: '단일 주문 생성 API (스테이징)' })
-  async createAnOrder_stag(@Body() createOrderReqDto: CreateOrderReqDto) {
-    const { payment, billing, shipping, line_items, shipping_lines } = createOrderReqDto;
-
-    return await this.orderService.createAnOrder_stag(payment, billing, shipping, line_items, shipping_lines);
+  async createAnOrder_stag(@Body() data: CreateOrderReqDto) {
+    return await this.orderService.createAnOrder_stag(data);
   }
 
   @Public()
@@ -53,10 +51,8 @@ export class OrderController {
   @Public()
   @Post('prod')
   @ApiOperation({ summary: '단일 주문 생성 API (프로덕션)' })
-  async createAnOrder_prod(@Body() createOrderReqDto: CreateOrderReqDto) {
-    const { payment, billing, shipping, line_items, shipping_lines } = createOrderReqDto;
-
-    return await this.orderService.createAnOrder_prod(payment, billing, shipping, line_items, shipping_lines);
+  async createAnOrder_prod(@Body() data: CreateOrderReqDto) {
+    return await this.orderService.createAnOrder_prod(data);
   }
 
   @Public()

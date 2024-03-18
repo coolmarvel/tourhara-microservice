@@ -58,12 +58,14 @@ export class RetrieveProductCategoryReqDto {
   category_id: string;
 }
 
-export class UpdateProductCategoryReqDto {
+export class UpdateProductCategoryParamReqDto {
   @ApiProperty({ required: true })
   category_id: string;
+}
 
-  @ApiProperty({ required: true, example: { description: 'All kinds of clothes' } })
-  data: object;
+export class UpdateProductCategoryBodyReqDto {
+  @ApiProperty({ required: true, example: 'All kinds of clothes' })
+  description: string;
 }
 
 export class DeleteProductCateogryReqDto {
