@@ -22,6 +22,7 @@ export interface IProductService {
   deleteAProduct_prod(product_id: string): Promise<any>;
 
   // --
+  insertProduct_prod(): Promise<any>;
 
   insertProductImage_prod(): Promise<any>;
 

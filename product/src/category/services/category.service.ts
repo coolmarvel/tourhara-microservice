@@ -156,9 +156,9 @@ export class CategoryService implements ICategoryService {
             if (!existingCategoryImage) {
               const newProductCategoryImage = {
                 id: image.id,
-                name: image.name,
+                name: image.name == '' ? null : image.name,
                 src: image.src,
-                alt: image.alt,
+                alt: image.alt == '' ? null : image.alt,
                 dateCreated: image.date_created,
                 dateCreatedGmt: image.date_created_gmt,
                 dateModified: image.date_modified,

@@ -94,6 +94,13 @@ export class ProductController {
 
   // --
   @Public()
+  @ApiTags('Database-Product')
+  @Post('prod/insert-database')
+  async insertProduct_prod() {
+    return await this.productService.insertProduct_prod();
+  }
+
+  @Public()
   @ApiTags('Database-Product-Image')
   @Post('prod/insert-image-database')
   async insertProductImage_prod() {

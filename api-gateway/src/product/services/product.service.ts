@@ -91,6 +91,14 @@ export class ProductService implements IProductService {
   }
 
   // --
+  async insertProduct_prod(): Promise<any> {
+    const pattern = { cmd: 'insertProduct_prod' };
+    const payload = {};
+    const result = await firstValueFrom(this.client.send(pattern, payload));
+
+    return result;
+  }
+
   async insertProductImage_prod(): Promise<any> {
     const pattern = { cmd: 'insertProductImage_prod' };
     const payload = {};

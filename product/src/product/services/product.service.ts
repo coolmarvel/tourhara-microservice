@@ -138,6 +138,7 @@ export class ProductService implements IProductService {
       await queryRunner.startTransaction();
 
       for (let i = 1; i < 9999; i++) {
+        console.log(`product attribute migrate (page: ${i})`);
         const params = { page: i, per_page: 10 };
         const products = await this.wooCommerceProd
           .get('products', params)
@@ -170,7 +171,16 @@ export class ProductService implements IProductService {
           const attributes = product.attributes;
           const productAttributeId: string[] = [];
           for (const attribute of attributes) {
-            const existingAttribute = await queryRunner.manager.findOne(ProductAttribute, { where: { options: attribute.options } });
+            const existingAttribute = await queryRunner.manager.findOne(ProductAttribute, {
+              where: {
+                id: attribute.id,
+                name: attribute.name,
+                position: attribute.position,
+                visible: attribute.visible,
+                variation: attribute.variation,
+                options: attribute.options,
+              },
+            });
             if (existingAttribute) productAttributeId.push(existingAttribute.productAttributeId);
           }
 
@@ -182,17 +192,17 @@ export class ProductService implements IProductService {
             status: product.status,
             featured: product.featured,
             description: null,
-            shortDescription: product.short_description,
-            price: product.price,
-            regularPrice: product.regular_price,
+            shortDescription: null,
+            price: product.price == '' ? null : product.price,
+            regularPrice: product.regular_price == '' ? null : product.regular_price,
             onSale: product.on_sale,
-            salePrice: product.sale_price,
-            purchasable: product.purchasable,
-            productCategoryId: productCategoryId,
-            productTagId: productTagId,
-            productImageId: productImageId,
-            productAttributeId: productAttributeId,
-            variations: product.variations,
+            salePrice: product.sale_price == '' ? null : product.sale_price,
+            purchasable: product.purchasable == '' ? null : product.purchasable,
+            productCategoryId: productCategoryId.length == 0 ? null : productCategoryId,
+            productTagId: productTagId.length == 0 ? null : productTagId,
+            productImageId: productImageId.length == 0 ? null : productImageId,
+            productAttributeId: productAttributeId.length == 0 ? null : productAttributeId,
+            variations: product.variations.length == 0 ? null : product.variations,
             dateCreated: product.date_created,
             dateCreatedGmt: product.date_created_gmt,
             dateModified: product.date_modified,
