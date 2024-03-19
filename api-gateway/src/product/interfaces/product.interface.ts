@@ -24,4 +24,6 @@ export interface IProductService {
   // --
 
   insertProductImage_prod(): Promise<any>;
+
+  insertProductAttribute_prod(): Promise<any>;
 }

@@ -23,12 +23,12 @@ export class ProductAttribute {
   @Column({
     type: 'text',
     transformer: {
-      to: (value: string[]): string => JSON.stringify(value),
-      from: (value: string): string[] => JSON.parse(value),
+      to: (value: string[] | null): string | null => (value ? JSON.stringify(value) : null),
+      from: (value: string): string[] | null => (value ? JSON.parse(value) : null),
     },
     nullable: true,
   })
-  options: string;
+  options: string | null;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

@@ -62,4 +62,9 @@ export class ProductController {
   async insertProductImage_prod() {
     return await this.productService.insertProductImage_prod();
   }
+
+  @MessagePattern({ cmd: 'insertProductAttribute_prod' })
+  async insertProductAttribute_prod() {
+    return await this.productService.insertProductAttribute_prod();
+  }
 }
