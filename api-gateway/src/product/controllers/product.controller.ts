@@ -5,7 +5,6 @@ import { PageReqDto } from 'src/common/dtos/req.dto';
 import { ApiExtraModels, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateProductReqDto, DeleteProductReqDto, RetrieveProductReqDto, UpdateProductBodyReqDto, UpdateProductParamReqDto } from '../dtos/req.dto';
 
-@ApiTags('Product')
 @ApiExtraModels()
 @Controller({ path: 'api/product', version: VERSION_NEUTRAL })
 export class ProductController {
@@ -13,6 +12,7 @@ export class ProductController {
 
   // WooCommerce Staging Product APIs
   @Public()
+  @ApiTags('Product')
   @Post('stag')
   @ApiOperation({ summary: '단일 상품 생성 API (스테이징)' })
   async createAProduct_stag(@Body() data: CreateProductReqDto) {
@@ -20,6 +20,7 @@ export class ProductController {
   }
 
   @Public()
+  @ApiTags('Product')
   @Get('stag/:product_id')
   @ApiOperation({ summary: '단일 상품 조회 API (스테이징)' })
   async retrieveAProduct_stag(@Param() { product_id }: RetrieveProductReqDto) {
@@ -27,6 +28,7 @@ export class ProductController {
   }
 
   @Public()
+  @ApiTags('Product')
   @Get('stag')
   @ApiOperation({ summary: '상품 리스트 조회 API (스테이징)' })
   async listAllProducts_stag(@Query() { page, size }: PageReqDto) {
@@ -34,6 +36,7 @@ export class ProductController {
   }
 
   @Public()
+  @ApiTags('Product')
   @Put('stag/:product_id')
   @ApiOperation({ summary: '단일 상품 갱신 API (스테이징)' })
   async updateAProduct_stag(@Param() { product_id }: UpdateProductParamReqDto, @Body() data: UpdateProductBodyReqDto) {
@@ -41,6 +44,7 @@ export class ProductController {
   }
 
   @Public()
+  @ApiTags('Product')
   @Delete('stag/:product_id')
   @ApiOperation({ summary: '단일 상품 삭제 API (스테이징)' })
   async deleteAProduct_stag(@Param() { product_id }: DeleteProductReqDto) {
@@ -49,6 +53,7 @@ export class ProductController {
 
   // WooCommerce Production Product APIs
   @Public()
+  @ApiTags('Product')
   @Post('prod')
   @ApiOperation({ summary: '단일 상품 생성 API (프로덕션)' })
   async createAProduct_prod(@Body() data: CreateProductReqDto) {
@@ -56,6 +61,7 @@ export class ProductController {
   }
 
   @Public()
+  @ApiTags('Product')
   @Get('prod/:product_id')
   @ApiOperation({ summary: '단일 상품 조회 API (프로덕션)' })
   async retrieveAProduct_prod(@Param() { product_id }: RetrieveProductReqDto) {
@@ -63,6 +69,7 @@ export class ProductController {
   }
 
   @Public()
+  @ApiTags('Product')
   @Get('prod')
   @ApiOperation({ summary: '상품 리스트 조회 API (프로덕션)' })
   async listAllProducts_prod(@Query() { page, size }: PageReqDto) {
@@ -70,6 +77,7 @@ export class ProductController {
   }
 
   @Public()
+  @ApiTags('Product')
   @Put('prod/:product_id')
   @ApiOperation({ summary: '단일 상품 갱신 API (프로덕션)' })
   async updateAProduct_prod(@Param() { product_id }: UpdateProductParamReqDto, @Body() data: UpdateProductBodyReqDto) {
@@ -77,6 +85,7 @@ export class ProductController {
   }
 
   @Public()
+  @ApiTags('Product')
   @Delete('prod/:product_id')
   @ApiOperation({ summary: '단일 상품 삭제 API (프로덕션)' })
   async deleteAProduct_prod(@Param() { product_id }: DeleteProductReqDto) {
