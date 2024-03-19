@@ -139,6 +139,7 @@ export class CategoryService implements ICategoryService {
       await queryRunner.startTransaction();
 
       for (let i = 1; i < 9999; i++) {
+        console.log(`product category migrate (page: ${i})`);
         const params = { page: i, per_page: 10 };
         const categories = await this.wooCommerceProd
           .get('products/categories', params)

@@ -134,6 +134,7 @@ export class TagService implements ITagService {
       await queryRunner.startTransaction();
 
       for (let i = 1; i < 9999; i++) {
+        console.log(`product tag migrate (page: ${i})`);
         const params = { page: i, per_page: 10 };
         const tags = await this.wooCommerceProd
           .get('products/tags', params)
