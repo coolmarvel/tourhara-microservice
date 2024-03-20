@@ -29,6 +29,9 @@ export class ProductCategoryImage {
   @Column({ name: 'date_modified_gmt', nullable: true })
   dateModifiedGmt: Date;
 
+  @Column('uuid', { name: 'product_category_id', nullable: true })
+  productCategoryId: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

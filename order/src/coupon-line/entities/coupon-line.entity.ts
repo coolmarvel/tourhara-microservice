@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class CouponLine {
@@ -34,9 +34,12 @@ export class CouponLine {
   })
   productCategoryId: string[] | null;
 
+  @Column('uuid', { name: 'order_id', nullable: true })
   orderId: string;
 
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 }
