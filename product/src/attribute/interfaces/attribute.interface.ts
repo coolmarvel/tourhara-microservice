@@ -20,4 +20,9 @@ export interface IAttributeService {
   updateAProductAttribute_prod(attribute_id: string, data: any): Promise<any>;
 
   deleteAProductAttribute_prod(attribute_id: string): Promise<any>;
+
+  // --
+  insertProductAttribute_stag(): Promise<any>;
+
+  insertProductAttribute_prod(): Promise<any>;
 }

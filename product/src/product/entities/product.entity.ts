@@ -26,7 +26,7 @@ export class Product {
   @Column({ nullable: true, length: 2000 })
   description: string;
 
-  @Column({ nullable: true, length: 1000 })
+  @Column({ name: 'short_description', nullable: true, length: 1000 })
   shortDescription: string;
 
   @Column({ nullable: true })

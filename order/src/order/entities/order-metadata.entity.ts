@@ -5,30 +5,23 @@ export class OrderMetadata {
   @PrimaryGeneratedColumn('uuid', { name: 'order_metadata_id' })
   orderMetadataId: string;
 
-  @Column()
+  @Column('bigint', { nullable: true })
   id: number;
 
-  @Column()
+  @Column({ nullable: true })
   key: string;
 
   @Column({
     type: 'text',
     transformer: {
-      to(value: string | object): string {
-        return JSON.stringify(value);
-      },
-      from(value: string): string | object {
-        try {
-          return JSON.parse(value);
-        } catch (error) {
-          return value;
-        }
-      },
+      to: (value: string[] | null): string | null => (value ? JSON.stringify(value) : null),
+      from: (value: string): string[] | null => (value ? JSON.parse(value) : null),
     },
+    nullable: true,
   })
-  value: string | object;
+  value: string | null;
 
-  @Column({ type: 'uuid', name: 'order_id' })
+  @Column('uuid', { name: 'order_id' })
   orderId: string;
 
   @CreateDateColumn({ name: 'created_at' })

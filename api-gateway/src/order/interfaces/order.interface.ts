@@ -20,4 +20,7 @@ export interface IOrderService {
   updateAnOrder_prod(order_id: string, data: any): Promise<any>;
 
   deleteAnOrder_prod(order_id: string): Promise<any>;
+
+  // --
+  insertOrder_prod(): Promise<any>;
 }

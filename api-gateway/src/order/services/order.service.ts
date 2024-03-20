@@ -81,4 +81,13 @@ export class OrderService implements IOrderService {
     const payload = { order_id };
     await firstValueFrom(this.client.send(pattern, payload));
   }
+
+  // --
+  async insertOrder_prod(): Promise<any> {
+    const pattern = { cmd: 'insertOrder_prod' };
+    const payload = {};
+    const result = await firstValueFrom(this.client.send(pattern, payload));
+
+    return result;
+  }
 }

@@ -5,6 +5,15 @@ import { OrderModule } from './order/order.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AdapterModule } from './adapter/adapter.module';
+import { BillingModule } from './billing/billing.module';
+import { ShippingModule } from './shipping/shipping.module';
+import { LineItemModule } from './line-item/line-item.module';
+import { PaymentModule } from './payment/payment.module';
+import { TourModule } from './tour/tour.module';
+import { GuestHouseModule } from './guest-house/guest-house.module';
+import { UsimModule } from './usim/usim.module';
+import { JfkModule } from './jfk/jfk.module';
+import { CouponLineModule } from './coupon-line/coupon-line.module';
 import config from './config';
 
 @Module({
@@ -29,6 +38,15 @@ import config from './config';
     }),
     OrderModule,
     AdapterModule,
+    BillingModule,
+    ShippingModule,
+    LineItemModule,
+    PaymentModule,
+    TourModule,
+    GuestHouseModule,
+    UsimModule,
+    JfkModule,
+    CouponLineModule,
   ],
   controllers: [AppController],
   providers: [AppService],

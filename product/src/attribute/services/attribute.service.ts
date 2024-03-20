@@ -4,6 +4,7 @@ import { IAttributeService } from '../interfaces/attribute.interface';
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 import { DataSource } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
+import { ProductAttribute } from '../entities/attribute.entity';
 
 @Injectable()
 export class AttributeService implements IAttributeService {
@@ -120,5 +121,63 @@ export class AttributeService implements IAttributeService {
       .catch((error: any) => error.response.data);
 
     return attribute;
+  }
+
+  async insertProductAttribute_stag(): Promise<any> {}
+
+  async insertProductAttribute_prod(): Promise<any> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+
+    try {
+      await queryRunner.startTransaction();
+
+      for (let i = 1; i < Infinity; i++) {
+        console.log(`product attribute migrate (page: ${i})`);
+        const params = { page: i, per_page: 10 };
+        const products = await this.wooCommerceProd
+          .get('products', params)
+          .then((response: any) => response.data)
+          .catch((error: any) => error.response.data);
+
+        if (products.length === 0) break;
+        for (const product of products) {
+          const attributes = product.attributes;
+          for (const attribute of attributes) {
+            const existingProductAttribute = await queryRunner.manager.findOne(ProductAttribute, {
+              where: {
+                id: attribute.id,
+                name: attribute.name,
+                position: attribute.position,
+                visible: attribute.visible,
+                variation: attribute.variation,
+                options: attribute.options,
+              },
+            });
+            if (existingProductAttribute) continue;
+
+            const newProductAttribute = {
+              id: attribute.id,
+              name: attribute.name,
+              position: attribute.position,
+              visible: attribute.visible,
+              variation: attribute.variation,
+              options: attribute.options,
+            };
+            const productAttributeEntity = queryRunner.manager.create(ProductAttribute, newProductAttribute);
+            await queryRunner.manager.save(productAttributeEntity);
+          }
+        }
+      }
+
+      await queryRunner.commitTransaction();
+
+      return 'insertProductAttribute_prod success';
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 }
