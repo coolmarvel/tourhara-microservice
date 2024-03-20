@@ -38,6 +38,9 @@ export class JfkOneway {
   @Column({ name: 'ewr_flight_num', nullable: true })
   ewrFlightNum: string;
 
+  @Column('uuid', { name: 'order_id', nullable: true })
+  orderId: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

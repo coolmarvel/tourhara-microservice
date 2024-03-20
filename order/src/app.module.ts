@@ -13,6 +13,7 @@ import { TourModule } from './tour/tour.module';
 import { GuestHouseModule } from './guest-house/guest-house.module';
 import { UsimModule } from './usim/usim.module';
 import { JfkModule } from './jfk/jfk.module';
+import { CouponLineModule } from './coupon-line/coupon-line.module';
 import config from './config';
 
 @Module({
@@ -45,6 +46,7 @@ import config from './config';
     GuestHouseModule,
     UsimModule,
     JfkModule,
+    CouponLineModule,
   ],
   controllers: [AppController],
   providers: [AppService],

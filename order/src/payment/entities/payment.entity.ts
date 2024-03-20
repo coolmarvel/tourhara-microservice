@@ -29,6 +29,9 @@ export class Payment {
   @Column({ name: 'date_paid_gmt', nullable: true })
   datePaidGmt: Date;
 
+  @Column('uuid', { name: 'order_id' })
+  orderId: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

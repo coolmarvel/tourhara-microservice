@@ -14,6 +14,9 @@ export class H2ousim {
   @Column({ name: 'previous_order_number', nullable: true })
   previousOrderNumber: string;
 
+  @Column('uuid', { name: 'order_id', nullable: true })
+  orderId: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

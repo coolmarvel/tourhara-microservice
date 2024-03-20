@@ -54,7 +54,7 @@ export class LineItem {
   })
   bundledItems: string[] | null;
 
-  @Column({ type: 'uuid', name: 'order_id', nullable: true })
+  @Column('uuid', { name: 'order_id', nullable: true })
   orderId: string;
 
   @CreateDateColumn({ name: 'created_at' })

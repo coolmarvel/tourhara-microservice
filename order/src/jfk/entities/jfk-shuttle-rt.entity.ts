@@ -38,6 +38,9 @@ export class JfkShuttleRt {
   @Column({ name: 'ewr_flght_num2', nullable: true })
   ewrFlightNum2: string;
 
+  @Column('uuid', { name: 'order_id', nullable: true })
+  orderId: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

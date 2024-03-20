@@ -38,7 +38,7 @@ export class Shipping {
   @Column({ name: 'shipping_mobile', nullable: true })
   shippingMobile: string;
 
-  @Column('uuid', { name: 'order_id' })
+  @Column('uuid', { name: 'order_id', nullable: true })
   orderId: string;
 
   @CreateDateColumn({ name: 'created_at' })

@@ -23,6 +23,9 @@ export class GuestHouse {
   @Column({ name: 'security_deposit', nullable: true })
   securityDeposit: string;
 
+  @Column('uuid', { name: 'order_id', nullable: true })
+  orderId: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

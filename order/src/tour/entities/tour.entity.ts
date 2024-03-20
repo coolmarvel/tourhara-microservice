@@ -77,6 +77,9 @@ export class Tour {
   @Column({ name: 'guggen_notice', nullable: true })
   guggenNotice: string;
 
+  @Column('uuid', { name: 'order_id', nullable: true })
+  orderId: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

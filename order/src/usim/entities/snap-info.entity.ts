@@ -8,6 +8,9 @@ export class SnapInfo {
   @Column({ name: 'mobile_snap', nullable: true })
   mobileSnap: string;
 
+  @Column('uuid', { name: 'order_id', nullable: true })
+  orderId: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

@@ -38,6 +38,9 @@ export class TourInfo {
   @Column({ name: 'contact_info', nullable: true })
   contactInfo: string;
 
+  @Column('uuid', { name: 'order_id', nullable: true })
+  orderId: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

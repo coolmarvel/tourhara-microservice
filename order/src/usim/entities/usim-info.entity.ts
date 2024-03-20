@@ -38,6 +38,9 @@ export class UsimInfo {
   @Column({ name: 'notice_check_simcard', nullable: true })
   noticeCheckSimcard: string;
 
+  @Column('uuid', { name: 'order_id', nullable: true })
+  orderId: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
