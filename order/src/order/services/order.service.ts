@@ -10,6 +10,7 @@ import { BillingService } from 'src/billing/services/billing.service';
 import { ShippingService } from 'src/shipping/services/shipping.service';
 import { PaymentService } from 'src/payment/services/payment.service';
 import { GuestHouseService } from 'src/guest-house/services/guest-house.service';
+import { TourService } from 'src/tour/services/tour.service';
 
 @Injectable()
 export class OrderService implements IOrderService {
@@ -24,6 +25,7 @@ export class OrderService implements IOrderService {
     private readonly shippingService: ShippingService,
     private readonly paymentService: PaymentService,
     private readonly guestHouseService: GuestHouseService,
+    private readonly tourService: TourService,
   ) {
     this.wooCommerceStag = new WooCommerceRestApi({
       url: this.configService.get('wc-stag.url'),
@@ -181,11 +183,13 @@ export class OrderService implements IOrderService {
 
           // TODO. Under Domain
           const guestHouse = order.guest_house;
-          await this.guestHouseService.saveGuestHouse(queryRunner, orderId, guestHouse);
+          await this.guestHouseService.saveGuestHouse_prod(queryRunner, orderId, guestHouse);
 
           const tour = order.tour;
+          await this.tourService.saveTour_prod(queryRunner, orderId, tour);
 
           const tourInfo = order.tour_info;
+          await this.tourService.saveTourInfo_prod(queryRunner, orderId, tourInfo);
 
           const snapInfo = order.snap_info;
 

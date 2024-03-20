@@ -14,6 +14,9 @@ export class Tour {
   @Column({ name: 'tor_time_2', nullable: true })
   torTime2: string;
 
+  @Column({ name: 'date_summit', nullable: true })
+  dateSummit: string;
+
   @Column({ name: 'summit_daytime_time', nullable: true })
   summitDaytimeTime: string;
 

@@ -5,7 +5,7 @@ import { GuestHouse } from '../entities/guest-house.entity';
 
 @Injectable()
 export class GuestHouseService implements IGuestHouseService {
-  async saveGuestHouse(queryRunner: QueryRunner, orderId: string, guestHouse: any): Promise<any> {
+  async saveGuestHouse_prod(queryRunner: QueryRunner, orderId: string, guestHouse: any): Promise<any> {
     try {
       await queryRunner.startTransaction();
 

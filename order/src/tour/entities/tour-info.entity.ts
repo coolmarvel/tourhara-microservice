@@ -33,7 +33,7 @@ export class TourInfo {
   addressTo: string;
 
   @Column({ name: 'flight_info', nullable: true })
-  flughtInfo: string;
+  flightInfo: string;
 
   @Column({ name: 'contact_info', nullable: true })
   contactInfo: string;
