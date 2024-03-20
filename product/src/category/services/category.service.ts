@@ -181,7 +181,7 @@ export class CategoryService implements ICategoryService {
               parent: category.parent,
               name: category.name,
               slug: category.slug,
-              description: category.description,
+              description: category.description == '' ? null : category.description,
               productCategoryImageId: productCategoryImageEntity ? productCategoryImageEntity.productCategoryImageId : null, // Correctly use ID or null
             };
 
