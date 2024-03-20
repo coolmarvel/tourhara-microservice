@@ -62,4 +62,10 @@ export class OrderController {
   async deleteAnOrder_prod({ order_id }: DeleteReqDto) {
     return await this.orderService.deleteAnOrder_prod(order_id);
   }
+  
+  // --
+  @MessagePattern({ cmd: 'insertOrder_prod' })
+  async insertOrder_prod() {
+    return await this.orderService.insertOrder_prod();
+  }
 }

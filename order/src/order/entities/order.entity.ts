@@ -36,8 +36,6 @@ export class Order {
   @Column({ name: 'date_completed_gmt', nullable: true })
   dateCompletedGmt: Date;
 
-  // TODO. coupon_lines ADD
-
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

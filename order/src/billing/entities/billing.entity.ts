@@ -5,10 +5,10 @@ export class Billing {
   @PrimaryGeneratedColumn('uuid', { name: 'billing_id' })
   billingId: string;
 
-  @Column({ name: 'first_name' })
+  @Column({ name: 'first_name', nullable: true })
   firstName: string;
 
-  @Column({ name: 'last_name' })
+  @Column({ name: 'last_name', nullable: true })
   lastName: string;
 
   @Column({ nullable: true })

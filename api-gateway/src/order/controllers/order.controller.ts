@@ -82,4 +82,12 @@ export class OrderController {
   async deleteAnOrder_prod(@Param() { order_id }: DeleteOrderReqDto) {
     return await this.orderService.deleteAnOrder_prod(order_id);
   }
+
+  // --
+  @Public()
+  @Post('prod/insert-database')
+  @ApiTags('Database-Order')
+  async insertOrder_prod() {
+    return await this.orderService.insertOrder_prod();
+  }
 }

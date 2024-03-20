@@ -3,9 +3,12 @@ import { OrderService } from './services/order.service';
 import { OrderController } from './controllers/order.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import entities from './entities';
+import { BillingModule } from 'src/billing/billing.module';
+import { ShippingModule } from 'src/shipping/shipping.module';
+import { PaymentModule } from 'src/payment/payment.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature(entities)],
+  imports: [TypeOrmModule.forFeature(entities), BillingModule, ShippingModule, PaymentModule],
   providers: [OrderService],
   controllers: [OrderController],
 })

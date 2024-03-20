@@ -4,6 +4,11 @@ import { IOrderService } from '../interfaces/order.interface';
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 import { ConfigService } from '@nestjs/config';
 import { DataSource } from 'typeorm';
+import { Order } from '../entities/order.entity';
+import { OrderStatus } from '../constants/order-status.enum';
+import { BillingService } from 'src/billing/services/billing.service';
+import { ShippingService } from 'src/shipping/services/shipping.service';
+import { PaymentService } from 'src/payment/services/payment.service';
 
 @Injectable()
 export class OrderService implements IOrderService {
@@ -13,6 +18,10 @@ export class OrderService implements IOrderService {
   constructor(
     private dataSource: DataSource,
     private configService: ConfigService,
+
+    private readonly billingService: BillingService,
+    private readonly shippingService: ShippingService,
+    private readonly paymentService: PaymentService,
   ) {
     this.wooCommerceStag = new WooCommerceRestApi({
       url: this.configService.get('wc-stag.url'),
@@ -112,52 +121,72 @@ export class OrderService implements IOrderService {
 
     return order;
   }
+
+  // --
+  async insertOrder_prod(): Promise<any> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+
+    try {
+      await queryRunner.startTransaction();
+
+      for (let i = 1; i < 2; i++) {
+        console.log(`order migrate (page: ${i})`);
+        const params = { page: i, per_page: 10 };
+        const orders = await this.wooCommerceProd
+          .get('orders', params)
+          .then((response: any) => response.data)
+          .catch((error: any) => error.response.data);
+
+        if (orders.length === 0) break;
+        for (const order of orders) {
+          const existingOrder = await queryRunner.manager.findOne(Order, { where: { id: order.id } });
+          if (existingOrder) continue;
+
+          const newOrder = {
+            id: order.id,
+            status: OrderStatus[order.status.toUpperCase() as keyof typeof OrderStatus],
+            currency: order.currency,
+            currencySymbol: order.currency_symbol,
+            dateCreated: order.date_created,
+            dateCreatedGmt: order.date_created_gmt,
+            dateModified: order.date_modified,
+            dateModifiedGmt: order.date_modified_gmt,
+            dateCompleted: order.date_completed,
+            dateCompletedGmt: order.date_completed_gmt,
+          };
+          const orderEntity = queryRunner.manager.create(Order, newOrder);
+          const orderResult = await queryRunner.manager.save(orderEntity);
+          const orderId = orderResult.orderId;
+
+          const billing = order.billing;
+          await this.billingService.saveBilling_prod(queryRunner, orderId, billing);
+
+          const shipping = order.shipping;
+          await this.shippingService.saveShipping_prod(queryRunner, orderId, shipping);
+
+          const payment = {
+            paymentMethod: order.payment_method,
+            paymentMethodTitle: order.payment_method_title,
+            transactionId: order.transaction_id,
+            paymentUrl: order.payment_url,
+            needsPayment: order.needs_payment,
+            needsProcessing: order.needs_processing,
+            datePaid: order.date_paid,
+            datePaidGmt: order.date_paid_gmt,
+          };
+          await this.paymentService.savePayment_prod(queryRunner, orderId, payment);
+        }
+      }
+
+      await queryRunner.commitTransaction();
+
+      return 'insertOrder_prod success';
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
 }
-
-// const queryRunner = this.dataSource.createQueryRunner();
-// await queryRunner.connect();
-// await queryRunner.startTransaction();
-
-// try {
-//   const exist = await queryRunner.manager.findOneBy(Order, { id: Number(order_id) });
-//   if (exist === null) {
-//     // Billing entity
-//     const billingEntity = queryRunner.manager.create(Billing, {
-//       firstName: order.billing.first_name,
-//       email: order.billing.email,
-//       phone: order.billing.phone,
-//       survey: order.billing.survey,
-//     });
-//     await queryRunner.manager.save(billingEntity);
-
-//     // Shipping entity
-//     const shippingEntity = queryRunner.manager.create(Shipping, {
-//       firstName: order.shipping.first_name,
-//     });
-//     await queryRunner.manager.save(shippingEntity);
-
-//     // Order entity
-//     const orderEntity = queryRunner.manager.create(Order, {
-//       id: order.id,
-//       status: order.status,
-//       currency: order.currency,
-//       dateCreated: new Date(order.date_created),
-//       dateModified: new Date(order.date_modified),
-//       dateCompleted: order.date_completed ? new Date(order.date_completed) : null,
-//       datePaid: order.date_paid ? new Date(order.date_paid) : null,
-//       billingId: billingEntity.billingId,
-//       shippingId: shippingEntity.shippingId,
-//       paymentMethod: order.payment_method,
-//       paymentMethodTitle: order.payment_method_title,
-//       transactionId: order.transaction_id,
-//     });
-//     await queryRunner.manager.save(orderEntity);
-
-//     await queryRunner.commitTransaction();
-//   }
-// } catch (error) {
-//   await queryRunner.rollbackTransaction();
-//   throw error;
-// } finally {
-//   await queryRunner.release();
-// }
