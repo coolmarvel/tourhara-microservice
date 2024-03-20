@@ -15,6 +15,9 @@ export class Order {
   @Column({ nullable: true })
   currency: string;
 
+  @Column({ name: 'currency_symbol', nullable: true })
+  currencySymbol: string;
+
   @Column({ name: 'date_created', nullable: true })
   dateCreated: Date;
 
@@ -33,14 +36,40 @@ export class Order {
   @Column({ name: 'date_completed_gmt', nullable: true })
   dateCompletedGmt: Date;
 
-  @Column('uuid', { name: 'payment_id', nullable: true })
-  paymentId: string;
-
   @Column('uuid', { name: 'billing_id', nullable: true })
   billingId: string;
 
   @Column('uuid', { name: 'shipping_id', nullable: true })
   shippingId: string;
+
+  @Column('uuid', { name: 'payment_id', nullable: true })
+  paymentId: string;
+
+  // TODO. coupon_lines ADD
+
+  @Column('uuid', { name: 'guest_houst_id', nullable: true })
+  guestHouseId: string;
+
+  @Column('uuid', { name: 'tour_id', nullable: true })
+  tourId: string;
+
+  @Column('uuid', { name: 'tour_info_id', nullable: true })
+  tourInfoId: string;
+
+  @Column('uuid', { name: 'snap_info_id', nullable: true })
+  snapInfoId: string;
+
+  @Column('uuid', { name: 'usim_info_id', nullable: true })
+  usimInfoId: string;
+
+  @Column('uuid', { name: 'h2ousim_id', nullable: true })
+  h2ousimId: string;
+
+  @Column('uuid', { name: 'jfk_oneway_id', nullable: true })
+  jfkOnewayId: string;
+
+  @Column('uuid', { name: 'jfk_shuttle_rt_id', nullable: true })
+  jfkShuttleRtId: string;
 
   @Column('uuid', { name: 'metadata_id', nullable: true })
   metadataId: string;

@@ -9,6 +9,10 @@ import { BillingModule } from './billing/billing.module';
 import { ShippingModule } from './shipping/shipping.module';
 import { LineItemModule } from './line-item/line-item.module';
 import { PaymentModule } from './payment/payment.module';
+import { TourModule } from './tour/tour.module';
+import { GuestHouseModule } from './guest-house/guest-house.module';
+import { UsimModule } from './usim/usim.module';
+import { JfkModule } from './jfk/jfk.module';
 import config from './config';
 
 @Module({
@@ -37,6 +41,10 @@ import config from './config';
     ShippingModule,
     LineItemModule,
     PaymentModule,
+    TourModule,
+    GuestHouseModule,
+    UsimModule,
+    JfkModule,
   ],
   controllers: [AppController],
   providers: [AppService],
