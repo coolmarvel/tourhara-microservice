@@ -3,7 +3,7 @@ import { IOrderService } from '../interfaces/order.interface';
 
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 import { ConfigService } from '@nestjs/config';
-import { DataSource } from 'typeorm';
+import { DataSource, QueryRunner } from 'typeorm';
 import { Order } from '../entities/order.entity';
 import { OrderStatus } from '../constants/order-status.enum';
 import { BillingService } from 'src/billing/services/billing.service';
@@ -211,6 +211,19 @@ export class OrderService implements IOrderService {
       throw error;
     } finally {
       await queryRunner.release();
+    }
+  }
+
+  async saveOrderMetadata_prod(queryRunner: QueryRunner, orderId: string, metadata: any): Promise<any> {
+    try {
+      await queryRunner.startTransaction();
+
+      await queryRunner.commitTransaction();
+
+      return true;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
     }
   }
 }
