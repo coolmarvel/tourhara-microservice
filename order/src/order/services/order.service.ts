@@ -176,6 +176,23 @@ export class OrderService implements IOrderService {
             datePaidGmt: order.date_paid_gmt,
           };
           await this.paymentService.savePayment_prod(queryRunner, orderId, payment);
+
+          // TODO. Under Domain
+          const guestHouse = order.guest_house;
+
+          const tour = order.tour;
+
+          const tourInfo = order.tour_info;
+
+          const snapInfo = order.snap_info;
+
+          const usimInfo = order.usim_info;
+
+          const h2ousim = order.h2ousim;
+
+          const jfkOneway = order.jfk_oneway;
+
+          const jfkShuttleRt = order.jfk_shuttle_rt;
         }
       }
 

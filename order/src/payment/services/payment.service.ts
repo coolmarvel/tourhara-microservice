@@ -17,10 +17,10 @@ export class PaymentService implements IPaymentService {
         paymentMethodTitle: payment.paymentMethodTitle == '' ? null : payment.paymentMethodTitle,
         transactionId: payment.transactionId == '' ? null : payment.transactionId,
         paymentUrl: payment.paymentUrl == '' ? null : payment.paymentUrl,
-        needsPayment: payment.needsPayment == '' ? null : payment.needsPayment,
-        needsProcessing: payment.needsProcessing == '' ? null : payment.needsProcessing,
-        datePaid: payment.datePaid == '' ? null : payment.paymentMethod,
-        datePaidGmt: payment.datePaidGmt == '' ? null : payment.paymentMethod,
+        needsPayment: payment.needsPayment,
+        needsProcessing: payment.needsProcessing,
+        datePaid: payment.datePaid == '' ? null : payment.datePaid,
+        datePaidGmt: payment.datePaidGmt == '' ? null : payment.datePaidGmt,
         orderId: orderId,
       };
       const orderPaymentEntity = queryRunner.manager.create(Payment, newOrderPayment);
