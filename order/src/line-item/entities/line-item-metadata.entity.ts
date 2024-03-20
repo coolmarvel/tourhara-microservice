@@ -1,9 +1,9 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
-export class OrderMetadata {
-  @PrimaryGeneratedColumn('uuid', { name: 'order_metadata_id' })
-  orderMetadataId: string;
+export class LineItemMetadata {
+  @PrimaryGeneratedColumn('uuid', { name: 'line_item_metadata_id' })
+  lineItemMetadataId: string;
 
   @Column('bigint', { nullable: true })
   id: number;
@@ -19,10 +19,10 @@ export class OrderMetadata {
     },
     nullable: true,
   })
-  value: string | null;
+  value: string[] | null;
 
-  @Column('uuid', { name: 'order_id' })
-  orderId: string;
+  @Column('uuid', { name: 'line_item_id', nullable: true })
+  lineItemId: string;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

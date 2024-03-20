@@ -9,7 +9,7 @@ export class Order {
   @Column('bigint')
   id: number;
 
-  @Column('enum', { enum: OrderStatus })
+  @Column('enum', { enum: OrderStatus, nullable: true })
   status: OrderStatus;
 
   @Column({ nullable: true })
@@ -18,34 +18,34 @@ export class Order {
   @Column({ name: 'date_created', nullable: true })
   dateCreated: Date;
 
+  @Column({ name: 'date_created_gmt', nullable: true })
+  dateCreatedGmt: Date;
+
   @Column({ name: 'date_modified', nullable: true })
   dateModified: Date;
+
+  @Column({ name: 'date_modified_gmt', nullable: true })
+  dateModifiedGmt: Date;
 
   @Column({ name: 'date_completed', nullable: true })
   dateCompleted: Date;
 
-  @Column({ name: 'date_paid', nullable: true })
-  datePaid: Date;
+  @Column({ name: 'date_completed_gmt', nullable: true })
+  dateCompletedGmt: Date;
 
-  @Column({ name: 'payment_method', nullable: true })
-  paymentMethod: string;
+  @Column('uuid', { name: 'payment_id', nullable: true })
+  paymentId: string;
 
-  @Column({ name: 'payment_method_title', nullable: true })
-  paymentMethodTitle: string;
-
-  @Column({ name: 'transaction_id', nullable: true })
-  transactionId: string;
-
-  @Column({ type: 'uuid', name: 'billing_id' })
+  @Column('uuid', { name: 'billing_id', nullable: true })
   billingId: string;
 
-  @Column({ type: 'uuid', name: 'shipping_id' })
+  @Column('uuid', { name: 'shipping_id', nullable: true })
   shippingId: string;
 
-  @Column('uuid', { name: 'metadata_id' })
+  @Column('uuid', { name: 'metadata_id', nullable: true })
   metadataId: string;
 
-  @Column('uuid', { name: 'line_item_id' })
+  @Column('uuid', { name: 'line_item_id', nullable: true })
   lineItemId: string;
 
   @CreateDateColumn({ name: 'created_at' })

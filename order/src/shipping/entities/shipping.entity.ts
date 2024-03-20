@@ -1,5 +1,4 @@
-import { Column, CreateDateColumn, Entity, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { Order } from './order.entity';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class Shipping {
@@ -39,7 +38,7 @@ export class Shipping {
   @Column({ name: 'shipping_mobile', nullable: true })
   shippingMobile: string;
 
-  @Column({ type: 'uuid', name: 'order_id' })
+  @Column('uuid', { name: 'order_id' })
   orderId: string;
 
   @CreateDateColumn({ name: 'created_at' })

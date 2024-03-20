@@ -5,6 +5,10 @@ import { OrderModule } from './order/order.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AdapterModule } from './adapter/adapter.module';
+import { BillingModule } from './billing/billing.module';
+import { ShippingModule } from './shipping/shipping.module';
+import { LineItemModule } from './line-item/line-item.module';
+import { PaymentModule } from './payment/payment.module';
 import config from './config';
 
 @Module({
@@ -29,6 +33,10 @@ import config from './config';
     }),
     OrderModule,
     AdapterModule,
+    BillingModule,
+    ShippingModule,
+    LineItemModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
