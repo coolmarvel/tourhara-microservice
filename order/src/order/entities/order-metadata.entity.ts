@@ -19,7 +19,7 @@ export class OrderMetadata {
     },
     nullable: true,
   })
-  value: string | null;
+  value: string[] | null;
 
   @Column('uuid', { name: 'order_id' })
   orderId: string;

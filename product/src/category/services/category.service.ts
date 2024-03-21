@@ -148,45 +148,37 @@ export class CategoryService implements ICategoryService {
 
         if (categories.length === 0) break;
         for (const category of categories) {
-          let productCategoryImageEntity: ProductCategoryImage | null = null; // Adjusted to correct entity type
+          const existingCategory = await queryRunner.manager.findOne(ProductCategory, { where: { id: category.id } });
+          if (existingCategory) continue;
+
+          const newProductCategory = {
+            id: category.id,
+            parent: category.parent,
+            name: category.name,
+            slug: category.slug,
+            description: category.description == '' ? null : category.description,
+          };
+          const productCategoryEntity = queryRunner.manager.create(ProductCategory, newProductCategory);
+          const productCategory = await queryRunner.manager.save(productCategoryEntity);
 
           const image = category.image;
           if (image) {
             const existingCategoryImage = await queryRunner.manager.findOne(ProductCategoryImage, { where: { id: image.id } });
+            if (existingCategoryImage) continue;
 
-            if (!existingCategoryImage) {
-              const newProductCategoryImage = {
-                id: image.id,
-                name: image.name == '' ? null : image.name,
-                src: image.src,
-                alt: image.alt == '' ? null : image.alt,
-                dateCreated: image.date_created,
-                dateCreatedGmt: image.date_created_gmt,
-                dateModified: image.date_modified,
-                dateModifiedGmt: image.date_modified_gmt,
-              };
-
-              productCategoryImageEntity = queryRunner.manager.create(ProductCategoryImage, newProductCategoryImage); // Fixed entity type
-              await queryRunner.manager.save(productCategoryImageEntity);
-            } else {
-              productCategoryImageEntity = existingCategoryImage; // Use existing image entity if found
-            }
-          }
-
-          const existingCategory = await queryRunner.manager.findOne(ProductCategory, { where: { id: category.id } });
-
-          if (!existingCategory) {
-            const newProductCategory = {
-              id: category.id,
-              parent: category.parent,
-              name: category.name,
-              slug: category.slug,
-              description: category.description == '' ? null : category.description,
-              productCategoryImageId: productCategoryImageEntity ? productCategoryImageEntity.productCategoryImageId : null, // Correctly use ID or null
+            const newProductCategoryImage = {
+              id: image.id,
+              name: image.name == '' ? null : image.name,
+              src: image.src,
+              alt: image.alt == '' ? null : image.alt,
+              dateCreated: image.date_created,
+              dateCreatedGmt: image.date_created_gmt,
+              dateModified: image.date_modified,
+              dateModifiedGmt: image.date_modified_gmt,
+              productCategoryId: productCategory.productCategoryId,
             };
-
-            const productCategoryEntity = queryRunner.manager.create(ProductCategory, newProductCategory);
-            await queryRunner.manager.save(productCategoryEntity);
+            const productCategoryImageEntity = queryRunner.manager.create(ProductCategoryImage, newProductCategoryImage);
+            await queryRunner.manager.save(productCategoryImageEntity);
           }
         }
       }

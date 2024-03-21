@@ -13,6 +13,10 @@ import { GuestHouseService } from 'src/guest-house/services/guest-house.service'
 import { TourService } from 'src/tour/services/tour.service';
 import { UsimService } from 'src/usim/services/usim.service';
 import { JfkService } from 'src/jfk/services/jfk.service';
+import { OrderMetadata } from '../entities/order-metadata.entity';
+import { LineItem } from 'src/line-item/entities/line-item.entity';
+import { ProductImage } from '../entities/product-image.entity';
+import { LineItemMetadata } from 'src/line-item/entities/line-item-metadata.entity';
 
 @Injectable()
 export class OrderService implements IOrderService {
@@ -185,7 +189,6 @@ export class OrderService implements IOrderService {
           };
           await this.paymentService.savePayment_prod(queryRunner, orderId, payment);
 
-          // TODO. Under Domain
           const guestHouse = order.guest_house;
           await this.guestHouseService.saveGuestHouse_prod(queryRunner, orderId, guestHouse);
 
@@ -209,6 +212,13 @@ export class OrderService implements IOrderService {
 
           const jfkShuttleRt = order.jfk_shuttle_rt;
           await this.jfkService.saveJfkShuttleRt_prod(queryRunner, orderId, jfkShuttleRt);
+
+          // TODO. Under Domain
+          const orderMetadata = order.meta_data;
+          await this.saveOrderMetadata_prod(queryRunner, orderId, orderMetadata);
+
+          const lineItems = order.line_items;
+          await this.saveLineItems_prod(queryRunner, orderId, lineItems);
         }
       }
 
@@ -223,12 +233,82 @@ export class OrderService implements IOrderService {
     }
   }
 
-  async saveOrderMetadata_prod(queryRunner: QueryRunner, orderId: string, metadata: any): Promise<any> {
+  async saveOrderMetadata_prod(queryRunner: QueryRunner, orderId: string, metadatas: any): Promise<any> {
     try {
       await queryRunner.startTransaction();
 
+      for (const metadata of metadatas) {
+        const existingOrderMetadata = await queryRunner.manager.findOne(OrderMetadata, { where: { id: metadata.id } });
+        if (existingOrderMetadata) return true;
+
+        const newOrderMetadata = {
+          id: metadata.id,
+          key: metadata.key,
+          value: metadata.value,
+          orderId: orderId,
+        };
+        const orderMetadataEntity = queryRunner.manager.create(OrderMetadata, newOrderMetadata);
+        await queryRunner.manager.save(orderMetadataEntity);
+      }
+
       await queryRunner.commitTransaction();
 
+      return true;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    }
+  }
+
+  async saveLineItems_prod(queryRunner: QueryRunner, orderId: string, lineItems: any): Promise<any> {
+    try {
+      await queryRunner.startTransaction();
+
+      for (const lineItem of lineItems) {
+        const existingOrderLineItem = await queryRunner.manager.findOne(LineItem, { where: { id: lineItem.id } });
+        if (existingOrderLineItem) return true;
+
+        const productImage = await queryRunner.manager.findOne(ProductImage, { where: { id: lineItem.image?.id } });
+
+        const lineItemName = lineItem.name.match(/<a [^>]*>(.*?)<\/a>/);
+        const name = lineItemName ? lineItemName[1].trim() : lineItem.name;
+
+        const newOrderLineItem = {
+          id: lineItem.id,
+          name: name,
+          productId: lineItem.product_id,
+          quantity: lineItem.quantity,
+          taxClass: lineItem.tax_class == '' ? null : lineItem.tax_class,
+          total: lineItem.total,
+          subtotal: lineItem.subtotal,
+          subtotalTax: lineItem.subtotal_tax == '' ? null : lineItem.subtotal_tax,
+          price: lineItem.price,
+          productImageId: productImage == null ? null : productImage.productImageId,
+          parentName: lineItem.parent_name,
+          bundledBy: lineItem.bundled_by == '' ? null : lineItem.bundled_by,
+          bundledItems: lineItem.bundled_items.length == 0 ? null : lineItem.bundled_items,
+          orderId: orderId,
+        };
+        const orderLineItemEntity = queryRunner.manager.create(LineItem, newOrderLineItem);
+        const orderLineItem = await queryRunner.manager.save(orderLineItemEntity);
+
+        const lineItemMetadata = lineItem.meta_data;
+        for (const metadata of lineItemMetadata) {
+          const existingOrderLineItemMetadata = await queryRunner.manager.findOne(LineItemMetadata, { where: { id: metadata.id } });
+          if (existingOrderLineItemMetadata) continue;
+
+          const newOrderLineItemMetadata = {
+            id: metadata.id,
+            key: metadata.key,
+            value: metadata.value,
+            lineItemId: orderLineItem.lineItemId,
+          };
+          const orderLineItemMetadataEntity = queryRunner.manager.create(LineItemMetadata, newOrderLineItemMetadata);
+          await queryRunner.manager.save(orderLineItemMetadataEntity);
+        }
+      }
+
+      await queryRunner.commitTransaction();
       return true;
     } catch (error) {
       await queryRunner.rollbackTransaction();
