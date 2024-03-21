@@ -12,6 +12,7 @@ import { PaymentService } from 'src/payment/services/payment.service';
 import { GuestHouseService } from 'src/guest-house/services/guest-house.service';
 import { TourService } from 'src/tour/services/tour.service';
 import { UsimService } from 'src/usim/services/usim.service';
+import { JfkService } from 'src/jfk/services/jfk.service';
 
 @Injectable()
 export class OrderService implements IOrderService {
@@ -28,6 +29,7 @@ export class OrderService implements IOrderService {
     private readonly guestHouseService: GuestHouseService,
     private readonly tourService: TourService,
     private readonly usimService: UsimService,
+    private readonly jfkService: JfkService,
   ) {
     this.wooCommerceStag = new WooCommerceRestApi({
       url: this.configService.get('wc-stag.url'),
@@ -203,8 +205,10 @@ export class OrderService implements IOrderService {
           await this.usimService.saveH2ousim_prod(queryRunner, orderId, h2ousim);
 
           const jfkOneway = order.jfk_oneway;
+          await this.jfkService.saveJfkOneway_prod(queryRunner, orderId, jfkOneway);
 
           const jfkShuttleRt = order.jfk_shuttle_rt;
+          await this.jfkService.saveJfkShuttleRt_prod(queryRunner, orderId, jfkShuttleRt);
         }
       }
 

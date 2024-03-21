@@ -8,5 +8,6 @@ import entities from './entities';
   imports: [TypeOrmModule.forFeature(entities)],
   providers: [JfkService],
   controllers: [JfkController],
+  exports: [JfkService],
 })
 export class JfkModule {}
