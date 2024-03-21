@@ -1,12 +1,12 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
-export class ProductCategoryImage {
-  @PrimaryGeneratedColumn('uuid', { name: 'product_cateogry_image_id' })
-  productCategoryImageId: string;
+export class ProductImage {
+  @PrimaryGeneratedColumn('uuid', { name: 'product_image_id' })
+  productImageId: string;
 
   @Column('bigint', { nullable: true })
-  id: number;
+  id: string;
 
   @Column({ nullable: true })
   name: string;
@@ -28,9 +28,6 @@ export class ProductCategoryImage {
 
   @Column({ name: 'date_modified_gmt', nullable: true })
   dateModifiedGmt: Date;
-
-  @Column('uuid', { name: 'product_category_id', nullable: true })
-  productCategoryId: string;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

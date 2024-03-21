@@ -1,3 +1,5 @@
+import { QueryRunner } from 'typeorm';
+
 export interface IOrderService {
   createAnOrder_stag(payment: object, billing: object, shipping: object, line_items: object, shipping_lines: object): Promise<any>;
 
@@ -21,4 +23,8 @@ export interface IOrderService {
 
   // --
   insertOrder_prod(): Promise<any>;
+
+  saveOrderMetadata_prod(queryRunner: QueryRunner, orderId: string, metadatas: any): Promise<any>;
+
+  saveLineItems_prod(queryRunner: QueryRunner, orderId: string, lineItems: any): Promise<any>;
 }

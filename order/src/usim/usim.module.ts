@@ -8,5 +8,6 @@ import entities from './entities';
   imports: [TypeOrmModule.forFeature(entities)],
   providers: [UsimService],
   controllers: [UsimController],
+  exports: [UsimService],
 })
 export class UsimModule {}

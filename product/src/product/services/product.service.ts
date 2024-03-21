@@ -147,11 +147,15 @@ export class ProductService implements IProductService {
 
         if (products.length === 0) break;
         for (const product of products) {
+          const existingProduct = await queryRunner.manager.findOne(Product, { where: { id: product.id } });
+          if (existingProduct) continue;
+          
           const categories = product.categories;
           const productCategoryId: string[] = [];
           for (const category of categories) {
             const existingCategory = await queryRunner.manager.findOne(ProductCategory, { where: { id: category.id } });
             if (existingCategory) productCategoryId.push(existingCategory.productCategoryId);
+            else if (!existingCategory) console.log(`not exist category ${category.id}`);
           }
 
           const tags = product.tags;
@@ -159,6 +163,7 @@ export class ProductService implements IProductService {
           for (const tag of tags) {
             const existingTag = await queryRunner.manager.findOne(ProductTag, { where: { id: tag.id } });
             if (existingTag) productTagId.push(existingTag.productTagId);
+            else if (!existingTag) console.log(`not exist category ${tag.id}`);
           }
 
           const images = product.images;
@@ -166,6 +171,7 @@ export class ProductService implements IProductService {
           for (const image of images) {
             const existingImage = await queryRunner.manager.findOne(ProductImage, { where: { id: image.id } });
             if (existingImage) productImageId.push(existingImage.productImageId);
+            else if (!existingImage) console.log(`not exist category ${image.id}`);
           }
 
           const attributes = product.attributes;
