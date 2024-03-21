@@ -11,6 +11,7 @@ import { ShippingService } from 'src/shipping/services/shipping.service';
 import { PaymentService } from 'src/payment/services/payment.service';
 import { GuestHouseService } from 'src/guest-house/services/guest-house.service';
 import { TourService } from 'src/tour/services/tour.service';
+import { UsimService } from 'src/usim/services/usim.service';
 
 @Injectable()
 export class OrderService implements IOrderService {
@@ -26,6 +27,7 @@ export class OrderService implements IOrderService {
     private readonly paymentService: PaymentService,
     private readonly guestHouseService: GuestHouseService,
     private readonly tourService: TourService,
+    private readonly usimService: UsimService,
   ) {
     this.wooCommerceStag = new WooCommerceRestApi({
       url: this.configService.get('wc-stag.url'),
@@ -192,10 +194,13 @@ export class OrderService implements IOrderService {
           await this.tourService.saveTourInfo_prod(queryRunner, orderId, tourInfo);
 
           const snapInfo = order.snap_info;
+          await this.usimService.saveSnapInfo_prod(queryRunner, orderId, snapInfo);
 
           const usimInfo = order.usim_info;
+          await this.usimService.saveUsimInfo_prod(queryRunner, orderId, usimInfo);
 
           const h2ousim = order.h2ousim;
+          await this.usimService.saveH2ousim_prod(queryRunner, orderId, h2ousim);
 
           const jfkOneway = order.jfk_oneway;
 
