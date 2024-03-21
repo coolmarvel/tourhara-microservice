@@ -8,6 +8,8 @@ import { ProductTagController } from './controllers/product-tag.controller';
 import { ProductAttributeController } from './controllers/product-attribute.controller';
 import { ProductTagService } from './services/product-tag.service';
 import { ProductAttributeServcie } from './services/product-attribute.service';
+import { ProductWebhookService } from './services/product-webhook.service';
+import { ProductWebhookController } from './controllers/product-webhook.controller';
 
 @Module({
   providers: [
@@ -15,6 +17,7 @@ import { ProductAttributeServcie } from './services/product-attribute.service';
     ProductTagService,
     ProductCategoryService,
     ProductAttributeServcie,
+    ProductWebhookService,
     {
       provide: 'PRODUCT_SERVICE',
       useFactory: () => {
@@ -25,6 +28,6 @@ import { ProductAttributeServcie } from './services/product-attribute.service';
       },
     },
   ],
-  controllers: [ProductController, ProductCategoryController, ProductTagController, ProductAttributeController],
+  controllers: [ProductController, ProductCategoryController, ProductTagController, ProductAttributeController, ProductWebhookController],
 })
 export class ProductModule {}
