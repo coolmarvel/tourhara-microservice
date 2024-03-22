@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IProductWebhookService } from '../interfaces/product-webhook.interface';
+import { IProductWebhookService } from '../interfaces/product/product-webhook.interface';
 import { firstValueFrom } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 

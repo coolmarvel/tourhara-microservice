@@ -1,5 +1,5 @@
 import { Body, Controller, Post, VERSION_NEUTRAL } from '@nestjs/common';
-import { ProductWebhookService } from '../services/product-webhook.service';
+import { ProductWebhookService } from '../../services/product-webhook.service';
 import { Public } from 'src/common/decorators/public.decorator';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 

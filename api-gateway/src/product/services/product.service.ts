@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { IProductService } from '../interfaces/product.interface';
+import { IProductService } from '../interfaces/product/product.interface';
 import { CreateProductReqDto } from '../dtos/req.dto';
 
 @Injectable()
