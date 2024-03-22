@@ -1,4 +1,4 @@
-export interface IProductCategoryWebhookService {
+export interface ICategoryWebhookService {
   productCategoryCreated_stag(payload: any): Promise<any>;
 
   productCategoryUpdated_stag(payload: any): Promise<any>;

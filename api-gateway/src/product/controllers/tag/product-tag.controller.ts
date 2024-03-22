@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, VERSION_NEUTRAL } from '@nestjs/common';
-import { ProductTagService } from '../../services/product-tag.service';
+import { ProductTagService } from '../../services/tag/product-tag.service';
 import { Public } from 'src/common/decorators/public.decorator';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PageReqDto } from 'src/common/dtos/req.dto';

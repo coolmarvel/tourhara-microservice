@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, VERSION_NEUTRAL } from '@nestjs/common';
-import { ProductAttributeServcie } from '../../services/product-attribute.service';
+import { ProductAttributeServcie } from '../../services/attribute/product-attribute.service';
 import { Public } from 'src/common/decorators/public.decorator';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PageReqDto } from 'src/common/dtos/req.dto';
