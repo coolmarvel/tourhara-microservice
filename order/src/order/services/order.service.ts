@@ -139,10 +139,11 @@ export class OrderService implements IOrderService {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
 
+    console.time('insertOrder_prod');
     try {
-      await queryRunner.startTransaction();
+      for (let i = 1; i < Infinity; i++) {
+        await queryRunner.startTransaction();
 
-      for (let i = 1; i < 2; i++) {
         console.log(`order migrate (page: ${i})`);
         const params = { page: i, per_page: 10 };
         const orders = await this.wooCommerceProd
@@ -220,9 +221,10 @@ export class OrderService implements IOrderService {
           const lineItems = order.line_items;
           await this.saveLineItems_prod(queryRunner, orderId, lineItems);
         }
-      }
 
-      await queryRunner.commitTransaction();
+        await queryRunner.commitTransaction();
+      }
+      console.timeEnd('insertOrder_prod');
 
       return 'insertOrder_prod success';
     } catch (error) {

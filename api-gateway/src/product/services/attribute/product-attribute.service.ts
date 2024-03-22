@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { IProductAttributeService } from '../interfaces/product-attribute.interface';
+import { IProductAttributeService } from '../../interfaces/attribute/product-attribute.interface';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable()

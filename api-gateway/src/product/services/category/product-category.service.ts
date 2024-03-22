@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IProductCategoryService } from '../interfaces/product-category.interface';
+import { IProductCategoryService } from '../../interfaces/category/product-category.interface';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 

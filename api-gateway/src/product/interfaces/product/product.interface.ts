@@ -1,4 +1,4 @@
-import { CreateProductReqDto } from '../dtos/req.dto';
+import { CreateProductReqDto } from '../../dtos/req.dto';
 
 export interface IProductService {
   createAProduct_stag(data: CreateProductReqDto): Promise<any>;

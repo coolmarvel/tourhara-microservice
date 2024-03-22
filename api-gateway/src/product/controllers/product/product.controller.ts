@@ -1,9 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, VERSION_NEUTRAL } from '@nestjs/common';
-import { ProductService } from '../services/product.service';
+import { ProductService } from '../../services/product/product.service';
 import { Public } from 'src/common/decorators/public.decorator';
 import { PageReqDto } from 'src/common/dtos/req.dto';
 import { ApiExtraModels, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CreateProductReqDto, DeleteProductReqDto, RetrieveProductReqDto, UpdateProductBodyReqDto, UpdateProductParamReqDto } from '../dtos/req.dto';
+import { CreateProductReqDto, DeleteProductReqDto, RetrieveProductReqDto, UpdateProductBodyReqDto, UpdateProductParamReqDto } from '../../dtos/req.dto';
 
 @ApiExtraModels()
 @Controller({ path: 'api/product', version: VERSION_NEUTRAL })
