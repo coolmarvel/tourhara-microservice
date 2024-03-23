@@ -2,10 +2,13 @@ import { Module } from '@nestjs/common';
 import { OrderService } from './services/order.service';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { OrderController } from './controllers/order.controller';
+import { OrderWebhookService } from './services/order-webhook.service';
+import { OrderWebhookController } from './controllers/order-webhook.controller';
 
 @Module({
   providers: [
     OrderService,
+    OrderWebhookService,
     {
       provide: 'ORDER_SERVICE',
       useFactory: () => {
@@ -17,6 +20,6 @@ import { OrderController } from './controllers/order.controller';
     },
   ],
   exports: [OrderService],
-  controllers: [OrderController],
+  controllers: [OrderController, OrderWebhookController],
 })
 export class OrderModule {}
