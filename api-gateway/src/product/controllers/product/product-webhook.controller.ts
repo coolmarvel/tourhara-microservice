@@ -1,4 +1,4 @@
-import { Body, Controller, Post, VERSION_NEUTRAL } from '@nestjs/common';
+import { Body, Controller, Headers, Post, VERSION_NEUTRAL } from '@nestjs/common';
 import { ProductWebhookService } from '../../services/product/product-webhook.service';
 import { Public } from 'src/common/decorators/public.decorator';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -11,7 +11,9 @@ export class ProductWebhookController {
   @ApiTags('Product-Webhook')
   @Post('stag/created')
   @ApiOperation({ summary: '단일 상품 생성 WEBHOOK (스테이징)' })
-  async productCreated_stag(@Body() data: any) {
+  async productCreated_stag(@Headers() header: any, @Body() data: any) {
+    console.log(header);
+
     return await this.productWebhookService.productCreated_stag(data);
   }
 

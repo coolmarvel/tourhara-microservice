@@ -10,10 +10,12 @@ import { GuestHouseModule } from 'src/guest-house/guest-house.module';
 import { TourModule } from 'src/tour/tour.module';
 import { UsimModule } from 'src/usim/usim.module';
 import { JfkModule } from 'src/jfk/jfk.module';
+import { OrderWebhookService } from './services/order-webhook.service';
+import { OrderWebhookController } from './controllers/order-webhook.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature(entities), BillingModule, ShippingModule, PaymentModule, GuestHouseModule, TourModule, UsimModule, JfkModule],
-  providers: [OrderService],
-  controllers: [OrderController],
+  providers: [OrderService, OrderWebhookService],
+  controllers: [OrderController, OrderWebhookController],
 })
 export class OrderModule {}
