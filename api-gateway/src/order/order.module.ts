@@ -8,6 +8,7 @@ import { OrderWebhookController } from './controllers/order-webhook.controller';
 @Module({
   providers: [
     OrderService,
+    OrderWebhookService,
     {
       provide: 'ORDER_SERVICE',
       useFactory: () => {
@@ -18,7 +19,7 @@ import { OrderWebhookController } from './controllers/order-webhook.controller';
       },
     },
   ],
-  exports: [OrderService, OrderWebhookService],
+  exports: [OrderService],
   controllers: [OrderController, OrderWebhookController],
 })
 export class OrderModule {}
