@@ -10,5 +10,6 @@ import { CategoryWebhookService } from './services/category-webhook.service';
   imports: [TypeOrmModule.forFeature(entities)],
   providers: [CategoryService, CategoryWebhookService],
   controllers: [CategoryController, CategoryWebhookController],
+  exports: [CategoryService],
 })
 export class CategoryModule {}

@@ -1,3 +1,5 @@
+import { QueryRunner } from 'typeorm';
+
 export interface ICategoryService {
   // WooCommerce Staging Product Category APIs
   createAProductCategory_stag(data: any): Promise<any>;
@@ -25,4 +27,8 @@ export interface ICategoryService {
   insertProductCategories_stag(): Promise<any>;
 
   insertProductCategories_prod(): Promise<any>;
+
+  saveProductCategory_stag(queryRunner: QueryRunner, category_id: number, category: any): Promise<any>;
+
+  saveProductCategory_prod(queryRunner: QueryRunner, category_id: number, category: any): Promise<any>;
 }

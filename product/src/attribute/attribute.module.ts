@@ -10,5 +10,6 @@ import { AttributeWebhookController } from './controllers/attribute-webhook.cont
   imports: [TypeOrmModule.forFeature(entities)],
   providers: [AttributeService, AttributeWebhookService],
   controllers: [AttributeController, AttributeWebhookController],
+  exports: [AttributeService],
 })
 export class AttributeModule {}

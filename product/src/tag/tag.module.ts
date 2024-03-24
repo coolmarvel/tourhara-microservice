@@ -10,5 +10,6 @@ import { TagWebhookController } from './controllers/tag-webhook.controller';
   imports: [TypeOrmModule.forFeature(entities)],
   providers: [TagService, TagWebhookService],
   controllers: [TagController, TagWebhookController],
+  exports: [TagService],
 })
 export class TagModule {}

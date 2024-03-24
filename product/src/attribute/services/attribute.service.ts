@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { IAttributeService } from '../interfaces/attribute.interface';
 
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
-import { DataSource } from 'typeorm';
+import { DataSource, QueryRunner } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { ProductAttribute } from '../entities/attribute.entity';
 
@@ -178,6 +178,57 @@ export class AttributeService implements IAttributeService {
       throw error;
     } finally {
       await queryRunner.release();
+    }
+  }
+
+  async saveProductAttribute_stag(queryRunner: QueryRunner, attribute_id: number, attribute: any): Promise<any> {
+    try {
+      await queryRunner.startTransaction();
+
+      const existingProductAttribute = await queryRunner.manager.findOne(ProductAttribute, { where: { id: attribute_id } });
+      if (existingProductAttribute) return true;
+
+      const newProductAttribute = {
+        id: attribute.id,
+        name: attribute.name,
+        position: attribute.position,
+        visible: attribute.visible,
+        variation: attribute.variation,
+        options: attribute.options,
+      };
+      const productAttributeEntity = queryRunner.manager.create(ProductAttribute, newProductAttribute);
+      await queryRunner.manager.save(productAttributeEntity);
+
+      await queryRunner.commitTransaction();
+      return true;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    }
+  }
+  async saveProductAttribute_prod(queryRunner: QueryRunner, attribute_id: number, attribute: any): Promise<any> {
+    try {
+      await queryRunner.startTransaction();
+
+      const existingProductAttribute = await queryRunner.manager.findOne(ProductAttribute, { where: { id: attribute_id } });
+      if (existingProductAttribute) return true;
+
+      const newProductAttribute = {
+        id: attribute.id,
+        name: attribute.name,
+        position: attribute.position,
+        visible: attribute.visible,
+        variation: attribute.variation,
+        options: attribute.options,
+      };
+      const productAttributeEntity = queryRunner.manager.create(ProductAttribute, newProductAttribute);
+      await queryRunner.manager.save(productAttributeEntity);
+
+      await queryRunner.commitTransaction();
+      return true;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
     }
   }
 }
