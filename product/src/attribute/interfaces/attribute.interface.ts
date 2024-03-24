@@ -1,3 +1,5 @@
+import { QueryRunner } from 'typeorm';
+
 export interface IAttributeService {
   // WooCommerce Staging Product Attribute APIs
   createAProductAttribute_stag(data: any): Promise<any>;
@@ -25,4 +27,8 @@ export interface IAttributeService {
   insertProductAttribute_stag(): Promise<any>;
 
   insertProductAttribute_prod(): Promise<any>;
+
+  saveProductAttribute_stag(queryRunner: QueryRunner, attribute_id: number, attribute: any): Promise<any>;
+
+  saveProductAttribute_prod(queryRunner: QueryRunner, attribute_id: number, attribute: any): Promise<any>;
 }

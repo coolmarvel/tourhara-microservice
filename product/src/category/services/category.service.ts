@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ICategoryService } from '../interfaces/category.interface';
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
-import { DataSource } from 'typeorm';
+import { DataSource, QueryRunner } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { ProductCategory } from '../entities/category.entity';
 import { ProductCategoryImage } from '../entities/category-image.entity';
@@ -191,6 +191,56 @@ export class CategoryService implements ICategoryService {
       throw error;
     } finally {
       await queryRunner.release();
+    }
+  }
+
+  async saveProductCategory_stag(queryRunner: QueryRunner, category_id: number, category: any): Promise<any> {
+    try {
+      await queryRunner.startTransaction();
+
+      const exsitingProductCategory = await queryRunner.manager.findOne(ProductCategory, { where: { id: category_id } });
+      if (exsitingProductCategory) return true;
+
+      const newProductCategory = {
+        id: category.id,
+        parent: category.parent,
+        name: category.name,
+        slug: category.slug,
+        description: category.description,
+      };
+      const productCategoryEntity = queryRunner.manager.create(ProductCategory, newProductCategory);
+      await queryRunner.manager.save(productCategoryEntity);
+
+      await queryRunner.commitTransaction();
+      return true;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    }
+  }
+
+  async saveProductCategory_prod(queryRunner: QueryRunner, category_id: number, category: any): Promise<any> {
+    try {
+      await queryRunner.startTransaction();
+
+      const exsitingProductCategory = await queryRunner.manager.findOne(ProductCategory, { where: { id: category_id } });
+      if (exsitingProductCategory) return true;
+
+      const newProductCategory = {
+        id: category.id,
+        parent: category.parent,
+        name: category.name,
+        slug: category.slug,
+        description: category.description,
+      };
+      const productCategoryEntity = queryRunner.manager.create(ProductCategory, newProductCategory);
+      await queryRunner.manager.save(productCategoryEntity);
+
+      await queryRunner.commitTransaction();
+      return true;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
     }
   }
 }

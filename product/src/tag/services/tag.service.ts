@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ITagService } from '../interfaces/tag.interface';
 
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
-import { DataSource } from 'typeorm';
+import { DataSource, QueryRunner } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { ProductTag } from '../entities/tag.entity';
 
@@ -166,6 +166,54 @@ export class TagService implements ITagService {
       throw error;
     } finally {
       await queryRunner.release();
+    }
+  }
+
+  async saveProductTag_stag(queryRunner: QueryRunner, tag_id: number, tag: any): Promise<any> {
+    try {
+      await queryRunner.startTransaction();
+
+      const existingProductTag = await queryRunner.manager.findOne(ProductTag, { where: { id: tag_id } });
+      if (existingProductTag) return true;
+
+      const newProductTag = {
+        id: tag.id,
+        name: tag.name,
+        slug: tag.slug,
+        count: tag.count,
+      };
+      const prodctTagEntity = queryRunner.manager.create(ProductTag, newProductTag);
+      await queryRunner.manager.save(prodctTagEntity);
+
+      await queryRunner.commitTransaction();
+      return true;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    }
+  }
+
+  async saveProductTag_prod(queryRunner: QueryRunner, tag_id: number, tag: any): Promise<any> {
+    try {
+      await queryRunner.startTransaction();
+
+      const existingProductTag = await queryRunner.manager.findOne(ProductTag, { where: { id: tag_id } });
+      if (existingProductTag) return true;
+
+      const newProductTag = {
+        id: tag.id,
+        name: tag.name,
+        slug: tag.slug,
+        count: tag.count,
+      };
+      const prodctTagEntity = queryRunner.manager.create(ProductTag, newProductTag);
+      await queryRunner.manager.save(prodctTagEntity);
+
+      await queryRunner.commitTransaction();
+      return true;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
     }
   }
 }

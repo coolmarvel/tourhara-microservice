@@ -149,7 +149,7 @@ export class ProductService implements IProductService {
         for (const product of products) {
           const existingProduct = await queryRunner.manager.findOne(Product, { where: { id: product.id } });
           if (existingProduct) continue;
-          
+
           const categories = product.categories;
           const productCategoryId: string[] = [];
           for (const category of categories) {
@@ -279,5 +279,38 @@ export class ProductService implements IProductService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async synchronizeProduct_stag(): Promise<any> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+
+    try {
+      await queryRunner.startTransaction();
+
+      for (let i = 0; i < Infinity; i++) {
+        console.log(`product data migrate (page: ${i})`);
+        const params = { page: i, per_page: 10 };
+        const categories = await this.wooCommerceStag
+          .get('products/categories', params)
+          .then((response: any) => response.data)
+          .catch((error: any) => error.response.data);
+
+        for (const category of categories) {
+        }
+      }
+
+      await queryRunner.commitTransaction();
+      return 'synchronizeProduct_stag success';
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async synchronizeProduct_prod(): Promise<any> {
+    throw new Error('Method not implemented.');
   }
 }

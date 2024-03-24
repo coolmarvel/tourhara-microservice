@@ -1,3 +1,5 @@
+import { QueryRunner } from 'typeorm';
+
 export interface ITagService {
   // WooCommerce Staging Product Tags APIs
   createAProductTag_stag(data: any): Promise<any>;
@@ -24,4 +26,9 @@ export interface ITagService {
   insertProductTag_stag(): Promise<any>;
 
   insertProductTag_prod(): Promise<any>;
+
+  // --
+  saveProductTag_stag(queryRunner: QueryRunner, tag_id: number, tag: any): Promise<any>;
+
+  saveProductTag_prod(queryRunner: QueryRunner, tag_id: number, tag: any): Promise<any>;
 }
