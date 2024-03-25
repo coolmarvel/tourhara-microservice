@@ -1,9 +1,21 @@
 import { registerAs } from '@nestjs/config';
 
-export default registerAs('mariadb', () => ({
-  host: process.env.MARIADB_HOST,
-  port: Number(process.env.MARIADB_PORT),
-  database: process.env.MARIADB_DATABASE,
-  username: process.env.MARIADB_USERNAME,
-  password: process.env.MARIADB_PASSWORD,
-}));
+export default registerAs('mariadb', () => {
+  if (process.env.MARIADB_ENV === 'staging') {
+    return {
+      host: process.env.MARIADB_STAGING_HOST,
+      port: parseInt(process.env.MARIADB_STAGING_PORT, 10),
+      database: process.env.MARIADB_STAGING_DATABASE,
+      username: process.env.MARIADB_STAGING_USERNAME,
+      password: process.env.MARIADB_STAGING_PASSWORD,
+    };
+  } else if (process.env.MARIADB_ENV === 'production') {
+    return {
+      host: process.env.MARIADB_PRODUCTION_HOST,
+      port: parseInt(process.env.MARIADB_PRODUCTION_PORT, 10),
+      database: process.env.MARIADB_PRODUCTION_DATABASE,
+      username: process.env.MARIADB_PRODUCTION_USERNAME,
+      password: process.env.MARIADB_PRODUCTION_PASSWORD,
+    };
+  }
+});

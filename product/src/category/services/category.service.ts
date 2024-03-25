@@ -194,11 +194,11 @@ export class CategoryService implements ICategoryService {
     }
   }
 
-  async saveProductCategory_stag(queryRunner: QueryRunner, category_id: number, category: any): Promise<any> {
+  async saveProductCategory_stag(queryRunner: QueryRunner, category: any): Promise<any> {
     try {
       await queryRunner.startTransaction();
 
-      const exsitingProductCategory = await queryRunner.manager.findOne(ProductCategory, { where: { id: category_id } });
+      const exsitingProductCategory = await queryRunner.manager.findOne(ProductCategory, { where: { id: category.id } });
       if (exsitingProductCategory) return true;
 
       const newProductCategory = {
@@ -219,11 +219,11 @@ export class CategoryService implements ICategoryService {
     }
   }
 
-  async saveProductCategory_prod(queryRunner: QueryRunner, category_id: number, category: any): Promise<any> {
+  async saveProductCategory_prod(queryRunner: QueryRunner, category: any): Promise<any> {
     try {
       await queryRunner.startTransaction();
 
-      const exsitingProductCategory = await queryRunner.manager.findOne(ProductCategory, { where: { id: category_id } });
+      const exsitingProductCategory = await queryRunner.manager.findOne(ProductCategory, { where: { id: category.id } });
       if (exsitingProductCategory) return true;
 
       const newProductCategory = {

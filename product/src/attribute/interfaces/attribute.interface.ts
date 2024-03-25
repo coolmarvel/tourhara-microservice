@@ -28,7 +28,7 @@ export interface IAttributeService {
 
   insertProductAttribute_prod(): Promise<any>;
 
-  saveProductAttribute_stag(queryRunner: QueryRunner, attribute_id: number, attribute: any): Promise<any>;
+  saveProductAttribute_stag(queryRunner: QueryRunner, attribute: any): Promise<any>;
 
-  saveProductAttribute_prod(queryRunner: QueryRunner, attribute_id: number, attribute: any): Promise<any>;
+  saveProductAttribute_prod(queryRunner: QueryRunner, attribute: any): Promise<any>;
 }

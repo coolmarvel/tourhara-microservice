@@ -169,11 +169,11 @@ export class TagService implements ITagService {
     }
   }
 
-  async saveProductTag_stag(queryRunner: QueryRunner, tag_id: number, tag: any): Promise<any> {
+  async saveProductTag_stag(queryRunner: QueryRunner, tag: any): Promise<any> {
     try {
       await queryRunner.startTransaction();
 
-      const existingProductTag = await queryRunner.manager.findOne(ProductTag, { where: { id: tag_id } });
+      const existingProductTag = await queryRunner.manager.findOne(ProductTag, { where: { id: tag.id } });
       if (existingProductTag) return true;
 
       const newProductTag = {
@@ -193,11 +193,11 @@ export class TagService implements ITagService {
     }
   }
 
-  async saveProductTag_prod(queryRunner: QueryRunner, tag_id: number, tag: any): Promise<any> {
+  async saveProductTag_prod(queryRunner: QueryRunner, tag: any): Promise<any> {
     try {
       await queryRunner.startTransaction();
 
-      const existingProductTag = await queryRunner.manager.findOne(ProductTag, { where: { id: tag_id } });
+      const existingProductTag = await queryRunner.manager.findOne(ProductTag, { where: { id: tag.id } });
       if (existingProductTag) return true;
 
       const newProductTag = {

@@ -28,7 +28,7 @@ export interface ITagService {
   insertProductTag_prod(): Promise<any>;
 
   // --
-  saveProductTag_stag(queryRunner: QueryRunner, tag_id: number, tag: any): Promise<any>;
+  saveProductTag_stag(queryRunner: QueryRunner, tag: any): Promise<any>;
 
-  saveProductTag_prod(queryRunner: QueryRunner, tag_id: number, tag: any): Promise<any>;
+  saveProductTag_prod(queryRunner: QueryRunner, tag: any): Promise<any>;
 }

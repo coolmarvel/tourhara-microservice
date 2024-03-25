@@ -28,7 +28,7 @@ export interface ICategoryService {
 
   insertProductCategories_prod(): Promise<any>;
 
-  saveProductCategory_stag(queryRunner: QueryRunner, category_id: number, category: any): Promise<any>;
+  saveProductCategory_stag(queryRunner: QueryRunner, category: any): Promise<any>;
 
-  saveProductCategory_prod(queryRunner: QueryRunner, category_id: number, category: any): Promise<any>;
+  saveProductCategory_prod(queryRunner: QueryRunner, category: any): Promise<any>;
 }

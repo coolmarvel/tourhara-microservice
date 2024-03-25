@@ -8,6 +8,8 @@ import { ProductCategory } from 'src/category/entities/category.entity';
 import { ProductTag } from 'src/tag/entities/tag.entity';
 import { ProductImage } from '../entities/product-image.entity';
 import { ProductAttribute } from 'src/attribute/entities/attribute.entity';
+import { CategoryService } from 'src/category/services/category.service';
+import { TagService } from 'src/tag/services/tag.service';
 
 @Injectable()
 export class ProductService implements IProductService {
@@ -17,6 +19,9 @@ export class ProductService implements IProductService {
   constructor(
     private dataSource: DataSource,
     private configService: ConfigService,
+
+    private readonly tagService: TagService,
+    private readonly categoryService: CategoryService,
   ) {
     this.wooCommerceStag = new WooCommerceRestApi({
       url: this.configService.get('wc-stag.url'),
@@ -291,12 +296,23 @@ export class ProductService implements IProductService {
       for (let i = 0; i < Infinity; i++) {
         console.log(`product data migrate (page: ${i})`);
         const params = { page: i, per_page: 10 };
+
         const categories = await this.wooCommerceStag
           .get('products/categories', params)
           .then((response: any) => response.data)
           .catch((error: any) => error.response.data);
 
         for (const category of categories) {
+          await this.categoryService.saveProductCategory_stag(queryRunner, category);
+        }
+
+        const tags = await this.wooCommerceStag
+          .get('products/tags', params)
+          .then((response: any) => response.data)
+          .catch((error: any) => error.response.data);
+
+        for (const tag of tags) {
+          await this.tagService.saveProductTag_stag(queryRunner, tag);
         }
       }
 
