@@ -9,10 +9,13 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService implements IUserService {
-  constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {}
+  constructor(
+    @InjectRepository(User, 'staging') private readonly userRepositoryStag: Repository<User>,
+    @InjectRepository(User, 'production') private readonly userRepositoryProd: Repository<User>,
+  ) {}
 
   async checkUserIsAdmin(uuid: string): Promise<{ isAdmin: boolean }> {
-    const user = await this.userRepository.findOneBy({ id: uuid });
+    const user = await this.userRepositoryProd.findOneBy({ id: uuid });
 
     return { isAdmin: user.role === Role.Admin };
   }
@@ -20,8 +23,8 @@ export class UserService implements IUserService {
   async signup(email: string, password: string): Promise<{ id: string }> {
     const saltRounds = 10;
     const hash = await bcrypt.hash(password, saltRounds);
-    const userEntity = this.userRepository.create({ email, password: hash });
-    const user = await this.userRepository.save(userEntity);
+    const userEntity = this.userRepositoryProd.create({ email, password: hash });
+    const user = await this.userRepositoryProd.save(userEntity);
 
     return user;
   }
@@ -37,7 +40,7 @@ export class UserService implements IUserService {
   }
 
   async findOneByEmail(email: string): Promise<User> {
-    const user = await this.userRepository.findOneBy({ email });
+    const user = await this.userRepositoryProd.findOneBy({ email });
 
     return user;
   }

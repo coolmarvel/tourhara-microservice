@@ -31,7 +31,6 @@ async function bootstrap() {
 
   await app.listen(port);
 
-  console.log(`🛰️  Database connected on ENV(${process.env.MARIADB_ENV})`);
   console.log(`🚀 Server is listening on http://localhost:${port}`);
   console.log(`📚 Swagger API documentation available at http://localhost:${port}/docs`);
 }

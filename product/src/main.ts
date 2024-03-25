@@ -17,7 +17,6 @@ async function bootstrap() {
 
   await app.listen();
 
-  console.log(`🛰️  Database connected on ENV(${process.env.MARIADB_ENV})`);
   console.log(`🚀 PRODUCT-SERVICE is listening on http://localhost:${port} for TCP`);
 }
 bootstrap();
