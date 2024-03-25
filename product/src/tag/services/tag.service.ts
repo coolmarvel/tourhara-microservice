@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ITagService } from '../interfaces/tag.interface';
 
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
-import { DataSource, QueryRunner } from 'typeorm';
+import { QueryRunner } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { ProductTag } from '../entities/tag.entity';
 
@@ -11,10 +11,7 @@ export class TagService implements ITagService {
   private wooCommerceStag: WooCommerceRestApi;
   private wooCommerceProd: WooCommerceRestApi;
 
-  constructor(
-    private dataSource: DataSource,
-    private configService: ConfigService,
-  ) {
+  constructor(private configService: ConfigService) {
     this.wooCommerceStag = new WooCommerceRestApi({
       url: this.configService.get('wc-stag.url'),
       consumerKey: this.configService.get('wc-stag.key'),
@@ -124,55 +121,8 @@ export class TagService implements ITagService {
     return tag;
   }
 
-  async insertProductTag_stag(): Promise<any> {}
-
-  async insertProductTag_prod(): Promise<any> {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-
-    try {
-      await queryRunner.startTransaction();
-
-      for (let i = 1; i < 9999; i++) {
-        console.log(`product tag migrate (page: ${i})`);
-        const params = { page: i, per_page: 10 };
-        const tags = await this.wooCommerceProd
-          .get('products/tags', params)
-          .then((response: any) => response.data)
-          .catch((error: any) => error.response.data);
-
-        if (tags.length === 0) break;
-
-        for (const tag of tags) {
-          const existingTag = await queryRunner.manager.findOne(ProductTag, { where: { id: tag.id } });
-          if (existingTag) continue;
-
-          const newProductTag = {
-            id: tag.id,
-            name: tag.name,
-            slug: tag.slug,
-            count: tag.count,
-          };
-          const productTagEntity = queryRunner.manager.create(ProductTag, newProductTag);
-          await queryRunner.manager.save(productTagEntity);
-        }
-      }
-
-      await queryRunner.commitTransaction();
-
-      return 'insertProductTag_prod success';
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-      throw error;
-    } finally {
-      await queryRunner.release();
-    }
-  }
-
   async saveProductTag_stag(queryRunner: QueryRunner, tag: any): Promise<any> {
     try {
-      // await queryRunner.startTransaction();
-
       const existingProductTag = await queryRunner.manager.findOne(ProductTag, { where: { id: tag.id } });
       if (existingProductTag) return true;
 
@@ -185,18 +135,14 @@ export class TagService implements ITagService {
       const prodctTagEntity = queryRunner.manager.create(ProductTag, newProductTag);
       await queryRunner.manager.save(prodctTagEntity);
 
-      // await queryRunner.commitTransaction();
       return true;
     } catch (error) {
-      // await queryRunner.rollbackTransaction();
       throw error;
     }
   }
 
   async saveProductTag_prod(queryRunner: QueryRunner, tag: any): Promise<any> {
     try {
-      await queryRunner.startTransaction();
-
       const existingProductTag = await queryRunner.manager.findOne(ProductTag, { where: { id: tag.id } });
       if (existingProductTag) return true;
 
@@ -209,10 +155,8 @@ export class TagService implements ITagService {
       const prodctTagEntity = queryRunner.manager.create(ProductTag, newProductTag);
       await queryRunner.manager.save(prodctTagEntity);
 
-      await queryRunner.commitTransaction();
       return true;
     } catch (error) {
-      await queryRunner.rollbackTransaction();
       throw error;
     }
   }

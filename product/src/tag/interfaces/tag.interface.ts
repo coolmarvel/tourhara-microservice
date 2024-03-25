@@ -23,11 +23,6 @@ export interface ITagService {
 
   deleteAProductTag_prod(tag_id: string): Promise<any>;
 
-  insertProductTag_stag(): Promise<any>;
-
-  insertProductTag_prod(): Promise<any>;
-
-  // --
   saveProductTag_stag(queryRunner: QueryRunner, tag: any): Promise<any>;
 
   saveProductTag_prod(queryRunner: QueryRunner, tag: any): Promise<any>;

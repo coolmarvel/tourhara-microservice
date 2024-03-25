@@ -88,13 +88,4 @@ export class ProductCategoryService implements IProductCategoryService {
 
     return category;
   }
-
-  // Database insert
-  async insertProductCategories_prod() {
-    const pattern = { cmd: 'insertProductCategories_prod' };
-    const payload = {};
-    const result = await firstValueFrom(this.client.send(pattern, payload));
-
-    return result;
-  }
 }

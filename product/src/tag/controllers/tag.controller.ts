@@ -57,11 +57,4 @@ export class TagController {
   async deleteAProductTag_prod({ tag_id }: { tag_id: string }) {
     return await this.tagService.deleteAProductTag_prod(tag_id);
   }
-
-  //
-
-  @MessagePattern({ cmd: 'insertProductTag_prod' })
-  async insertProductTag_prod() {
-    return await this.tagService.insertProductTag_prod();
-  }
 }
