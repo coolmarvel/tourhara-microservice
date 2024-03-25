@@ -214,7 +214,6 @@ export class OrderService implements IOrderService {
           const jfkShuttleRt = order.jfk_shuttle_rt;
           await this.jfkService.saveJfkShuttleRt_prod(queryRunner, orderId, jfkShuttleRt);
 
-          // TODO. Under Domain
           const orderMetadata = order.meta_data;
           await this.saveOrderMetadata_prod(queryRunner, orderId, orderMetadata);
 

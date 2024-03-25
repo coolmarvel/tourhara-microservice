@@ -58,19 +58,14 @@ export class ProductController {
     return await this.productService.deleteAProduct_prod(product_id);
   }
 
-  @MessagePattern({ cmd: 'insertProduct_prod' })
-  async insertProduct_prod() {
-    return await this.productService.insertProduct_prod();
-  }
-
-  @MessagePattern({ cmd: 'insertProductImage_prod' })
-  async insertProductImage_prod() {
-    return await this.productService.insertProductImage_prod();
-  }
-
-  // TEST synchronizeProduct_stag
+  // synchronizeProduct
   @MessagePattern({ cmd: 'synchronizeProduct_stag' })
   async synchronizeProduct_stag() {
     return await this.productService.synchronizeProduct_stag();
+  }
+
+  @MessagePattern({ cmd: 'synchronizeProduct_prod' })
+  async synchronizeProduct_prod() {
+    return await this.productService.synchronizeProduct_prod();
   }
 }
