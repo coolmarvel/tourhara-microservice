@@ -12,6 +12,7 @@ import { CategoryService } from 'src/category/services/category.service';
 import { TagService } from 'src/tag/services/tag.service';
 import { AttributeService } from 'src/attribute/services/attribute.service';
 import { InjectDataSource } from '@nestjs/typeorm';
+import { CreateProductReqDto } from '../dtos/req.dto';
 
 @Injectable()
 export class ProductService implements IProductService {
@@ -43,7 +44,7 @@ export class ProductService implements IProductService {
   }
 
   // WooCommerce Staging Product APIs
-  async createAProduct_stag(data: any): Promise<any> {
+  async createAProduct_stag(data: CreateProductReqDto): Promise<any> {
     const product = await this.wooCommerceStag
       .post('products', data)
       .then((response: any) => response.data)
@@ -90,7 +91,7 @@ export class ProductService implements IProductService {
   }
 
   // WooCommerce Production Product APIs
-  async createAProduct_prod(data: any): Promise<any> {
+  async createAProduct_prod(data: CreateProductReqDto): Promise<any> {
     const product = await this.wooCommerceProd
       .post('products', data)
       .then((response: any) => response.data)
@@ -136,6 +137,7 @@ export class ProductService implements IProductService {
     return product;
   }
 
+  // DATABASE
   async saveProduct_stag(queryRunner: QueryRunner, product: any): Promise<any> {
     try {
       const existingProduct = await queryRunner.manager.findOne(Product, { where: { id: product.id } });
@@ -440,7 +442,7 @@ export class ProductService implements IProductService {
 
           for (const category of categories) {
             // 상품 카테고리, 상품 카테고리 이미지 저장
-            await this.categoryService.saveProductCategory_stag(queryRunner, category);
+            await this.categoryService.saveProductCategory_prod(queryRunner, category);
           }
 
           categoriesFlag = categories.length > 0;
@@ -454,7 +456,7 @@ export class ProductService implements IProductService {
 
           for (const tag of tags) {
             // 상품 태그 저장
-            await this.tagService.saveProductTag_stag(queryRunner, tag);
+            await this.tagService.saveProductTag_prod(queryRunner, tag);
           }
 
           tagsFlag = tags.length > 0;
@@ -471,18 +473,18 @@ export class ProductService implements IProductService {
 
             for (const attribute of attributes) {
               // 상품 속성 저장
-              await this.attributeService.saveProductAttribute_stag(queryRunner, attribute);
+              await this.attributeService.saveProductAttribute_prod(queryRunner, attribute);
             }
 
             const images = product.images;
 
             for (const image of images) {
               // 상품 이미지 저장
-              await this.saveProductImage_stag(queryRunner, image);
+              await this.saveProductImage_prod(queryRunner, image);
             }
 
             // 상품 저장
-            await this.saveProduct_stag(queryRunner, product);
+            await this.saveProduct_prod(queryRunner, product);
           }
 
           productsFlag = products.length > 0;
@@ -492,7 +494,7 @@ export class ProductService implements IProductService {
       }
       console.log(`Product data migration complete`);
 
-      return 'synchronizeProduct_stag success';
+      return 'synchronizeProduct_prod success';
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;

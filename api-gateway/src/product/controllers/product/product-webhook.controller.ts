@@ -1,4 +1,4 @@
-import { Body, Controller, Headers, Post, VERSION_NEUTRAL } from '@nestjs/common';
+import { Body, Controller, Headers, HttpStatus, Post, VERSION_NEUTRAL } from '@nestjs/common';
 import { ProductWebhookService } from '../../services/product/product-webhook.service';
 import { Public } from 'src/common/decorators/public.decorator';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -14,7 +14,10 @@ export class ProductWebhookController {
   async productCreated_stag(@Headers() header: any, @Body() data: any) {
     console.log(header);
 
-    return await this.productWebhookService.productCreated_stag(data);
+    const result = await this.productWebhookService.productCreated_stag(data);
+
+    if (result) return HttpStatus.OK;
+    else return HttpStatus.BAD_REQUEST;
   }
 
   @Public()
