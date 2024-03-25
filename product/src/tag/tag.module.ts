@@ -7,7 +7,7 @@ import { TagWebhookService } from './services/tag-webhook.service';
 import { TagWebhookController } from './controllers/tag-webhook.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature(entities)],
+  imports: [TypeOrmModule.forFeature(entities, 'staging'), TypeOrmModule.forFeature(entities, 'production')],
   providers: [TagService, TagWebhookService],
   controllers: [TagController, TagWebhookController],
   exports: [TagService],

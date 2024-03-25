@@ -11,6 +11,7 @@ import { ProductAttribute } from 'src/attribute/entities/attribute.entity';
 import { CategoryService } from 'src/category/services/category.service';
 import { TagService } from 'src/tag/services/tag.service';
 import { AttributeService } from 'src/attribute/services/attribute.service';
+import { InjectDataSource } from '@nestjs/typeorm';
 
 @Injectable()
 export class ProductService implements IProductService {
@@ -18,8 +19,9 @@ export class ProductService implements IProductService {
   private wooCommerceProd: WooCommerceRestApi;
 
   constructor(
-    private dataSource: DataSource,
     private configService: ConfigService,
+    @InjectDataSource('staging') private dataSourceStag: DataSource,
+    @InjectDataSource('production') private dataSourceProd: DataSource,
 
     private readonly tagService: TagService,
     private readonly categoryService: CategoryService,
@@ -330,7 +332,7 @@ export class ProductService implements IProductService {
   }
 
   async synchronizeProduct_stag(): Promise<any> {
-    const queryRunner = this.dataSource.createQueryRunner();
+    const queryRunner = this.dataSourceStag.createQueryRunner();
     await queryRunner.connect();
 
     let categoriesFlag: boolean = true;
@@ -415,7 +417,7 @@ export class ProductService implements IProductService {
   }
 
   async synchronizeProduct_prod(): Promise<any> {
-    const queryRunner = this.dataSource.createQueryRunner();
+    const queryRunner = this.dataSourceProd.createQueryRunner();
     await queryRunner.connect();
 
     let categoriesFlag: boolean = true;
