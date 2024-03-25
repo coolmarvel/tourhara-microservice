@@ -67,4 +67,10 @@ export class ProductController {
   async insertProductImage_prod() {
     return await this.productService.insertProductImage_prod();
   }
+
+  // TEST synchronizeProduct_stag
+  @MessagePattern({ cmd: 'synchronizeProduct_stag' })
+  async synchronizeProduct_stag() {
+    return await this.productService.synchronizeProduct_stag();
+  }
 }

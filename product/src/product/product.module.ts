@@ -7,9 +7,10 @@ import { ProductWebhookService } from './services/product-webhook.service';
 import { ProductWebhookController } from './controllers/product-webhook.controller';
 import { CategoryModule } from 'src/category/category.module';
 import { TagModule } from 'src/tag/tag.module';
+import { AttributeModule } from 'src/attribute/attribute.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature(entities), CategoryModule, TagModule],
+  imports: [TypeOrmModule.forFeature(entities), CategoryModule, TagModule, AttributeModule],
   providers: [ProductService, ProductWebhookService],
   controllers: [ProductController, ProductWebhookController],
 })

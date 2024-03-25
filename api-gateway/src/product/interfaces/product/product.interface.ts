@@ -27,4 +27,7 @@ export interface IProductService {
   insertProductImage_prod(): Promise<any>;
 
   insertProductAttribute_prod(): Promise<any>;
+
+  // TEST synchronizeProduct_stag
+  synchronizeProduct_stag(): Promise<any>;
 }

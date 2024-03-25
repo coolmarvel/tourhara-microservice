@@ -171,7 +171,7 @@ export class TagService implements ITagService {
 
   async saveProductTag_stag(queryRunner: QueryRunner, tag: any): Promise<any> {
     try {
-      await queryRunner.startTransaction();
+      // await queryRunner.startTransaction();
 
       const existingProductTag = await queryRunner.manager.findOne(ProductTag, { where: { id: tag.id } });
       if (existingProductTag) return true;
@@ -185,10 +185,10 @@ export class TagService implements ITagService {
       const prodctTagEntity = queryRunner.manager.create(ProductTag, newProductTag);
       await queryRunner.manager.save(prodctTagEntity);
 
-      await queryRunner.commitTransaction();
+      // await queryRunner.commitTransaction();
       return true;
     } catch (error) {
-      await queryRunner.rollbackTransaction();
+      // await queryRunner.rollbackTransaction();
       throw error;
     }
   }

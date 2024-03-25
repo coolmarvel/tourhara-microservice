@@ -196,10 +196,10 @@ export class CategoryService implements ICategoryService {
 
   async saveProductCategory_stag(queryRunner: QueryRunner, category: any): Promise<any> {
     try {
-      await queryRunner.startTransaction();
+      // await queryRunner.startTransaction();
 
-      const exsitingProductCategory = await queryRunner.manager.findOne(ProductCategory, { where: { id: category.id } });
-      if (exsitingProductCategory) return true;
+      const existingProductCategory = await queryRunner.manager.findOne(ProductCategory, { where: { id: category.id } });
+      if (existingProductCategory) return true;
 
       const newProductCategory = {
         id: category.id,
@@ -209,12 +209,32 @@ export class CategoryService implements ICategoryService {
         description: category.description,
       };
       const productCategoryEntity = queryRunner.manager.create(ProductCategory, newProductCategory);
-      await queryRunner.manager.save(productCategoryEntity);
+      const productCategory = await queryRunner.manager.save(productCategoryEntity);
 
-      await queryRunner.commitTransaction();
+      const image = category.image;
+      if (image) {
+        const existingProductCategoryImage = await queryRunner.manager.findOne(ProductCategoryImage, { where: { id: image.id } });
+        if (!existingProductCategoryImage) {
+          const newProductCategoryImage = {
+            id: image.id,
+            name: image.name === '' ? null : image.name,
+            src: image.src,
+            alt: image.alt === '' ? null : image.alt,
+            dateCreated: image.date_created,
+            dateCreatedGmt: image.date_created_gmt,
+            dateModified: image.date_modified,
+            dateModifiedGmt: image.date_modified_gmt,
+            productCategoryId: productCategory.productCategoryId,
+          };
+          const productCategoryImageEntity = queryRunner.manager.create(ProductCategoryImage, newProductCategoryImage);
+          await queryRunner.manager.save(productCategoryImageEntity);
+        }
+      }
+
+      // await queryRunner.commitTransaction();
       return true;
     } catch (error) {
-      await queryRunner.rollbackTransaction();
+      // await queryRunner.rollbackTransaction();
       throw error;
     }
   }
@@ -223,8 +243,8 @@ export class CategoryService implements ICategoryService {
     try {
       await queryRunner.startTransaction();
 
-      const exsitingProductCategory = await queryRunner.manager.findOne(ProductCategory, { where: { id: category.id } });
-      if (exsitingProductCategory) return true;
+      const existingProductCategory = await queryRunner.manager.findOne(ProductCategory, { where: { id: category.id } });
+      if (existingProductCategory) return true;
 
       const newProductCategory = {
         id: category.id,
@@ -234,7 +254,27 @@ export class CategoryService implements ICategoryService {
         description: category.description,
       };
       const productCategoryEntity = queryRunner.manager.create(ProductCategory, newProductCategory);
-      await queryRunner.manager.save(productCategoryEntity);
+      const productCategory = await queryRunner.manager.save(productCategoryEntity);
+
+      const image = category.image;
+      if (image) {
+        const existingProductCategoryImage = await queryRunner.manager.findOne(ProductCategoryImage, { where: { id: image.id } });
+        if (!existingProductCategoryImage) {
+          const newProductCategoryImage = {
+            id: image.id,
+            name: image.name === '' ? null : image.name,
+            src: image.src,
+            alt: image.alt === '' ? null : image.alt,
+            dateCreated: image.date_created,
+            dateCreatedGmt: image.date_created_gmt,
+            dateModified: image.date_modified,
+            dateModifiedGmt: image.date_modified_gmt,
+            productCategoryId: productCategory.productCategoryId,
+          };
+          const productCategoryImageEntity = queryRunner.manager.create(ProductCategoryImage, newProductCategoryImage);
+          await queryRunner.manager.save(productCategoryImageEntity);
+        }
+      }
 
       await queryRunner.commitTransaction();
       return true;

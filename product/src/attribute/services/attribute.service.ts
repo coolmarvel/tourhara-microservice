@@ -183,9 +183,17 @@ export class AttributeService implements IAttributeService {
 
   async saveProductAttribute_stag(queryRunner: QueryRunner, attribute: any): Promise<any> {
     try {
-      await queryRunner.startTransaction();
+      // await queryRunner.startTransaction();
 
-      const existingProductAttribute = await queryRunner.manager.findOne(ProductAttribute, { where: { id: attribute.id } });
+      const existingProductAttribute = await queryRunner.manager.findOne(ProductAttribute, {
+        where: {
+          id: attribute.id,
+          name: attribute.name,
+          position: attribute.position,
+          visible: attribute.visible,
+          options: attribute.options,
+        },
+      });
       if (existingProductAttribute) return true;
 
       const newProductAttribute = {
@@ -199,10 +207,10 @@ export class AttributeService implements IAttributeService {
       const productAttributeEntity = queryRunner.manager.create(ProductAttribute, newProductAttribute);
       await queryRunner.manager.save(productAttributeEntity);
 
-      await queryRunner.commitTransaction();
+      // await queryRunner.commitTransaction();
       return true;
     } catch (error) {
-      await queryRunner.rollbackTransaction();
+      // await queryRunner.rollbackTransaction();
       throw error;
     }
   }
@@ -210,7 +218,15 @@ export class AttributeService implements IAttributeService {
     try {
       await queryRunner.startTransaction();
 
-      const existingProductAttribute = await queryRunner.manager.findOne(ProductAttribute, { where: { id: attribute.id } });
+      const existingProductAttribute = await queryRunner.manager.findOne(ProductAttribute, {
+        where: {
+          id: attribute.id,
+          name: attribute.name,
+          position: attribute.position,
+          visible: attribute.visible,
+          options: attribute.options,
+        },
+      });
       if (existingProductAttribute) return true;
 
       const newProductAttribute = {

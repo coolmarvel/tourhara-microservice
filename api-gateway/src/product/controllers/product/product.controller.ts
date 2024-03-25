@@ -113,4 +113,12 @@ export class ProductController {
   async insertProductAttribute_prod() {
     return await this.productService.insertProductAttribute_prod();
   }
+
+  // TEST synchronizeProduct_stag
+  @Public()
+  @ApiTags('Database-Product')
+  @Post('stag/synchronize-database')
+  async synchronizeProduct_stag() {
+    return await this.productService.synchronizeProduct_stag();
+  }
 }

@@ -114,4 +114,13 @@ export class ProductService implements IProductService {
 
     return result;
   }
+
+  // TEST
+  async synchronizeProduct_stag(): Promise<any> {
+    const pattern = { cmd: 'synchronizeProduct_stag' };
+    const payload = {};
+    const result = await firstValueFrom(this.client.send(pattern, payload));
+
+    return result;
+  }
 }
