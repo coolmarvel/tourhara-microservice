@@ -1,3 +1,5 @@
+import { QueryRunner } from 'typeorm';
+
 export interface IProductService {
   createAProduct_stag(data: any): Promise<any>;
 
@@ -19,14 +21,13 @@ export interface IProductService {
 
   deleteAProduct_prod(product_id: string): Promise<any>;
 
-  // --
-  insertProduct_stag(): Promise<any>;
+  saveProduct_stag(queryRunner: QueryRunner, product: any): Promise<any>;
 
-  insertProduct_prod(): Promise<any>;
+  saveProduct_prod(queryRunner: QueryRunner, product: any): Promise<any>;
 
-  insertProductImage_stag(): Promise<any>;
+  saveProductImage_stag(queryRunner: QueryRunner, image: any): Promise<any>;
 
-  insertProductImage_prod(): Promise<any>;
+  saveProductImage_prod(queryRunner: QueryRunner, image: any): Promise<any>;
 
   synchronizeProduct_stag(): Promise<any>;
 

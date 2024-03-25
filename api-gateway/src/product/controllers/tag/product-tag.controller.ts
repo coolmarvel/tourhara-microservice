@@ -90,12 +90,4 @@ export class ProductTagController {
   async deleteAProductTag_prod(@Param() { tag_id }: DeleteProductTagReqDto) {
     return await this.productTagService.deleteAProductTag_prod(tag_id);
   }
-
-  //
-  @Public()
-  @Post('prod/insert-database')
-  @ApiTags('Database-Product-Tag')
-  async insertProductTag_prod() {
-    return await this.productTagService.insertProductTag_prod();
-  }
 }

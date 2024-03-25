@@ -4,19 +4,21 @@ import { DataSource, Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/services/user.service';
 import { RefreshToken } from '../entities/refresh-token.entity';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class AuthService implements IAuthService {
   constructor(
-    private dataSource: DataSource,
     private jwtService: JwtService,
     private userService: UserService,
-    @InjectRepository(RefreshToken) private refreshTokenRepository: Repository<RefreshToken>,
+    @InjectDataSource('staging') private dataSourceStag: DataSource,
+    @InjectDataSource('production') private dataSourceProd: DataSource,
+    @InjectRepository(RefreshToken, 'staging') private refreshTokenRepositoryStag: Repository<RefreshToken>,
+    @InjectRepository(RefreshToken, 'production') private refreshTokenRepositoryProd: Repository<RefreshToken>,
   ) {}
 
   async signup(email: string, password: string): Promise<ISignupResponse> {
-    const queryRunner = this.dataSource.createQueryRunner();
+    const queryRunner = this.dataSourceProd.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
@@ -52,14 +54,14 @@ export class AuthService implements IAuthService {
   }
 
   async refresh(token: string, userId: string): Promise<IRefreshResponse> {
-    const refreshTokenEntity = await this.refreshTokenRepository.findOneBy({ userId });
+    const refreshTokenEntity = await this.refreshTokenRepositoryProd.findOneBy({ userId });
     if (!refreshTokenEntity) throw new BadRequestException();
 
     const accessToken = this.generateAccessToken(userId);
     const refreshToken = this.generateRefreshToken(userId);
     refreshTokenEntity.token = refreshToken;
 
-    await this.refreshTokenRepository.save(refreshTokenEntity);
+    await this.refreshTokenRepositoryProd.save(refreshTokenEntity);
 
     return { accessToken, refreshToken };
   }
@@ -77,10 +79,10 @@ export class AuthService implements IAuthService {
   }
 
   async generateRefreshTokenUsingByUser(userId: string, refreshToken: string): Promise<void> {
-    let refreshTokenEntity = await this.refreshTokenRepository.findOneBy({ userId });
+    let refreshTokenEntity = await this.refreshTokenRepositoryProd.findOneBy({ userId });
     if (refreshTokenEntity) refreshTokenEntity.token = refreshToken;
-    else refreshTokenEntity = this.refreshTokenRepository.create({ userId, token: refreshToken });
+    else refreshTokenEntity = this.refreshTokenRepositoryProd.create({ userId, token: refreshToken });
 
-    await this.refreshTokenRepository.save(refreshTokenEntity);
+    await this.refreshTokenRepositoryProd.save(refreshTokenEntity);
   }
 }

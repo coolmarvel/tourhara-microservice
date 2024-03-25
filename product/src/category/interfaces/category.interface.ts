@@ -23,12 +23,7 @@ export interface ICategoryService {
 
   deleteAProductCategory_prod(category_id: string): Promise<any>;
 
-  // Database First Insert
-  insertProductCategories_stag(): Promise<any>;
+  saveProductCategory_stag(queryRunner: QueryRunner, category: any): Promise<any>;
 
-  insertProductCategories_prod(): Promise<any>;
-
-  saveProductCategory_stag(queryRunner: QueryRunner, category_id: number, category: any): Promise<any>;
-
-  saveProductCategory_prod(queryRunner: QueryRunner, category_id: number, category: any): Promise<any>;
+  saveProductCategory_prod(queryRunner: QueryRunner, category: any): Promise<any>;
 }

@@ -14,7 +14,17 @@ import { OrderWebhookService } from './services/order-webhook.service';
 import { OrderWebhookController } from './controllers/order-webhook.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature(entities), BillingModule, ShippingModule, PaymentModule, GuestHouseModule, TourModule, UsimModule, JfkModule],
+  imports: [
+    BillingModule,
+    ShippingModule,
+    PaymentModule,
+    GuestHouseModule,
+    TourModule,
+    UsimModule,
+    JfkModule,
+    TypeOrmModule.forFeature(entities, 'staging'),
+    TypeOrmModule.forFeature(entities, 'production'),
+  ],
   providers: [OrderService, OrderWebhookService],
   controllers: [OrderController, OrderWebhookController],
 })

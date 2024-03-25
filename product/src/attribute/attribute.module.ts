@@ -7,7 +7,7 @@ import { AttributeWebhookService } from './services/attribute-webhook.service';
 import { AttributeWebhookController } from './controllers/attribute-webhook.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature(entities)],
+  imports: [TypeOrmModule.forFeature(entities, 'staging'), TypeOrmModule.forFeature(entities, 'production')],
   providers: [AttributeService, AttributeWebhookService],
   controllers: [AttributeController, AttributeWebhookController],
   exports: [AttributeService],

@@ -7,7 +7,7 @@ import { CategoryWebhookController } from './controllers/category-webhook.contro
 import { CategoryWebhookService } from './services/category-webhook.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature(entities)],
+  imports: [TypeOrmModule.forFeature(entities, 'staging'), TypeOrmModule.forFeature(entities, 'production'),],
   providers: [CategoryService, CategoryWebhookService],
   controllers: [CategoryController, CategoryWebhookController],
   exports: [CategoryService],

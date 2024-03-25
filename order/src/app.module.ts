@@ -20,15 +20,34 @@ import config from './config';
   imports: [
     ConfigModule.forRoot({ envFilePath: ['.env'], isGlobal: true, load: config }),
     TypeOrmModule.forRootAsync({
+      name: 'staging',
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
         let obj: TypeOrmModuleOptions = {
           type: 'mariadb',
-          host: configService.get('mariadb.host'),
-          port: configService.get('mariadb.port'),
-          database: configService.get('mariadb.database'),
-          username: configService.get('mariadb.username'),
-          password: configService.get('mariadb.password'),
+          host: configService.get('mariadb-stag.host'),
+          port: configService.get('mariadb-stag.port'),
+          database: configService.get('mariadb-stag.database'),
+          username: configService.get('mariadb-stag.username'),
+          password: configService.get('mariadb-stag.password'),
+          autoLoadEntities: true,
+          synchronize: true,
+        };
+
+        return obj;
+      },
+    }),
+    TypeOrmModule.forRootAsync({
+      name: 'production',
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => {
+        let obj: TypeOrmModuleOptions = {
+          type: 'mariadb',
+          host: configService.get('mariadb-prod.host'),
+          port: configService.get('mariadb-prod.port'),
+          database: configService.get('mariadb-prod.database'),
+          username: configService.get('mariadb-prod.username'),
+          password: configService.get('mariadb-prod.password'),
           autoLoadEntities: true,
           synchronize: true,
         };

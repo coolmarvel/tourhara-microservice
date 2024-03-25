@@ -1,4 +1,5 @@
 export interface IProductCategoryService {
+  // WooCommerce Staging Product Category APIs
   createAProductCategory_stag(name: string, image: any): Promise<any>;
 
   retrieveAProductCategory_stag(category_id: string): Promise<any>;
@@ -9,6 +10,7 @@ export interface IProductCategoryService {
 
   deleteAProductCategory_stag(category_id: string): Promise<any>;
 
+  // WooCommerce Production Product Category APIs
   createAProductCategory_prod(name: string, image: any): Promise<any>;
 
   retrieveAProductCategory_prod(category_id: string): Promise<any>;

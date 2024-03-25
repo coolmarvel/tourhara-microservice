@@ -90,12 +90,4 @@ export class ProductCategoryController {
   async deleteAProductCategory_prod(@Param() { category_id }: DeleteProductCateogryReqDto) {
     return await this.productCategoryService.deleteAProductCategory_prod(category_id);
   }
-
-  // Database insert
-  @ApiTags('Database-Product-Category')
-  @Public()
-  @Post('prod/insert-database')
-  async insertProductCategories_prod() {
-    return await this.productCategoryService.insertProductCategories_prod();
-  }
 }

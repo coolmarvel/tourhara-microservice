@@ -57,10 +57,4 @@ export class AttributeController {
   async deleteAProductAttribute_prod({ attribute_id }: { attribute_id: string }) {
     return await this.attributeService.deleteAProductAttribute_prod(attribute_id);
   }
-
-  // --
-  @MessagePattern({ cmd: 'insertProductAttribute_prod' })
-  async insertProductAttribute_prod() {
-    return await this.attributeService.insertProductAttribute_prod();
-  }
 }

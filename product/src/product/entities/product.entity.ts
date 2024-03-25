@@ -23,12 +23,6 @@ export class Product {
   @Column({ nullable: true })
   featured: boolean;
 
-  @Column({ nullable: true, length: 2000 })
-  description: string;
-
-  @Column({ name: 'short_description', nullable: true, length: 1000 })
-  shortDescription: string;
-
   @Column({ nullable: true })
   price: string;
 

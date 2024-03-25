@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { IAttributeService } from '../interfaces/attribute.interface';
 
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
-import { DataSource, QueryRunner } from 'typeorm';
+import { QueryRunner } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { ProductAttribute } from '../entities/attribute.entity';
 
@@ -11,10 +11,7 @@ export class AttributeService implements IAttributeService {
   private wooCommerceStag: WooCommerceRestApi;
   private wooCommerceProd: WooCommerceRestApi;
 
-  constructor(
-    private dataSource: DataSource,
-    private configService: ConfigService,
-  ) {
+  constructor(private configService: ConfigService) {
     this.wooCommerceStag = new WooCommerceRestApi({
       url: this.configService.get('wc-stag.url'),
       consumerKey: this.configService.get('wc-stag.key'),
@@ -123,69 +120,17 @@ export class AttributeService implements IAttributeService {
     return attribute;
   }
 
-  async insertProductAttribute_stag(): Promise<any> {}
-
-  async insertProductAttribute_prod(): Promise<any> {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-
+  async saveProductAttribute_stag(queryRunner: QueryRunner, attribute: any): Promise<any> {
     try {
-      await queryRunner.startTransaction();
-
-      for (let i = 1; i < Infinity; i++) {
-        console.log(`product attribute migrate (page: ${i})`);
-        const params = { page: i, per_page: 10 };
-        const products = await this.wooCommerceProd
-          .get('products', params)
-          .then((response: any) => response.data)
-          .catch((error: any) => error.response.data);
-
-        if (products.length === 0) break;
-        for (const product of products) {
-          const attributes = product.attributes;
-          for (const attribute of attributes) {
-            const existingProductAttribute = await queryRunner.manager.findOne(ProductAttribute, {
-              where: {
-                id: attribute.id,
-                name: attribute.name,
-                position: attribute.position,
-                visible: attribute.visible,
-                variation: attribute.variation,
-                options: attribute.options,
-              },
-            });
-            if (existingProductAttribute) continue;
-
-            const newProductAttribute = {
-              id: attribute.id,
-              name: attribute.name,
-              position: attribute.position,
-              visible: attribute.visible,
-              variation: attribute.variation,
-              options: attribute.options,
-            };
-            const productAttributeEntity = queryRunner.manager.create(ProductAttribute, newProductAttribute);
-            await queryRunner.manager.save(productAttributeEntity);
-          }
-        }
-      }
-
-      await queryRunner.commitTransaction();
-
-      return 'insertProductAttribute_prod success';
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-      throw error;
-    } finally {
-      await queryRunner.release();
-    }
-  }
-
-  async saveProductAttribute_stag(queryRunner: QueryRunner, attribute_id: number, attribute: any): Promise<any> {
-    try {
-      await queryRunner.startTransaction();
-
-      const existingProductAttribute = await queryRunner.manager.findOne(ProductAttribute, { where: { id: attribute_id } });
+      const existingProductAttribute = await queryRunner.manager.findOne(ProductAttribute, {
+        where: {
+          id: attribute.id,
+          name: attribute.name,
+          position: attribute.position,
+          visible: attribute.visible,
+          options: attribute.options,
+        },
+      });
       if (existingProductAttribute) return true;
 
       const newProductAttribute = {
@@ -199,18 +144,22 @@ export class AttributeService implements IAttributeService {
       const productAttributeEntity = queryRunner.manager.create(ProductAttribute, newProductAttribute);
       await queryRunner.manager.save(productAttributeEntity);
 
-      await queryRunner.commitTransaction();
       return true;
     } catch (error) {
-      await queryRunner.rollbackTransaction();
       throw error;
     }
   }
-  async saveProductAttribute_prod(queryRunner: QueryRunner, attribute_id: number, attribute: any): Promise<any> {
+  async saveProductAttribute_prod(queryRunner: QueryRunner, attribute: any): Promise<any> {
     try {
-      await queryRunner.startTransaction();
-
-      const existingProductAttribute = await queryRunner.manager.findOne(ProductAttribute, { where: { id: attribute_id } });
+      const existingProductAttribute = await queryRunner.manager.findOne(ProductAttribute, {
+        where: {
+          id: attribute.id,
+          name: attribute.name,
+          position: attribute.position,
+          visible: attribute.visible,
+          options: attribute.options,
+        },
+      });
       if (existingProductAttribute) return true;
 
       const newProductAttribute = {
@@ -224,7 +173,6 @@ export class AttributeService implements IAttributeService {
       const productAttributeEntity = queryRunner.manager.create(ProductAttribute, newProductAttribute);
       await queryRunner.manager.save(productAttributeEntity);
 
-      await queryRunner.commitTransaction();
       return true;
     } catch (error) {
       await queryRunner.rollbackTransaction();

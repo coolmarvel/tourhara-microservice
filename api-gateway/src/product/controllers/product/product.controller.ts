@@ -92,25 +92,18 @@ export class ProductController {
     return await this.productService.deleteAProduct_prod(product_id);
   }
 
-  // --
+  // TEST synchronizeProduct
   @Public()
   @ApiTags('Database-Product')
-  @Post('prod/insert-database')
-  async insertProduct_prod() {
-    return await this.productService.insertProduct_prod();
+  @Post('stag/synchronize-database')
+  async synchronizeProduct_stag() {
+    return await this.productService.synchronizeProduct_stag();
   }
 
   @Public()
-  @ApiTags('Database-Product-Image')
-  @Post('prod/insert-image-database')
-  async insertProductImage_prod() {
-    return await this.productService.insertProductImage_prod();
-  }
-
-  @Public()
-  @ApiTags('Database-Product-Attribute')
-  @Post('prod/insert-attribute-database')
-  async insertProductAttribute_prod() {
-    return await this.productService.insertProductAttribute_prod();
+  @ApiTags('Database-Product')
+  @Post('prod/synchronize-database')
+  async synchronizeProduct_prod() {
+    return await this.productService.synchronizeProduct_prod();
   }
 }

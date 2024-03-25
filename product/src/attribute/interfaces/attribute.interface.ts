@@ -23,12 +23,7 @@ export interface IAttributeService {
 
   deleteAProductAttribute_prod(attribute_id: string): Promise<any>;
 
-  // --
-  insertProductAttribute_stag(): Promise<any>;
+  saveProductAttribute_stag(queryRunner: QueryRunner, attribute: any): Promise<any>;
 
-  insertProductAttribute_prod(): Promise<any>;
-
-  saveProductAttribute_stag(queryRunner: QueryRunner, attribute_id: number, attribute: any): Promise<any>;
-
-  saveProductAttribute_prod(queryRunner: QueryRunner, attribute_id: number, attribute: any): Promise<any>;
+  saveProductAttribute_prod(queryRunner: QueryRunner, attribute: any): Promise<any>;
 }
