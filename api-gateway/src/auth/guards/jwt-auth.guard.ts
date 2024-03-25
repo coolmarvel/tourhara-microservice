@@ -33,18 +33,18 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     if (!token) throw new UnauthorizedException('accessToken is required.');
 
     const decoded = this.jwtService.decode(token);
-    if (url !== '/api/auth/refresh' && decoded['tokenType'] === 'refresh') {
-      const error = new UnauthorizedException('accessToken is required.');
-      console.error(error.message, error.stack);
-
-      throw error;
+    if (!['/api/auth/stag/refresh', '/api/auth/prod/refresh'].includes(url) && decoded['tokenType'] === 'refresh') {
+      throw new UnauthorizedException('accessToken is required.');
     }
 
     const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [context.getHandler(), context.getClass()]);
     if (requiredRoles) {
       const userId = decoded['sub'];
+      const isStag = url.includes('/stag/');
+      
+      const checkUserIsAdmin = isStag ? this.userService.checkUserIsAdmin_stag(userId) : this.userService.checkUserIsAdmin_prod(userId);
 
-      return this.userService.checkUserIsAdmin(userId);
+      return checkUserIsAdmin;
     }
 
     return super.canActivate(context);

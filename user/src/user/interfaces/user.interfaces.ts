@@ -1,11 +1,21 @@
 import { User } from '../entities/user.entity';
 
 export interface IUserService {
-  checkUserIsAdmin(uuid: string): Promise<{ isAdmin: boolean }>;
+  // STAGING
+  checkUserIsAdmin_stag(uuid: string): Promise<{ isAdmin: boolean }>;
 
-  signup(email: string, password: string): Promise<{ id: string }>;
+  signup_stag(email: string, password: string): Promise<{ id: string }>;
 
-  validateUser(email: string, password: string): Promise<{ id: string }>;
+  validateUser_stag(email: string, password: string): Promise<{ id: string }>;
 
-  findOneByEmail(email: string): Promise<User>;
+  findOneByEmail_stag(email: string): Promise<User>;
+
+  // PRODUCTION
+  checkUserIsAdmin_prod(uuid: string): Promise<{ isAdmin: boolean }>;
+
+  signup_prod(email: string, password: string): Promise<{ id: string }>;
+
+  validateUser_prod(email: string, password: string): Promise<{ id: string }>;
+
+  findOneByEmail_prod(email: string, password: string): Promise<User>;
 }
