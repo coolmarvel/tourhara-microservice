@@ -14,7 +14,7 @@ import { OrderWebhookController } from './controllers/order-webhook.controller';
       useFactory: () => {
         return ClientProxyFactory.create({
           transport: Transport.TCP,
-          options: { host: process.env.ORDER_DOCKER_FLAG === 'true' ? process.env.ORDER_DOCKER_HOST : 'localhost', port: Number(process.env.ORDER_DOCKER_PORT) },
+          options: { host: process.env.ORDER_DOCKER_FLAG === 'true' ? process.env.ORDER_DOCKER_HOST : '127.0.0.1', port: Number(process.env.ORDER_DOCKER_PORT) },
         });
       },
     },

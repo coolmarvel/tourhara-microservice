@@ -10,7 +10,7 @@ export class ProductWebhookService implements IProductWebhookService {
   async productCreated_stag(data: any): Promise<any> {
     const pattern = { cmd: 'productCreated_stag' };
     const payload = data;
-    const result = await firstValueFrom(this.client.send(pattern, payload));
+    const result = await firstValueFrom<boolean>(this.client.send<boolean>(pattern, payload));
 
     return result;
   }
@@ -18,7 +18,7 @@ export class ProductWebhookService implements IProductWebhookService {
   async productUpdated_stag(data: any): Promise<any> {
     const pattern = { cmd: 'productUpdated_stag' };
     const payload = data;
-    const result = await firstValueFrom(this.client.send(pattern, payload));
+    const result = await firstValueFrom<boolean>(this.client.send<boolean>(pattern, payload));
 
     return result;
   }
@@ -48,7 +48,7 @@ export class ProductWebhookService implements IProductWebhookService {
   }
 
   async productUpdated_prod(data: any): Promise<any> {
-    const pattern = { cmd: '' };
+    const pattern = { cmd: 'productUpdated_prod' };
     const payload = data;
     const result = await firstValueFrom(this.client.send(pattern, payload));
 

@@ -5,7 +5,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import config from './config';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { TypeOrmModule, TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { OrderModule } from './order/order.module';
 import { ProductModule } from './product/product.module';
 
@@ -15,9 +15,10 @@ import { ProductModule } from './product/product.module';
     TypeOrmModule.forRootAsync({
       name: 'staging',
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => {
-        let obj: TypeOrmModuleOptions = {
+      useFactory: (configService: ConfigService) =>
+        ({
           type: 'mariadb',
+          name: 'staging',
           host: configService.get('mariadb-stag.host'),
           port: configService.get('mariadb-stag.port'),
           database: configService.get('mariadb-stag.database'),
@@ -25,17 +26,15 @@ import { ProductModule } from './product/product.module';
           password: configService.get('mariadb-stag.password'),
           autoLoadEntities: true,
           synchronize: true,
-        };
-
-        return obj;
-      },
+        }) as TypeOrmModuleAsyncOptions,
     }),
     TypeOrmModule.forRootAsync({
       name: 'production',
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => {
-        let obj: TypeOrmModuleOptions = {
+      useFactory: (configService: ConfigService) =>
+        ({
           type: 'mariadb',
+          name: 'production',
           host: configService.get('mariadb-prod.host'),
           port: configService.get('mariadb-prod.port'),
           database: configService.get('mariadb-prod.database'),
@@ -43,10 +42,7 @@ import { ProductModule } from './product/product.module';
           password: configService.get('mariadb-prod.password'),
           autoLoadEntities: true,
           synchronize: true,
-        };
-
-        return obj;
-      },
+        }) as TypeOrmModuleAsyncOptions,
     }),
     UserModule,
     AuthModule,

@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import config from './config';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { TypeOrmModule, TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -12,9 +12,10 @@ import { UserModule } from './user/user.module';
     TypeOrmModule.forRootAsync({
       name: 'staging',
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => {
-        let obj: TypeOrmModuleOptions = {
+      useFactory: (configService: ConfigService) =>
+        ({
           type: 'mariadb',
+          name: 'staging',
           host: configService.get('mariadb-stag.host'),
           port: configService.get('mariadb-stag.port'),
           database: configService.get('mariadb-stag.database'),
@@ -22,17 +23,15 @@ import { UserModule } from './user/user.module';
           password: configService.get('mariadb-stag.password'),
           autoLoadEntities: true,
           synchronize: true,
-        };
-
-        return obj;
-      },
+        }) as TypeOrmModuleAsyncOptions,
     }),
     TypeOrmModule.forRootAsync({
       name: 'production',
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => {
-        let obj: TypeOrmModuleOptions = {
+      useFactory: (configService: ConfigService) =>
+        ({
           type: 'mariadb',
+          name: 'production',
           host: configService.get('mariadb-prod.host'),
           port: configService.get('mariadb-prod.port'),
           database: configService.get('mariadb-prod.database'),
@@ -40,10 +39,7 @@ import { UserModule } from './user/user.module';
           password: configService.get('mariadb-prod.password'),
           autoLoadEntities: true,
           synchronize: true,
-        };
-
-        return obj;
-      },
+        }) as TypeOrmModuleAsyncOptions,
     }),
     UserModule,
   ],

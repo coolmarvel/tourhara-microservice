@@ -34,7 +34,7 @@ import { ProductAttributeWebhookService } from './services/attribute/product-att
       useFactory: () => {
         return ClientProxyFactory.create({
           transport: Transport.TCP,
-          options: { host: process.env.PRODUCT_DOCKER_FLAG === 'true' ? process.env.PRODUCT_DOCKER_HOST : 'localhost', port: Number(process.env.PRODUCT_DOCKER_PORT) },
+          options: { host: process.env.PRODUCT_DOCKER_FLAG === 'true' ? process.env.PRODUCT_DOCKER_HOST : '127.0.0.1', port: Number(process.env.PRODUCT_DOCKER_PORT) },
         });
       },
     },
