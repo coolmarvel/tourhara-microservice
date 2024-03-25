@@ -17,6 +17,7 @@ import { OrderMetadata } from '../entities/order-metadata.entity';
 import { LineItem } from 'src/line-item/entities/line-item.entity';
 import { ProductImage } from '../entities/product-image.entity';
 import { LineItemMetadata } from 'src/line-item/entities/line-item-metadata.entity';
+import { InjectDataSource } from '@nestjs/typeorm';
 
 @Injectable()
 export class OrderService implements IOrderService {
@@ -24,7 +25,8 @@ export class OrderService implements IOrderService {
   private wooCommerceProd: WooCommerceRestApi;
 
   constructor(
-    private dataSource: DataSource,
+    @InjectDataSource('staging') private dataSourceStag: DataSource,
+    @InjectDataSource('production') private dataSourceProd: DataSource,
     private configService: ConfigService,
 
     private readonly billingService: BillingService,
@@ -136,7 +138,7 @@ export class OrderService implements IOrderService {
 
   // --
   async insertOrder_prod(): Promise<any> {
-    const queryRunner = this.dataSource.createQueryRunner();
+    const queryRunner = this.dataSourceProd.createQueryRunner();
     await queryRunner.connect();
 
     console.time('insertOrder_prod');
