@@ -32,4 +32,9 @@ export interface IProductService {
   synchronizeProduct_stag(): Promise<any>;
 
   synchronizeProduct_prod(): Promise<any>;
+
+  // Webhook Logic
+  updateWebhookProduct_stag(queryRunner: QueryRunner, payload: any): Promise<any>;
+
+  updateWebhookProduct_prod(queryRunner: QueryRunner, payload: any): Promise<any>;
 }

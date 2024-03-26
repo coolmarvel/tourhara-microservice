@@ -502,4 +502,78 @@ export class ProductService implements IProductService {
       await queryRunner.release();
     }
   }
+
+  async updateWebhookProduct_stag(queryRunner: QueryRunner, payload: any): Promise<any> {
+    try {
+      const existingProduct = await queryRunner.manager.findOne(Product, { where: { id: payload.id } });
+      if (!existingProduct) return false;
+
+      const categories = payload.categories;
+      const productCategoryId: string[] = [];
+      for (const category of categories) {
+        const existingCategory = await queryRunner.manager.findOne(ProductCategory, { where: { id: category.id } });
+        if (existingCategory) productCategoryId.push(existingCategory.productCategoryId);
+      }
+
+      const tags = payload.tags;
+      const productTagId: string[] = [];
+      for (const tag of tags) {
+        const existingTag = await queryRunner.manager.findOne(ProductTag, { where: { id: tag.id } });
+        if (existingTag) productTagId.push(existingTag.productTagId);
+      }
+
+      const images = payload.images;
+      const productImageId: string[] = [];
+      for (const image of images) {
+        const existingImage = await queryRunner.manager.findOne(ProductImage, { where: { id: image.id } });
+        if (existingImage) productImageId.push(existingImage.productImageId);
+      }
+
+      const attributes = payload.attributes;
+      const productAttributeId: string[] = [];
+      for (const attribute of attributes) {
+        const existingAttribute = await queryRunner.manager.findOne(ProductAttribute, {
+          where: {
+            id: attribute.id,
+            name: attribute.name,
+            position: attribute.position,
+            visible: attribute.visible,
+            variation: attribute.variation,
+            options: attribute.options,
+          },
+        });
+        if (existingAttribute) productAttributeId.push(existingAttribute.productAttributeId);
+      }
+
+      const updateData: Partial<Product> = {
+        id: payload.id,
+        name: payload.name,
+        slug: payload.slug,
+        type: payload.type,
+        status: payload.status,
+        featured: payload.featured,
+        price: payload.price === '' ? null : payload.price,
+        regularPrice: payload.regular_price === '' ? null : payload.regular_price,
+        onSale: payload.on_sale,
+        salePrice: payload.sale_price === '' ? null : payload.sale_price,
+        purchasable: payload.purchasable === '' ? null : payload.purchasable,
+        productCategoryId: productCategoryId.length === 0 ? null : productCategoryId,
+        productTagId: productTagId.length === 0 ? null : productTagId,
+        productImageId: productImageId.length === 0 ? null : productImageId,
+        productAttributeId: productAttributeId.length === 0 ? null : productAttributeId,
+        variations: payload.variations.length === 0 ? null : payload.variations,
+        dateCreated: payload.date_created,
+        dateCreatedGmt: payload.date_created_gmt,
+        dateModified: payload.date_modified,
+        dateModifiedGmt: payload.date_modified_gmt,
+      };
+      await queryRunner.manager.update(Product, { id: payload.id }, updateData);
+
+      return true;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateWebhookProduct_prod(queryRunner: QueryRunner, payload: any): Promise<any> {}
 }

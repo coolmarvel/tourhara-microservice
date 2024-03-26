@@ -63,7 +63,7 @@ export class ProductWebhookService implements IProductWebhookService {
   }
 
   async productUpdated_stag(payload: any): Promise<boolean> {
-    console.log(payload);
+    // console.log(payload);
 
     const queryRunner: QueryRunner = this.dataSourceStag.createQueryRunner();
     await queryRunner.connect();
@@ -71,8 +71,7 @@ export class ProductWebhookService implements IProductWebhookService {
     try {
       await queryRunner.startTransaction();
 
-      const existingProduct = await queryRunner.manager.findOne(Product, { where: { id: payload.id } });
-      if (!existingProduct) return false;
+      await this.productService.updateWebhookProduct_stag(queryRunner, payload);
 
       await queryRunner.commitTransaction();
     } catch (error) {

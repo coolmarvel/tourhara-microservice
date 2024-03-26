@@ -1,4 +1,4 @@
-import { Controller, VERSION_NEUTRAL } from '@nestjs/common';
+import { Controller, HttpStatus, VERSION_NEUTRAL } from '@nestjs/common';
 import { ProductWebhookService } from '../services/product-webhook.service';
 import { MessagePattern } from '@nestjs/microservices';
 
@@ -7,42 +7,60 @@ export class ProductWebhookController {
   constructor(private readonly productWebhookService: ProductWebhookService) {}
 
   @MessagePattern({ cmd: 'productCreated_stag' })
-  async productCreated_stag(payload: any): Promise<boolean> {
-    return await this.productWebhookService.productCreated_stag(payload);
+  async productCreated_stag(payload: any): Promise<HttpStatus> {
+    const result = this.productWebhookService.productCreated_stag(payload);
+    console.log('productCreated_stag', result);
+
+    return HttpStatus.OK;
   }
 
   @MessagePattern({ cmd: 'productUpdated_stag' })
-  async productUpdated_stag(payload: any): Promise<boolean> {
-    return await this.productWebhookService.productUpdated_stag(payload);
+  async productUpdated_stag(payload: any): Promise<HttpStatus> {
+    const result = await this.productWebhookService.productUpdated_stag(payload);
+    console.log('productUpdated_stag', result);
+
+    return HttpStatus.OK;
   }
 
   @MessagePattern({ cmd: 'productDeleted_stag' })
-  async productDeleted_stag(payload: any): Promise<boolean> {
-    return await this.productWebhookService.productDeleted_stag(payload);
+  async productDeleted_stag(payload: any): Promise<HttpStatus> {
+    const result = this.productWebhookService.productDeleted_stag(payload);
+
+    return HttpStatus.OK;
   }
 
   @MessagePattern({ cmd: 'productRestored_stag' })
-  async productRestored_stag(payload: any): Promise<boolean> {
-    return await this.productWebhookService.productRestored_stag(payload);
+  async productRestored_stag(payload: any): Promise<HttpStatus> {
+    const result = this.productWebhookService.productRestored_stag(payload);
+
+    return HttpStatus.OK;
   }
 
   @MessagePattern({ cmd: 'productCreated_prod' })
-  async productCreated_prod(payload: any): Promise<boolean> {
-    return await this.productWebhookService.productCreated_prod(payload);
+  async productCreated_prod(payload: any): Promise<HttpStatus> {
+    const result = this.productWebhookService.productCreated_prod(payload);
+
+    return HttpStatus.OK;
   }
 
   @MessagePattern({ cmd: 'productUpdated_prod' })
-  async productUpdated_prod(payload: any): Promise<boolean> {
-    return await this.productWebhookService.productUpdated_prod(payload);
+  async productUpdated_prod(payload: any): Promise<HttpStatus> {
+    const result = this.productWebhookService.productUpdated_prod(payload);
+
+    return HttpStatus.OK;
   }
 
   @MessagePattern({ cmd: 'productDeleted_prod' })
-  async productDeleted_prod(payload: any): Promise<boolean> {
-    return await this.productWebhookService.productDeleted_prod(payload);
+  async productDeleted_prod(payload: any): Promise<HttpStatus> {
+    const result = this.productWebhookService.productDeleted_prod(payload);
+
+    return HttpStatus.OK;
   }
 
   @MessagePattern({ cmd: 'productRestored_prod' })
-  async productRestored_prod(payload: any): Promise<boolean> {
-    return await this.productWebhookService.productRestored_prod(payload);
+  async productRestored_prod(payload: any): Promise<HttpStatus> {
+    const result = this.productWebhookService.productRestored_prod(payload);
+
+    return HttpStatus.OK;
   }
 }
