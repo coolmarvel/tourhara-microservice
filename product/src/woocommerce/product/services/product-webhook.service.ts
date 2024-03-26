@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { IProductWebhookService } from '../interfaces/product-webhook.interface';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource, QueryRunner } from 'typeorm';
-import { ProductCategory } from 'src/category/entities/category.entity';
-import { CategoryService } from 'src/category/services/category.service';
-import { TagService } from 'src/tag/services/tag.service';
-import { AttributeService } from 'src/attribute/services/attribute.service';
+import { ProductCategory } from 'src/woocommerce/category/entities/category.entity';
+import { CategoryService } from 'src/woocommerce/category/services/category.service';
+import { TagService } from 'src/woocommerce/tag/services/tag.service';
+import { AttributeService } from 'src/woocommerce/attribute/services/attribute.service';
 import { ProductService } from './product.service';
 import { Product } from '../entities/product.entity';
 
