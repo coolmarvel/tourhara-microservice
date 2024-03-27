@@ -3,7 +3,7 @@ import { ProductService } from './services/product/product.service';
 import { ProductController } from './controllers/product/product.controller';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { ProductCategoryService } from './services/category/product-category.service';
-import { ProductCategoryController } from './controllers/category/product-category.controller';
+// import { ProductCategoryController } from './controllers/category/product-category.controller';
 import { ProductTagController } from './controllers/tag/product-tag.controller';
 import { ProductTagService } from './services/tag/product-tag.service';
 import { ProductWebhookService } from './services/product/product-webhook.service';
@@ -18,13 +18,19 @@ import { AttributeStagingService } from './services/attribute/attribute-staging.
 import { AttributeProductionService } from './services/attribute/attribute-production.service';
 import { AttributeStagingController } from './controllers/attribute/attribute-staging.controller';
 import { AttributeProductionController } from './controllers/attribute/attribute-production.controller';
+import { CategoryStagingService } from './services/category/category-staging.service';
+import { CategoryProductionService } from './services/category/category-production.service';
+import { CategoryStagingController } from './controllers/category/category-staging.controller';
+import { CategoryProductionController } from './controllers/category/category-production.controller';
 
 @Module({
   providers: [
     // Legacy
     ProductService,
-    ProductTagService,
-    ProductCategoryService,
+    // ProductTagService,
+    // ProductCategoryService,
+    CategoryStagingService,
+    CategoryProductionService,
     AttributeStagingService,
     AttributeProductionService,
     // Webhook
@@ -45,8 +51,10 @@ import { AttributeProductionController } from './controllers/attribute/attribute
   controllers: [
     // Legacy
     ProductController,
-    ProductTagController,
-    ProductCategoryController,
+    // ProductTagController,
+    // ProductCategoryController,
+    CategoryStagingController,
+    CategoryProductionController,
     AttributeStagingController,
     AttributeProductionController,
     // Webhook

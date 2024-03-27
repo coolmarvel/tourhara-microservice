@@ -11,7 +11,7 @@ import {
 } from 'src/product/dtos/req.dto';
 import { AttributeProductionService } from 'src/product/services/attribute/attribute-production.service';
 
-@ApiTags('Product-Attribute-Production')
+@ApiTags('WooCommerce-Product-Attribute-Production')
 @Controller({ path: 'api/product/attribute/production', version: VERSION_NEUTRAL })
 export class AttributeProductionController {
   constructor(private readonly attributeProductionService: AttributeProductionService) {}

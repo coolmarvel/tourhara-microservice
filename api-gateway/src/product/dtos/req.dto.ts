@@ -56,12 +56,14 @@ export class CreateProductCategoryReqDto {
 
 export class RetrieveProductCategoryReqDto {
   @ApiProperty({ required: true })
-  category_id: string;
+  @Transform((param) => Number(param.value))
+  category_id: number;
 }
 
 export class UpdateProductCategoryParamReqDto {
   @ApiProperty({ required: true })
-  category_id: string;
+  @Transform((param) => Number(param.value))
+  category_id: number;
 }
 
 export class UpdateProductCategoryBodyReqDto {
@@ -71,7 +73,8 @@ export class UpdateProductCategoryBodyReqDto {
 
 export class DeleteProductCateogryReqDto {
   @ApiProperty({ required: true })
-  category_id: string;
+  @Transform((param) => Number(param.value))
+  category_id: number;
 }
 
 // Product Tag

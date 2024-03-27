@@ -11,7 +11,7 @@ import {
 } from 'src/product/dtos/req.dto';
 import { AttributeStagingService } from 'src/product/services/attribute/attribute-staging.service';
 
-@ApiTags('Product-Attribute-Staging')
+@ApiTags('WooCommerce-Product-Attribute-Staging')
 @Controller({ path: 'api/product/attribute/staging', version: VERSION_NEUTRAL })
 export class AttributeStagingController {
   constructor(private readonly attributeStagingService: AttributeStagingService) {}
