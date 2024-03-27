@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 
 // Product
 export class CreateProductReqDto {
@@ -119,12 +120,14 @@ export class CreateProductAttributeReqDto {
 
 export class RetrieveProductAttributeReqDto {
   @ApiProperty({ required: true })
-  attribute_id: string;
+  @Transform((param) => Number(param.value))
+  attribute_id: number;
 }
 
 export class UpdateProductAttributeParamReqDto {
   @ApiProperty({ required: true })
-  attribute_id: string;
+  @Transform((param) => Number(param.value))
+  attribute_id: number;
 }
 
 export class UpdateProductAttributeBodyReqDto {
@@ -134,5 +137,6 @@ export class UpdateProductAttributeBodyReqDto {
 
 export class DeleteProductAttributeReqDto {
   @ApiProperty({ required: true })
-  attribute_id: string;
+  @Transform((param) => Number(param.value))
+  attribute_id: number;
 }

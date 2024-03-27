@@ -30,6 +30,15 @@ export class ProductAttribute {
   })
   options: string | null;
 
+  @Column({ nullable: true })
+  slug: string;
+
+  @Column({ nullable: true })
+  type: string;
+
+  @Column({ name: 'has_archives', nullable: true })
+  hasArchivees: boolean;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

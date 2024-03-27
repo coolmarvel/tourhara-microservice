@@ -5,9 +5,7 @@ import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { ProductCategoryService } from './services/category/product-category.service';
 import { ProductCategoryController } from './controllers/category/product-category.controller';
 import { ProductTagController } from './controllers/tag/product-tag.controller';
-import { ProductAttributeController } from './controllers/attribute/product-attribute.controller';
 import { ProductTagService } from './services/tag/product-tag.service';
-import { ProductAttributeServcie } from './services/attribute/product-attribute.service';
 import { ProductWebhookService } from './services/product/product-webhook.service';
 import { ProductWebhookController } from './controllers/product/product-webhook.controller';
 import { ProductTagWebhookController } from './controllers/tag/product-tag-webhook.controller';
@@ -16,6 +14,10 @@ import { ProductAttributeWebhookController } from './controllers/attribute/produ
 import { ProductTagWebhookService } from './services/tag/product-tag-webhook.service';
 import { ProductCategoryWebhookService } from './services/category/product-category-webhook.service';
 import { ProductAttributeWebhookService } from './services/attribute/product-attribute-webhook.service';
+import { AttributeStagingService } from './services/attribute/attribute-staging.service';
+import { AttributeProductionService } from './services/attribute/attribute-production.service';
+import { AttributeStagingController } from './controllers/attribute/attribute-staging.controller';
+import { AttributeProductionController } from './controllers/attribute/attribute-production.controller';
 
 @Module({
   providers: [
@@ -23,7 +25,8 @@ import { ProductAttributeWebhookService } from './services/attribute/product-att
     ProductService,
     ProductTagService,
     ProductCategoryService,
-    ProductAttributeServcie,
+    AttributeStagingService,
+    AttributeProductionService,
     // Webhook
     ProductWebhookService,
     ProductTagWebhookService,
@@ -44,7 +47,8 @@ import { ProductAttributeWebhookService } from './services/attribute/product-att
     ProductController,
     ProductTagController,
     ProductCategoryController,
-    ProductAttributeController,
+    AttributeStagingController,
+    AttributeProductionController,
     // Webhook
     ProductWebhookController,
     ProductTagWebhookController,

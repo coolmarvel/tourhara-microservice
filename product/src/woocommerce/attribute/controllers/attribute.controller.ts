@@ -8,7 +8,7 @@ export class AttributeController {
 
   // WooCommerce Staging Product Attribute APIs
   @MessagePattern({ cmd: 'createAProductAttribute_stag' })
-  async createAProductAttribute_stag(data) {
+  async createAProductAttribute_stag(data: any) {
     return await this.attributeService.createAProductAttribute_stag(data);
   }
 
@@ -34,7 +34,7 @@ export class AttributeController {
 
   // WooCommerce Production Product Attribute APIs
   @MessagePattern({ cmd: 'createAProductAttribute_prod' })
-  async createAProductAttribute_prod(data) {
+  async createAProductAttribute_prod(data: any) {
     return await this.attributeService.createAProductAttribute_prod(data);
   }
 
