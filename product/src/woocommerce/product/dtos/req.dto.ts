@@ -18,17 +18,17 @@ export class CreateProductReqDto {
 }
 
 export class RetrieveProductReqDto {
-  product_id: string;
+  product_id: number;
 }
 
 export class UpdateProductReqDto {
-  product_id: string;
+  product_id: number;
 
   data: any;
 }
 
 export class DeleteProductReqDto {
-  product_id: string;
+  product_id: number;
 }
 
 export class PageReqDto {

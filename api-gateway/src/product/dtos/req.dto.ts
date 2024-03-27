@@ -27,12 +27,14 @@ export class CreateProductReqDto {
 
 export class RetrieveProductReqDto {
   @ApiProperty({ required: true })
-  product_id: string;
+  @Transform((param) => Number(param.value))
+  product_id: number;
 }
 
 export class UpdateProductParamReqDto {
   @ApiProperty({ required: true })
-  product_id: string;
+  @Transform((param) => Number(param.value))
+  product_id: number;
 }
 
 export class UpdateProductBodyReqDto {
@@ -42,7 +44,8 @@ export class UpdateProductBodyReqDto {
 
 export class DeleteProductReqDto {
   @ApiProperty({ required: true })
-  product_id: string;
+  @Transform((param) => Number(param.value))
+  product_id: number;
 }
 
 // Product Category

@@ -1,11 +1,7 @@
 import { Module } from '@nestjs/common';
-import { ProductService } from './services/product/product.service';
-import { ProductController } from './controllers/product/product.controller';
+// import { ProductService } from './services/product/product.service';
+// import { ProductController } from './controllers/product/product.controller';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
-import { ProductCategoryService } from './services/category/product-category.service';
-// import { ProductCategoryController } from './controllers/category/product-category.controller';
-// import { ProductTagController } from './controllers/tag/product-tag.controller';
-import { ProductTagService } from './services/tag/product-tag.service';
 import { ProductWebhookService } from './services/product/product-webhook.service';
 import { ProductWebhookController } from './controllers/product/product-webhook.controller';
 import { ProductTagWebhookController } from './controllers/tag/product-tag-webhook.controller';
@@ -26,13 +22,16 @@ import { TagStagingService } from './services/tag/tag-staging.service';
 import { TagProductionService } from './services/tag/tag-production.service';
 import { TagStagingController } from './controllers/tag/tag-staging.controller';
 import { TagProductionController } from './controllers/tag/tag-production.controller';
+import { ProductStagingService } from './services/product/product-staging.service';
+import { ProductProductionService } from './services/product/product-production.service';
+import { ProductStagingController } from './controllers/product/product-staging.controller';
+import { ProductProductionController } from './controllers/product/product-production.controller';
 
 @Module({
   providers: [
     // Legacy
-    ProductService,
-    // ProductTagService,
-    // ProductCategoryService,
+    ProductStagingService,
+    ProductProductionService,
     TagStagingService,
     TagProductionService,
     CategoryStagingService,
@@ -56,14 +55,13 @@ import { TagProductionController } from './controllers/tag/tag-production.contro
   ],
   controllers: [
     // Legacy
-    ProductController,
-    // ProductTagController,
+    ProductStagingController,
     TagStagingController,
-    TagProductionController,
-    // ProductCategoryController,
     CategoryStagingController,
-    CategoryProductionController,
     AttributeStagingController,
+    ProductProductionController,
+    TagProductionController,
+    CategoryProductionController,
     AttributeProductionController,
     // Webhook
     ProductWebhookController,
