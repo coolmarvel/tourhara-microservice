@@ -4,7 +4,7 @@ import { ProductController } from './controllers/product/product.controller';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { ProductCategoryService } from './services/category/product-category.service';
 // import { ProductCategoryController } from './controllers/category/product-category.controller';
-import { ProductTagController } from './controllers/tag/product-tag.controller';
+// import { ProductTagController } from './controllers/tag/product-tag.controller';
 import { ProductTagService } from './services/tag/product-tag.service';
 import { ProductWebhookService } from './services/product/product-webhook.service';
 import { ProductWebhookController } from './controllers/product/product-webhook.controller';
@@ -22,6 +22,10 @@ import { CategoryStagingService } from './services/category/category-staging.ser
 import { CategoryProductionService } from './services/category/category-production.service';
 import { CategoryStagingController } from './controllers/category/category-staging.controller';
 import { CategoryProductionController } from './controllers/category/category-production.controller';
+import { TagStagingService } from './services/tag/tag-staging.service';
+import { TagProductionService } from './services/tag/tag-production.service';
+import { TagStagingController } from './controllers/tag/tag-staging.controller';
+import { TagProductionController } from './controllers/tag/tag-production.controller';
 
 @Module({
   providers: [
@@ -29,6 +33,8 @@ import { CategoryProductionController } from './controllers/category/category-pr
     ProductService,
     // ProductTagService,
     // ProductCategoryService,
+    TagStagingService,
+    TagProductionService,
     CategoryStagingService,
     CategoryProductionService,
     AttributeStagingService,
@@ -52,6 +58,8 @@ import { CategoryProductionController } from './controllers/category/category-pr
     // Legacy
     ProductController,
     // ProductTagController,
+    TagStagingController,
+    TagProductionController,
     // ProductCategoryController,
     CategoryStagingController,
     CategoryProductionController,

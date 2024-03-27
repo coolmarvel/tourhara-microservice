@@ -85,12 +85,14 @@ export class CreateProductTagReqDto {
 
 export class RetrieveProductTagReqDto {
   @ApiProperty({ required: true })
-  tag_id: string;
+  @Transform((param) => Number(param.value))
+  tag_id: number;
 }
 
 export class UpdateProductTagParamReqDto {
   @ApiProperty({ required: true })
-  tag_id: string;
+  @Transform((param) => Number(param.value))
+  tag_id: number;
 }
 
 export class UpdateProductTagBodyReqDto {
@@ -100,7 +102,8 @@ export class UpdateProductTagBodyReqDto {
 
 export class DeleteProductTagReqDto {
   @ApiProperty({ required: true })
-  tag_id: string;
+  @Transform((param) => Number(param.value))
+  tag_id: number;
 }
 
 // Product Attribute
