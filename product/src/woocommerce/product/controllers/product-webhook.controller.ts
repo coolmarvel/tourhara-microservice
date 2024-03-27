@@ -8,16 +8,15 @@ export class ProductWebhookController {
 
   @MessagePattern({ cmd: 'productCreated_stag' })
   async productCreated_stag(payload: any): Promise<HttpStatus> {
-    const result = this.productWebhookService.productCreated_stag(payload);
-    console.log('productCreated_stag', result);
+    const result = await this.productWebhookService.productCreated_stag(payload);
 
     return HttpStatus.OK;
   }
 
   @MessagePattern({ cmd: 'productUpdated_stag' })
   async productUpdated_stag(payload: any): Promise<HttpStatus> {
-    const result = await this.productWebhookService.productUpdated_stag(payload);
-    console.log('productUpdated_stag', result);
+    const data = payload;
+    const result = await this.productWebhookService.productUpdated_stag(data);
 
     return HttpStatus.OK;
   }

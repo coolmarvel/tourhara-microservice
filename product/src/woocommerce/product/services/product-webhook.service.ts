@@ -2,12 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { IProductWebhookService } from '../interfaces/product-webhook.interface';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource, QueryRunner } from 'typeorm';
-import { ProductCategory } from 'src/woocommerce/category/entities/category.entity';
 import { CategoryService } from 'src/woocommerce/category/services/category.service';
 import { TagService } from 'src/woocommerce/tag/services/tag.service';
 import { AttributeService } from 'src/woocommerce/attribute/services/attribute.service';
 import { ProductService } from './product.service';
-import { Product } from '../entities/product.entity';
 
 @Injectable()
 export class ProductWebhookService implements IProductWebhookService {
@@ -63,25 +61,24 @@ export class ProductWebhookService implements IProductWebhookService {
   }
 
   async productUpdated_stag(payload: any): Promise<boolean> {
-    // console.log(payload);
-
     const queryRunner: QueryRunner = this.dataSourceStag.createQueryRunner();
     await queryRunner.connect();
 
     try {
       await queryRunner.startTransaction();
 
-      await this.productService.updateWebhookProduct_stag(queryRunner, payload);
+      const updated = await this.productService.updateWebhookProduct_stag(queryRunner, payload);
+      if (!updated) await this.productCreated_stag(payload);
 
       await queryRunner.commitTransaction();
+
+      return true;
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;
     } finally {
       await queryRunner.release();
     }
-
-    return true;
   }
 
   async productDeleted_stag(payload: any): Promise<any> {

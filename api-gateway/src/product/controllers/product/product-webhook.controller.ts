@@ -25,9 +25,13 @@ export class ProductWebhookController {
   @Post('stag/updated')
   @ApiOperation({ summary: '단일 상품 갱신 WEBHOOK (스테이징)' })
   async productUpdated_stag(@Headers() header: any, @Body() data: any) {
-    console.log(header);
+    if (Object.keys(data).length === 1 && data.webhook_id) {
+      console.log('Skipping processing for second webhook call with minimal data');
+      return HttpStatus.NO_CONTENT; // Or any other status you deem appropriate
+    }
 
-    return await this.productWebhookService.productUpdated_stag(data);
+    const result = await this.productWebhookService.productUpdated_stag(data);
+    if (result) return HttpStatus.OK;
   }
 
   @Public()
