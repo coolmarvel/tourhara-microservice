@@ -13,34 +13,68 @@ import { ApiGetResponse } from 'src/common/decorators/swagger.decorator';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  // STAGING
   @Public()
-  @Post('signup')
+  @Post('stag/signup')
   @ApiGetResponse(SignupResDto)
-  @ApiOperation({ summary: '회원가입 API (PUBLIC)' })
-  async signup(@Body() { email, password, passwordConfirm }: SignupReqDto): Promise<SignupResDto> {
+  @ApiOperation({ summary: '회원가입 API (스테이징)' })
+  async signup_stag(@Body() { email, password, passwordConfirm }: SignupReqDto): Promise<SignupResDto> {
     if (password !== passwordConfirm) throw new BadRequestException();
 
-    const { id, accessToken, refreshToken } = await this.authService.signup(email, password);
+    const { id, accessToken, refreshToken } = await this.authService.signup_stag(email, password);
 
     return { id, accessToken, refreshToken };
   }
 
   @Public()
-  @Post('signin')
+  @Post('stag/signin')
   @ApiGetResponse(SigninResDto)
-  @ApiOperation({ summary: '로그인 API (PUBLIC)' })
-  async signin(@Body() { email, password }: SigninReqDto): Promise<SigninResDto> {
-    return await this.authService.signin(email, password);
+  @ApiOperation({ summary: '로그인 API (스테이징)' })
+  async signin_stag(@Body() { email, password }: SigninReqDto): Promise<SigninResDto> {
+    return await this.authService.signin_stag(email, password);
   }
 
   @ApiBearerAuth()
-  @Post('refresh')
+  @Post('stag/refresh')
   @ApiGetResponse(RefreshResDto)
-  @ApiOperation({ summary: '리프레쉬 API (BEARER)' })
-  async refresh(@Headers('authorization') authorization, @User() user: UserAfterAuth): Promise<RefreshResDto> {
+  @ApiOperation({ summary: '리프레쉬 API (스테이징)' })
+  async refresh_stag(@Headers('authorization') authorization, @User() user: UserAfterAuth): Promise<RefreshResDto> {
     const token = /Bearer\s(.+)/.exec(authorization)[1];
 
-    const { accessToken, refreshToken } = await this.authService.refresh(token, user.id);
+    const { accessToken, refreshToken } = await this.authService.refresh_stag(token, user.id);
+
+    return { accessToken, refreshToken };
+  }
+
+  // PRODUCTION
+  @Public()
+  @Post('prod/signup')
+  @ApiGetResponse(SignupResDto)
+  @ApiOperation({ summary: '회원가입 API (프로덕션)' })
+  async signup_prod(@Body() { email, password, passwordConfirm }: SignupReqDto): Promise<SignupResDto> {
+    if (password !== passwordConfirm) throw new BadRequestException();
+
+    const { id, accessToken, refreshToken } = await this.authService.signup_prod(email, password);
+
+    return { id, accessToken, refreshToken };
+  }
+
+  @Public()
+  @Post('prod/signin')
+  @ApiGetResponse(SigninResDto)
+  @ApiOperation({ summary: '로그인 API (프로덕션)' })
+  async signin_prod(@Body() { email, password }: SigninReqDto): Promise<SigninResDto> {
+    return await this.authService.signin_prod(email, password);
+  }
+
+  @ApiBearerAuth()
+  @Post('prod/refresh')
+  @ApiGetResponse(RefreshResDto)
+  @ApiOperation({ summary: '리프레쉬 API (프로덕션)' })
+  async refresh_prod(@Headers('authorization') authorization, @User() user: UserAfterAuth): Promise<RefreshResDto> {
+    const token = /Bearer\s(.+)/.exec(authorization)[1];
+
+    const { accessToken, refreshToken } = await this.authService.refresh_prod(token, user.id);
 
     return { accessToken, refreshToken };
   }

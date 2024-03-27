@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { IOrderWebhookService } from '../interfaces/order-webhook.interface';
+import { OrderService } from './order.service';
 
 @Injectable()
 export class OrderWebhookService implements IOrderWebhookService {
+  constructor(private readonly orderService: OrderService) {}
+
   async orderCreated_stag(payload: any): Promise<any> {
     console.log(payload);
 

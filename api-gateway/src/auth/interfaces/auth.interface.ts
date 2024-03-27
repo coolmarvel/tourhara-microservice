@@ -1,15 +1,23 @@
 export interface IAuthService {
-  signup(email: string, password: string): Promise<ISignupResponse>;
+  signup_stag(email: string, password: string): Promise<ISignupResponse>;
 
-  signin(email: string, password: string): Promise<ISigninResponse>;
+  signin_stag(email: string, password: string): Promise<ISigninResponse>;
 
-  refresh(token: string, userId: string): Promise<IRefreshResponse>;
+  refresh_stag(token: string, userId: string): Promise<IRefreshResponse>;
 
   generateAccessToken(userId: string): string;
 
   generateRefreshToken(userId: string): string;
 
-  generateRefreshTokenUsingByUser(userId: string, refreshToken: string): Promise<void>;
+  generateRefreshTokenUsingByUser_stag(userId: string, refreshToken: string): Promise<void>;
+
+  signup_prod(email: string, password: string): Promise<ISignupResponse>;
+
+  signin_prod(email: string, password: string): Promise<ISigninResponse>;
+
+  refresh_prod(token: string, userId: string): Promise<IRefreshResponse>;
+
+  generateRefreshTokenUsingByUser_prod(userId: string, refreshToken: string): Promise<void>;
 }
 
 export interface ISignupResponse {

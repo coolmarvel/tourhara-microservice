@@ -71,3 +71,29 @@ export class DeleteOrderReqDto {
   @ApiProperty({ required: true })
   order_id: string;
 }
+
+// WEBHOOK DTO
+export class OrderWebhookHeaderReqDto {
+  @ApiProperty({ required: true })
+  'x-wc-webhook-source': string;
+
+  @ApiProperty({ required: true })
+  'x-wc-webhook-topic': string;
+
+  @ApiProperty({ required: true })
+  'x-wc-webhook-resource': string;
+
+  @ApiProperty({ required: true })
+  'x-wc-webhook-event': string;
+
+  @ApiProperty({ required: true })
+  'x-wc-webhook-signature': string;
+
+  @ApiProperty({ required: true })
+  'x-wc-webhook-id': string;
+
+  @ApiProperty({ required: true })
+  'x-wc-delivery-id': string;
+}
+
+export class OrderCreatedBodyReqDto {}

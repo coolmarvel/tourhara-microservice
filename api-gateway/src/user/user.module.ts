@@ -10,7 +10,7 @@ import { ClientProxyFactory, Transport } from '@nestjs/microservices';
       useFactory: () => {
         return ClientProxyFactory.create({
           transport: Transport.TCP,
-          options: { host: process.env.USER_DOCKER_FLAG === 'true' ? process.env.USER_DOCKER_HOST : 'localhost', port: Number(process.env.USER_DOCKER_PORT) },
+          options: { host: process.env.USER_DOCKER_FLAG === 'true' ? process.env.USER_DOCKER_HOST : '127.0.0.1', port: Number(process.env.USER_DOCKER_PORT) },
         });
       },
     },
