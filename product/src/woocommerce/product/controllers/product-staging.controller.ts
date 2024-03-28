@@ -31,4 +31,9 @@ export class ProductStagingController {
   async deleteAProduct({ product_id }: DeleteProductReqDto) {
     return await this.productStagingService.deleteAProduct(product_id);
   }
+
+  @MessagePattern({ cmd: 'synchronizeProductByWooCommerce_staging' })
+  async synchronizeProductByWooCommerce() {
+    return await this.productStagingService.synchronizeProductByWooCommerce();
+  }
 }

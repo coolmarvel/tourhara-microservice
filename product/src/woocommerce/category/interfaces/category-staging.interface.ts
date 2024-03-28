@@ -1,3 +1,5 @@
+import { QueryRunner } from 'typeorm';
+
 export interface ICategoryStagingService {
   createAProductCategory(data: any): Promise<any>;
 
@@ -8,4 +10,14 @@ export interface ICategoryStagingService {
   updateAProductCategory(category_id: number, data: any): Promise<any>;
 
   deleteAProductCategory(category_id: number): Promise<any>;
+
+  insert(queryRunner: QueryRunner, category: any): Promise<any>;
+
+  update(queryRunner: QueryRunner, category: any): Promise<any>;
+
+  selectAll(queryRunner: QueryRunner, category: any): Promise<any>;
+
+  select(queryRunner: QueryRunner, category: any): Promise<any>;
+
+  delete(queryRunner: QueryRunner, category: any): Promise<any>;
 }

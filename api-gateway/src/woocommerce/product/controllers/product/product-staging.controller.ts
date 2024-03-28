@@ -44,4 +44,11 @@ export class ProductStagingController {
   async deleteAProduct(@Param() { product_id }: DeleteProductReqDto) {
     return await this.productStagingService.deleteAProduct(product_id);
   }
+
+  @Public()
+  @Post('synchronize')
+  @ApiOperation({ summary: '상품 데이터 동기화 (스테이징)' })
+  async synchronizeProductByWooCommerce() {
+    return await this.productStagingService.synchronizeProductByWooCommerce();
+  }
 }
