@@ -1,6 +1,9 @@
 import { QueryRunner } from 'typeorm';
 
 export interface ITagProductionService {
+  /**
+   * Webhook
+   */
   createAProductTag(data: any): Promise<any>;
 
   retrieveAProductTag(tag_id: number): Promise<any>;
@@ -11,6 +14,9 @@ export interface ITagProductionService {
 
   deleteAProductTag(tag_id: number): Promise<any>;
 
+  /**
+   * Webhook
+   */
   insert(queryRunner: QueryRunner, tag: any): Promise<any>;
 
   update(queryRunner: QueryRunner, tag: any): Promise<any>;
@@ -19,5 +25,5 @@ export interface ITagProductionService {
 
   select(queryRunner: QueryRunner, tag: any): Promise<any>;
 
-  delete(queryRunner: QueryRunner, category: any): Promise<any>;
+  delete(queryRunner: QueryRunner, tag: any): Promise<any>;
 }

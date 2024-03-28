@@ -6,6 +6,9 @@ import { MessagePattern } from '@nestjs/microservices';
 export class CategoryProductionController {
   constructor(private readonly categoryProductionService: CategoryProductionService) {}
 
+  /**
+   * WooCommerce
+   */
   @MessagePattern({ cmd: 'createAProductCategory_woocommerce_production' })
   async createAProductCategory(data: any): Promise<any> {
     return await this.categoryProductionService.createAProductCategory(data);

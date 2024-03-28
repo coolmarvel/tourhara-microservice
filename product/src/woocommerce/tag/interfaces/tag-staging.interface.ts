@@ -1,4 +1,9 @@
+import { QueryRunner } from 'typeorm';
+
 export interface ITagStagingService {
+  /**
+   * WooCommerce
+   */
   createAProductTag(data: any): Promise<any>;
 
   retrieveAProductTag(tag_id: number): Promise<any>;
@@ -8,4 +13,17 @@ export interface ITagStagingService {
   updateAProductTag(tag_id: number, data: any): Promise<any>;
 
   deleteAProductTag(tag_id: number): Promise<any>;
+
+  /**
+   * Synchronize
+   */
+  insert(queryRunner: QueryRunner, tag: any): Promise<any>;
+
+  update(queryRunner: QueryRunner, tag: any): Promise<any>;
+
+  selectAll(queryRunner: QueryRunner, tag: any): Promise<any>;
+
+  select(queryRunner: QueryRunner, tag: any): Promise<any>;
+
+  delete(queryRunner: QueryRunner, tag: any): Promise<any>;
 }

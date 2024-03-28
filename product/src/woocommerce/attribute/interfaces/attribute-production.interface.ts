@@ -1,6 +1,9 @@
 import { QueryRunner } from 'typeorm';
 
 export interface IAttributeProductionService {
+  /**
+   * WooCommerce
+   */
   createAProductAttribute(data: any): Promise<any>;
 
   retrieveAProductAttribute(attribute_id: number): Promise<any>;
@@ -11,6 +14,9 @@ export interface IAttributeProductionService {
 
   deleteAProductAttribute(attribute_id: number): Promise<any>;
 
+  /**
+   * Synchronize
+   */
   insert(queryRunner: QueryRunner, attribute: any): Promise<any>;
 
   update(queryRunner: QueryRunner, attribute: any): Promise<any>;

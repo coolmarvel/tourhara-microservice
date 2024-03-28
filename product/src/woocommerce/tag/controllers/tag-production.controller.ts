@@ -6,6 +6,9 @@ import { MessagePattern } from '@nestjs/microservices';
 export class TagProductionController {
   constructor(private readonly tagProductionService: TagProductionService) {}
 
+  /**
+   * WooCommerce
+   */
   @MessagePattern({ cmd: 'createAProductTag_woocommerce_production' })
   async createAProductTag(data: any): Promise<any> {
     return await this.tagProductionService.createAProductTag(data);
@@ -30,4 +33,8 @@ export class TagProductionController {
   async deleteAProductTag({ tag_id }: { tag_id: number }): Promise<any> {
     return await this.tagProductionService.deleteAProductTag(tag_id);
   }
+
+  /**
+   * Synchronize
+   */
 }

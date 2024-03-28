@@ -1,11 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
-import { ProductTagWebhookController } from './controllers/tag/product-tag-webhook.controller';
-import { ProductCategoryWebhookController } from './controllers/category/product-category-webhook.controller';
-import { ProductAttributeWebhookController } from './controllers/attribute/product-attribute-webhook.controller';
-import { ProductTagWebhookService } from './services/tag/product-tag-webhook.service';
-import { ProductCategoryWebhookService } from './services/category/product-category-webhook.service';
-import { ProductAttributeWebhookService } from './services/attribute/product-attribute-webhook.service';
 import { AttributeStagingService } from './services/attribute/attribute-staging.service';
 import { AttributeProductionService } from './services/attribute/attribute-production.service';
 import { AttributeStagingController } from './controllers/attribute/attribute-staging.controller';
@@ -25,7 +19,6 @@ import { ProductProductionController } from './controllers/product/product-produ
 
 @Module({
   providers: [
-    // Legacy
     ProductStagingService,
     ProductProductionService,
     TagStagingService,
@@ -34,10 +27,6 @@ import { ProductProductionController } from './controllers/product/product-produ
     CategoryProductionService,
     AttributeStagingService,
     AttributeProductionService,
-    // Webhook
-    ProductTagWebhookService,
-    ProductCategoryWebhookService,
-    ProductAttributeWebhookService,
     {
       provide: 'PRODUCT_SERVICE',
       useFactory: () => {
@@ -49,7 +38,6 @@ import { ProductProductionController } from './controllers/product/product-produ
     },
   ],
   controllers: [
-    // Legacy
     ProductStagingController,
     TagStagingController,
     CategoryStagingController,
@@ -58,10 +46,6 @@ import { ProductProductionController } from './controllers/product/product-produ
     TagProductionController,
     CategoryProductionController,
     AttributeProductionController,
-    // Webhook
-    ProductTagWebhookController,
-    ProductCategoryWebhookController,
-    ProductAttributeWebhookController,
   ],
 })
 export class ProductModule {}

@@ -19,6 +19,9 @@ export class AttributeStagingService implements IAttributeStagingService {
     });
   }
 
+  /**
+   * WooCommerce
+   */
   async createAProductAttribute(data: any): Promise<any> {
     const attribute = await this.wooCommerce
       .post('products/attributes', data)
@@ -65,6 +68,9 @@ export class AttributeStagingService implements IAttributeStagingService {
     return attribute;
   }
 
+  /**
+   * Synchronize
+   */
   async insert(queryRunner: QueryRunner, attribute: any): Promise<any> {
     try {
       const existing = await queryRunner.manager.findOne(ProductAttribute, {
