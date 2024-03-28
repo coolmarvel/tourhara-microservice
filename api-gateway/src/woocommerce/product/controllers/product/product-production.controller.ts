@@ -44,4 +44,11 @@ export class ProductProductionController {
   async deleteAProduct(@Param() { product_id }: DeleteProductReqDto) {
     return await this.productProductionService.deleteAProduct(product_id);
   }
+
+  @Public()
+  @Post('synchronize')
+  @ApiOperation({ summary: '상품 데이터 동기화 (프로덕션)' })
+  async synchronizeProductByWooCommerce() {
+    return await this.productProductionService.synchronizeProductByWooCommerce();
+  }
 }

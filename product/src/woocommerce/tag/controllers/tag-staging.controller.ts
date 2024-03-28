@@ -12,8 +12,8 @@ export class TagStagingController {
   }
 
   @MessagePattern({ cmd: 'retrieveAProductTag_woocommerce_staging' })
-  async retrieveAProductTag({ attribute_id }: { attribute_id: number }): Promise<any> {
-    return await this.tagStagingService.retrieveAProductTag(attribute_id);
+  async retrieveAProductTag({ tag_id }: { tag_id: number }): Promise<any> {
+    return await this.tagStagingService.retrieveAProductTag(tag_id);
   }
 
   @MessagePattern({ cmd: 'listAllProductTags_woocommerce_staging' })
@@ -22,12 +22,12 @@ export class TagStagingController {
   }
 
   @MessagePattern({ cmd: 'updateAProductTag_woocommerce_staging' })
-  async updateAProductTag({ attribute_id, data }: { attribute_id: number; data: any }): Promise<any> {
-    return await this.tagStagingService.updateAProductTag(attribute_id, data);
+  async updateAProductTag({ tag_id, data }: { tag_id: number; data: any }): Promise<any> {
+    return await this.tagStagingService.updateAProductTag(tag_id, data);
   }
 
   @MessagePattern({ cmd: 'deleteAProductTag_woocommerce_staging' })
-  async deleteAProductTag({ attribute_id }: { attribute_id: number }): Promise<any> {
-    return await this.tagStagingService.deleteAProductTag(attribute_id);
+  async deleteAProductTag({ tag_id }: { tag_id: number }): Promise<any> {
+    return await this.tagStagingService.deleteAProductTag(tag_id);
   }
 }

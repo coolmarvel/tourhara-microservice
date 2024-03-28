@@ -61,4 +61,8 @@ export class ProductStagingService implements IProductStagingService {
 
     return product;
   }
+
+  async synchronizeProductByWooCommerce(): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
 }

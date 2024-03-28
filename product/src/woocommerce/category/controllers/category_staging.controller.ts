@@ -12,8 +12,8 @@ export class CategoryStagingController {
   }
 
   @MessagePattern({ cmd: 'retrieveAProductCategory_woocommerce_staging' })
-  async retrieveAProductCategory({ attribute_id }: { attribute_id: number }): Promise<any> {
-    return await this.categoryStagingService.retrieveAProductCategory(attribute_id);
+  async retrieveAProductCategory({ category_id }: { category_id: number }): Promise<any> {
+    return await this.categoryStagingService.retrieveAProductCategory(category_id);
   }
 
   @MessagePattern({ cmd: 'listAllProductCategories_woocommerce_staging' })
@@ -22,12 +22,12 @@ export class CategoryStagingController {
   }
 
   @MessagePattern({ cmd: 'updateAProductCategory_woocommerce_staging' })
-  async updateAProductCategory({ attribute_id, data }: { attribute_id: number; data: any }): Promise<any> {
-    return await this.categoryStagingService.updateAProductCategory(attribute_id, data);
+  async updateAProductCategory({ category_id, data }: { category_id: number; data: any }): Promise<any> {
+    return await this.categoryStagingService.updateAProductCategory(category_id, data);
   }
 
   @MessagePattern({ cmd: 'deleteAProductCategory_woocommerce_staging' })
-  async deleteAProductCategory({ attribute_id }: { attribute_id: number }): Promise<any> {
-    return await this.categoryStagingService.deleteAProductCategory(attribute_id);
+  async deleteAProductCategory({ category_id }: { category_id: number }): Promise<any> {
+    return await this.categoryStagingService.deleteAProductCategory(category_id);
   }
 }

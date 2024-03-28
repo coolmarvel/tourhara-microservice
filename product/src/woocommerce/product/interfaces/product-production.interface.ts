@@ -1,3 +1,5 @@
+import { QueryRunner } from 'typeorm';
+
 export interface IProductProductionService {
   createAProduct(data: any): Promise<any>;
 
@@ -11,13 +13,13 @@ export interface IProductProductionService {
 
   synchronizeProductByWooCommerce(): Promise<any>;
 
-  insert(): Promise<any>;
+  insert(queryRunner: QueryRunner, image: any, product: any): Promise<any>;
 
-  update(): Promise<any>;
+  update(queryRunner: QueryRunner, image: any, product: any): Promise<any>;
 
-  selectAll(): Promise<any>;
+  selectAll(queryRunner: QueryRunner, image: any, product: any): Promise<any>;
 
-  select(): Promise<any>;
+  select(queryRunner: QueryRunner, image: any, product: any): Promise<any>;
 
-  delete(): Promise<any>;
+  delete(queryRunner: QueryRunner, image: any, product: any): Promise<any>;
 }

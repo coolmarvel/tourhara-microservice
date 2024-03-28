@@ -46,4 +46,12 @@ export class ProductProductionService implements IProductProductionService {
 
     return result;
   }
+
+  async synchronizeProductByWooCommerce(): Promise<any> {
+    const pattern = { cmd: 'synchronizeProductByWooCommerce_production' };
+    const payload = {};
+    const result = await firstValueFrom(this.client.send(pattern, payload));
+
+    return result;
+  }
 }

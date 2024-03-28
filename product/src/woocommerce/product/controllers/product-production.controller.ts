@@ -31,4 +31,9 @@ export class ProductProductionController {
   async deleteAProduct({ product_id }: DeleteProductReqDto) {
     return await this.productProductionService.deleteAProduct(product_id);
   }
+
+  @MessagePattern({ cmd: 'synchronizeProductByWooCommerce_production' })
+  async synchronizeProductByWooCommerce() {
+    return await this.productProductionService.synchronizeProductByWooCommerce();
+  }
 }

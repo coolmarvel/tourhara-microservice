@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ITagProductionService } from '../interfaces/tag-production.interface';
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 import { ConfigService } from '@nestjs/config';
+import { QueryRunner } from 'typeorm';
+import { ProductTag } from '../entities/tag.entity';
 
 @Injectable()
 export class TagProductionService implements ITagProductionService {
@@ -60,5 +62,60 @@ export class TagProductionService implements ITagProductionService {
       .catch((error: any) => error.response.data);
 
     return tag;
+  }
+
+  /**
+   * Database Query Method
+   */
+
+  async insert(queryRunner: QueryRunner, tag: any): Promise<any> {
+    try {
+      const existingProductTag = await queryRunner.manager.findOne(ProductTag, { where: { id: tag.id } });
+      if (existingProductTag) return false;
+
+      const newProductTag = {
+        id: tag.id,
+        name: tag.name === '' ? null : tag.name,
+        slug: tag.slug === '' ? null : tag.slug,
+        count: tag.count,
+      };
+      const productTagEntity = queryRunner.manager.create(ProductTag, newProductTag);
+      const productTag = await queryRunner.manager.save(productTagEntity);
+
+      return productTag;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async update(queryRunner: QueryRunner, tag: any): Promise<any> {
+    try {
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async selectAll(queryRunner: QueryRunner, tag: any): Promise<any> {
+    try {
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async select(queryRunner: QueryRunner, tag_id: any): Promise<any> {
+    try {
+      const productTag = await queryRunner.manager.findOne(ProductTag, { where: { id: tag_id } });
+
+      return productTag;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async delete(queryRunner: QueryRunner, category: any): Promise<any> {
+    try {
+    } catch (error) {
+      throw error;
+    }
   }
 }
