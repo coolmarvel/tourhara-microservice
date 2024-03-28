@@ -249,16 +249,20 @@ export class ProductProductionService implements IProductProductionService {
   async selectAll(queryRunner: QueryRunner, image: any, product: any): Promise<any> {}
 
   async select(queryRunner: QueryRunner, image_id: any, product_id: any): Promise<any> {
-    if (image_id !== null && product_id === null) {
-      const productImage = await queryRunner.manager.findOne(ProductImage, { where: { id: image_id } });
+    try {
+      if (image_id !== null && product_id === null) {
+        const productImage = await queryRunner.manager.findOne(ProductImage, { where: { id: image_id } });
 
-      return productImage;
-    }
+        return productImage;
+      }
 
-    if (image_id === null && product_id !== null) {
-      const product = await queryRunner.manager.findOne(Product, { where: { id: product_id } });
+      if (image_id === null && product_id !== null) {
+        const product = await queryRunner.manager.findOne(Product, { where: { id: product_id } });
 
-      return product;
+        return product;
+      }
+    } catch (error) {
+      throw error;
     }
   }
 
@@ -267,16 +271,23 @@ export class ProductProductionService implements IProductProductionService {
   /**
    * Webhook
    */
-  productCreated(payload: any): Promise<any> {
-    throw new Error('Method not implemented.');
+  async productCreated(payload: any): Promise<any> {
+    try {
+    } catch (error) {}
   }
-  productUpdated(payload: any): Promise<any> {
-    throw new Error('Method not implemented.');
+
+  async productUpdated(payload: any): Promise<any> {
+    try {
+    } catch (error) {}
   }
-  productDeleted(payload: any): Promise<any> {
-    throw new Error('Method not implemented.');
+
+  async productDeleted(payload: any): Promise<any> {
+    try {
+    } catch (error) {}
   }
-  productRestored(payload: any): Promise<any> {
-    throw new Error('Method not implemented.');
+
+  async productRestored(payload: any): Promise<any> {
+    try {
+    } catch (error) {}
   }
 }

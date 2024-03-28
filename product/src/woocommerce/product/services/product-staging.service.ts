@@ -429,14 +429,22 @@ export class ProductStagingService implements IProductStagingService {
   }
 
   async productDeleted(payload: any): Promise<any> {
+    console.log(payload);
+
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
 
     try {
       await queryRunner.startTransaction();
 
+      const existingProduct = await queryRunner.manager.findOne(Product, { where: { id: payload.id } });
+      if (!existingProduct) return true;
+
+      await queryRunner.manager.delete(Product, existingProduct.productId);
+
       await queryRunner.commitTransaction();
-      await queryRunner.commitTransaction();
+
+      return true;
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;
@@ -446,13 +454,21 @@ export class ProductStagingService implements IProductStagingService {
   }
 
   async productRestored(payload: any): Promise<any> {
+    console.log(payload);
+
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
 
     try {
       await queryRunner.startTransaction();
 
+      const existingProduct = await queryRunner.manager.findOne(Product, { where: { id: payload.id } });
+      if (existingProduct) return await this.productUpdated(payload);
+
+      await this.productCreated(payload);
+
       await queryRunner.commitTransaction();
+
       return true;
     } catch (error) {
       await queryRunner.rollbackTransaction();

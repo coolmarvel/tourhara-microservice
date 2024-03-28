@@ -7,6 +7,9 @@ import { CreateProductReqDto, DeleteProductReqDto, PageReqDto, RetrieveProductRe
 export class ProductProductionController {
   constructor(private readonly productProductionService: ProductProductionService) {}
 
+  /**
+   * WooCommerce
+   */
   @MessagePattern({ cmd: 'createAProduct_woocommerce_production' })
   async createAProduct(data: CreateProductReqDto) {
     return await this.productProductionService.createAProduct(data);
@@ -32,8 +35,24 @@ export class ProductProductionController {
     return await this.productProductionService.deleteAProduct(product_id);
   }
 
+  /**
+   * Database
+   */
   @MessagePattern({ cmd: 'synchronizeProduct_woocommerce_production' })
   async synchronizeProduct() {
     return await this.productProductionService.synchronizeProduct();
+  }
+
+  /**
+   * Webhooks
+   */
+  @MessagePattern({ cmd: 'productCreated_production' })
+  async productCreated(payload: any) {
+    return await this.productProductionService.productCreated(payload);
+  }
+
+  @MessagePattern({ cmd: 'productUpdated_production' })
+  async productUpdated(payload: any) {
+    return await this.productProductionService.productUpdated(payload);
   }
 }

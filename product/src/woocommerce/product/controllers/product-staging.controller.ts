@@ -7,6 +7,9 @@ import { CreateProductReqDto, DeleteProductReqDto, PageReqDto, RetrieveProductRe
 export class ProductStagingController {
   constructor(private readonly productStagingService: ProductStagingService) {}
 
+  /**
+   * WooCommerce
+   */
   @MessagePattern({ cmd: 'createAProduct_woocommerce_staging' })
   async createAProduct(data: CreateProductReqDto) {
     return await this.productStagingService.createAProduct(data);
@@ -32,11 +35,17 @@ export class ProductStagingController {
     return await this.productStagingService.deleteAProduct(product_id);
   }
 
+  /**
+   * Database
+   */
   @MessagePattern({ cmd: 'synchronizeProduct_woocommerce_staging' })
   async synchronizeProduct() {
     return await this.productStagingService.synchronizeProduct();
   }
 
+  /**
+   * Webhook
+   */
   @MessagePattern({ cmd: 'productCreated_staging' })
   async productCreated(payload: any) {
     return await this.productStagingService.productCreated(payload);
@@ -45,5 +54,15 @@ export class ProductStagingController {
   @MessagePattern({ cmd: 'productUpdated_staging' })
   async productUpdated(payload: any) {
     return await this.productStagingService.productUpdated(payload);
+  }
+
+  @MessagePattern({ cmd: 'productDeleted_staging' })
+  async productDeleted(payload: any) {
+    return await this.productStagingService.productDeleted(payload);
+  }
+
+  @MessagePattern({ cmd: 'productRestored_staging' })
+  async productRestored(payload: any) {
+    return await this.productStagingService.productRestored(payload);
   }
 }
