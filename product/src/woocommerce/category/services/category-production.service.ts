@@ -105,7 +105,7 @@ export class CategoryProductionService implements ICategoryProductionService {
         }
       }
 
-      return productCategory;
+      return true;
     } catch (error) {
       throw error;
     }
@@ -113,6 +113,18 @@ export class CategoryProductionService implements ICategoryProductionService {
 
   async update(queryRunner: QueryRunner, category: any): Promise<any> {
     try {
+      const existingProductCategory = await queryRunner.manager.findOne(ProductCategory, { where: { id: category.id } });
+      if (!existingProductCategory) return await this.insert(queryRunner, category);
+
+      const updateProductCategory: Partial<ProductCategory> = {
+        parent: category.parent,
+        name: category.name,
+        slug: category.slug,
+        description: category.description,
+      };
+      await queryRunner.manager.update(ProductCategory, { id: category.id }, updateProductCategory);
+
+      return true;
     } catch (error) {
       throw error;
     }

@@ -48,7 +48,7 @@ export class ProductProductionController {
   @Public()
   @Post('synchronize')
   @ApiOperation({ summary: '상품 데이터 동기화 (프로덕션)' })
-  async synchronizeProductByWooCommerce() {
-    return await this.productProductionService.synchronizeProductByWooCommerce();
+  async synchronizeProduct() {
+    return await this.productProductionService.synchronizeProduct();
   }
 }

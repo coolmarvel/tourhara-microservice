@@ -32,8 +32,18 @@ export class ProductStagingController {
     return await this.productStagingService.deleteAProduct(product_id);
   }
 
-  @MessagePattern({ cmd: 'synchronizeProductByWooCommerce_staging' })
-  async synchronizeProductByWooCommerce() {
-    return await this.productStagingService.synchronizeProductByWooCommerce();
+  @MessagePattern({ cmd: 'synchronizeProduct_woocommerce_staging' })
+  async synchronizeProduct() {
+    return await this.productStagingService.synchronizeProduct();
+  }
+
+  @MessagePattern({ cmd: 'productCreated_staging' })
+  async productCreated(payload: any) {
+    return await this.productStagingService.productCreated(payload);
+  }
+
+  @MessagePattern({ cmd: 'productUpdated_staging' })
+  async productUpdated(payload: any) {
+    return await this.productStagingService.productUpdated(payload);
   }
 }

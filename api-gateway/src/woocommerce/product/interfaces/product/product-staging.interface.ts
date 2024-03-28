@@ -1,4 +1,7 @@
 export interface IProductStagingService {
+  /**
+   * WooCommerce
+   */
   createAProduct(data: any): Promise<any>;
 
   retrieveAProduct(product_id: number): Promise<any>;
@@ -9,5 +12,19 @@ export interface IProductStagingService {
 
   deleteAProduct(product_id: number): Promise<any>;
 
-  synchronizeProductByWooCommerce(): Promise<any>;
+  /**
+   * Database
+   */
+  synchronizeProduct(): Promise<any>;
+
+  /**
+   * Webhook
+   */
+  productCreated(payload: any): Promise<any>;
+
+  productUpdated(payload: any): Promise<any>;
+
+  productDeleted(payload: any): Promise<any>;
+
+  productRestored(payload: any): Promise<any>;
 }

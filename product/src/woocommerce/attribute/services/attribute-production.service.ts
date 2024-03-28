@@ -105,18 +105,18 @@ export class AttributeProductionService implements IAttributeProductionService {
           options: attribute.options,
         },
       });
-      if (existing) {
-        const updateAttribute: Partial<ProductAttribute> = {
-          id: attribute.id,
-          name: attribute.name,
-          position: attribute.position,
-          visible: attribute.visible,
-          options: attribute.options,
-        };
-        await queryRunner.manager.update(ProductAttribute, { id: attribute.id }, updateAttribute);
+      if (!existing) return await this.insert(queryRunner, attribute);
 
-        return true;
-      } else if (!existing) await this.insert(queryRunner, attribute);
+      const updateAttribute: Partial<ProductAttribute> = {
+        id: attribute.id,
+        name: attribute.name,
+        position: attribute.position,
+        visible: attribute.visible,
+        options: attribute.options,
+      };
+      await queryRunner.manager.update(ProductAttribute, { id: attribute.id }, updateAttribute);
+
+      return true;
     } catch (error) {
       throw error;
     }

@@ -9,5 +9,5 @@ export interface IProductProductionService {
 
   deleteAProduct(product_id: number): Promise<any>;
 
-  synchronizeProductByWooCommerce(): Promise<any>;
+  synchronizeProduct(): Promise<any>;
 }

@@ -7,6 +7,9 @@ import { IProductStagingService } from 'src/woocommerce/product/interfaces/produ
 export class ProductStagingService implements IProductStagingService {
   constructor(@Inject('PRODUCT_SERVICE') private client: ClientProxy) {}
 
+  /**
+   * WooCommerce
+   */
   async createAProduct(data: any): Promise<any> {
     const pattern = { cmd: 'createAProduct_woocommerce_staging' };
     const payload = data;
@@ -47,9 +50,43 @@ export class ProductStagingService implements IProductStagingService {
     return result;
   }
 
-  async synchronizeProductByWooCommerce(): Promise<any> {
-    const pattern = { cmd: 'synchronizeProductByWooCommerce_staging' };
+  /**
+   * Database
+   */
+  async synchronizeProduct(): Promise<any> {
+    const pattern = { cmd: 'synchronizeProduct_woocommerce_staging' };
     const payload = {};
+    const result = await firstValueFrom(this.client.send(pattern, payload));
+
+    return result;
+  }
+
+  /**
+   * Webhook
+   */
+  async productCreated(payload: any): Promise<any> {
+    const pattern = { cmd: 'productCreated_staging' };
+    const result = await firstValueFrom(this.client.send(pattern, payload));
+
+    return result;
+  }
+
+  async productUpdated(payload: any): Promise<any> {
+    const pattern = { cmd: 'productUpdated_staging' };
+    const result = await firstValueFrom(this.client.send(pattern, payload));
+
+    return result;
+  }
+
+  async productDeleted(payload: any): Promise<any> {
+    const pattern = { cmd: 'productDeleted_staging' };
+    const result = await firstValueFrom(this.client.send(pattern, payload));
+
+    return result;
+  }
+
+  async productRestored(payload: any): Promise<any> {
+    const pattern = { cmd: 'productRestored_staging' };
     const result = await firstValueFrom(this.client.send(pattern, payload));
 
     return result;

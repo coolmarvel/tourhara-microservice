@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, VERSION_NEUTRAL } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Headers, VERSION_NEUTRAL, HttpStatus } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/common/decorators/public.decorator';
 import { PageReqDto } from 'src/common/dtos/req.dto';
@@ -10,6 +10,9 @@ import { ProductStagingService } from 'src/woocommerce/product/services/product/
 export class ProductStagingController {
   constructor(private readonly productStagingService: ProductStagingService) {}
 
+  /**
+   * WooCommerce
+   */
   @Public()
   @Post()
   @ApiOperation({ summary: '단일 상품 생성 API (스테이징)' })
@@ -45,10 +48,57 @@ export class ProductStagingController {
     return await this.productStagingService.deleteAProduct(product_id);
   }
 
+  /**
+   * Database
+   */
   @Public()
   @Post('synchronize')
   @ApiOperation({ summary: '상품 데이터 동기화 (스테이징)' })
-  async synchronizeProductByWooCommerce() {
-    return await this.productStagingService.synchronizeProductByWooCommerce();
+  async synchronizeProduct() {
+    return await this.productStagingService.synchronizeProduct();
+  }
+
+  /**
+   * Webhook
+   */
+  @Public()
+  @Post('webhook-created')
+  @ApiOperation({ summary: '단일 상품 생성 WEBHOOK (스테이징)' })
+  async productCreated(@Headers() header: any, @Body() data: any) {
+    console.log(header);
+
+    const result = await this.productStagingService.productCreated(data);
+
+    if (result) return HttpStatus.OK;
+    else return HttpStatus.BAD_REQUEST;
+  }
+
+  @Public()
+  @Post('webhook-updated')
+  @ApiOperation({ summary: '단일 상품 갱신 WEBHOOK (스테이징)' })
+  async productUpdated(@Headers() header: any, @Body() data: any) {
+    console.log(header);
+    if (header['x-wc-webhook-topic'] !== 'product.updated') return HttpStatus.NO_CONTENT;
+
+    const result = await this.productStagingService.productUpdated(data);
+    if (result) return HttpStatus.OK;
+  }
+
+  @Public()
+  @Post('webhook-deleted')
+  @ApiOperation({ summary: '단일 상품 삭제 WEBHOOK (스테이징)' })
+  async productDeleted(@Headers() header: any, @Body() data: any) {
+    console.log(header);
+
+    return await this.productStagingService.productDeleted(data);
+  }
+
+  @Public()
+  @Post('webhook-restored')
+  @ApiOperation({ summary: '단일 상품 복원 WEBHOOK (스테이징)' })
+  async productRestored(@Headers() header: any, @Body() data: any) {
+    console.log(header);
+
+    return await this.productStagingService.productRestored(data);
   }
 }

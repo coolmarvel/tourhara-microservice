@@ -82,7 +82,7 @@ export class TagProductionService implements ITagProductionService {
       const productTagEntity = queryRunner.manager.create(ProductTag, newProductTag);
       const productTag = await queryRunner.manager.save(productTagEntity);
 
-      return productTag;
+      return true;
     } catch (error) {
       throw error;
     }
@@ -90,6 +90,17 @@ export class TagProductionService implements ITagProductionService {
 
   async update(queryRunner: QueryRunner, tag: any): Promise<any> {
     try {
+      const existingProductTag = await queryRunner.manager.findOne(ProductTag, { where: { id: tag.id } });
+      if (!existingProductTag) return await this.insert(queryRunner, tag);
+
+      const updateProductTag: Partial<ProductTag> = {
+        name: tag.name === '' ? null : tag.name,
+        slug: tag.slug === '' ? null : tag.slug,
+        count: tag.count,
+      };
+      await queryRunner.manager.update(ProductTag, { id: tag.id }, updateProductTag);
+
+      return true;
     } catch (error) {
       throw error;
     }

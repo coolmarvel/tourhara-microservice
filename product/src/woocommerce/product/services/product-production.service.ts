@@ -30,7 +30,7 @@ export class ProductProductionService implements IProductProductionService {
   }
 
   /**
-   * WooCommerce REST API
+   * Database
    */
   async createAProduct(data: any): Promise<any> {
     const product = await this.wooCommerce
@@ -79,9 +79,9 @@ export class ProductProductionService implements IProductProductionService {
   }
 
   /**
-   * Synchoronize WooCommerce to Database
+   * Database
    */
-  async synchronizeProductByWooCommerce(): Promise<any> {
+  async synchronizeProduct(): Promise<any> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
 
@@ -160,9 +160,6 @@ export class ProductProductionService implements IProductProductionService {
     }
   }
 
-  /**
-   * Database Query Method
-   */
   async insert(queryRunner: QueryRunner, image: any, product: any): Promise<any> {
     try {
       // product-image save
@@ -266,4 +263,20 @@ export class ProductProductionService implements IProductProductionService {
   }
 
   async delete(queryRunner: QueryRunner, image: any, product: any): Promise<any> {}
+
+  /**
+   * Webhook
+   */
+  productCreated(payload: any): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
+  productUpdated(payload: any): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
+  productDeleted(payload: any): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
+  productRestored(payload: any): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
 }
