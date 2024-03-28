@@ -5,10 +5,9 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import config from './config';
-import { TypeOrmModule, TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { OrderModule } from './order/order.module';
-import { ProductModule } from './product/product.module';
+import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
+import { WoocommerceModule } from './woocommerce/woocommerce.module';
 
 @Module({
   imports: [
@@ -47,8 +46,7 @@ import { LoggerMiddleware } from './common/middlewares/logger.middleware';
     }),
     UserModule,
     AuthModule,
-    OrderModule,
-    ProductModule,
+    WoocommerceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,12 +1,8 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ProductModule } from './woocommerce/product/product.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { CategoryModule } from './woocommerce/category/category.module';
-import { TagModule } from './woocommerce/tag/tag.module';
-import { AttributeModule } from './woocommerce/attribute/attribute.module';
 import { WoocommerceModule } from './woocommerce/woocommerce.module';
 import config from './config';
 
@@ -45,10 +41,6 @@ import config from './config';
           synchronize: true,
         }) as TypeOrmModuleAsyncOptions,
     }),
-    ProductModule,
-    CategoryModule,
-    TagModule,
-    AttributeModule,
     WoocommerceModule,
   ],
   controllers: [AppController],

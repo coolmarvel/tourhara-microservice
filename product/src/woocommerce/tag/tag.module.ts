@@ -14,6 +14,6 @@ import { TagProductionController } from './controllers/tag-production.controller
   imports: [TypeOrmModule.forFeature(entities, 'staging'), TypeOrmModule.forFeature(entities, 'production')],
   providers: [TagService, TagWebhookService, TagStagingService, TagProductionService],
   controllers: [TagController, TagWebhookController, TagStagingController, TagProductionController],
-  exports: [TagService],
+  exports: [TagService, TagProductionService, TagStagingService],
 })
 export class TagModule {}

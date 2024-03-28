@@ -11,13 +11,13 @@ export interface IAttributeStagingService {
 
   deleteAProductAttribute(attribute_id: number): Promise<any>;
 
-  insertAttribute(queryRunner: QueryRunner, attribute: any): Promise<any>;
+  insert(queryRunner: QueryRunner, attribute: any): Promise<any>;
 
-  updateAttribute(queryRunner: QueryRunner, attribute: any): Promise<any>;
+  update(queryRunner: QueryRunner, attribute: any): Promise<any>;
 
-  selectAttribute(queryRunner: QueryRunner, page: number, size: number): Promise<any>;
+  selectAll(queryRunner: QueryRunner, attribute: any): Promise<any>;
 
-  selectAttributeById(queryRunner: QueryRunner, attribute_id: number): Promise<any>;
+  select(queryRunner: QueryRunner, attribute: any): Promise<any>;
 
-  deleteAttribute(queryRunner: QueryRunner, attribute_id: number): Promise<any>;
+  delete(queryRunner: QueryRunner, attribute: any): Promise<any>;
 }

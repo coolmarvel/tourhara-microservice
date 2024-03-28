@@ -65,7 +65,7 @@ export class AttributeProductionService implements IAttributeProductionService {
     return attribute;
   }
 
-  async insertAttribute(queryRunner: QueryRunner, attribute: any): Promise<any> {
+  async insert(queryRunner: QueryRunner, attribute: any): Promise<any> {
     try {
       const existing = await queryRunner.manager.findOne(ProductAttribute, {
         where: {
@@ -77,25 +77,24 @@ export class AttributeProductionService implements IAttributeProductionService {
         },
       });
       if (existing) return false;
-      else {
-        const newAttribute = {
-          id: attribute.id,
-          name: attribute.name,
-          position: attribute.position,
-          visible: attribute.visible,
-          options: attribute.options,
-        };
-        const attributeEntity = queryRunner.manager.create(ProductAttribute, newAttribute);
-        await queryRunner.manager.save(attributeEntity);
 
-        return true;
-      }
+      const newAttribute = {
+        id: attribute.id,
+        name: attribute.name,
+        position: attribute.position,
+        visible: attribute.visible,
+        options: attribute.options,
+      };
+      const attributeEntity = queryRunner.manager.create(ProductAttribute, newAttribute);
+      const productAttribute = await queryRunner.manager.save(attributeEntity);
+
+      return productAttribute;
     } catch (error) {
       throw error;
     }
   }
 
-  async updateAttribute(queryRunner: QueryRunner, attribute: any): Promise<any> {
+  async update(queryRunner: QueryRunner, attribute: any): Promise<any> {
     try {
       const existing = await queryRunner.manager.findOne(ProductAttribute, {
         where: {
@@ -106,47 +105,42 @@ export class AttributeProductionService implements IAttributeProductionService {
           options: attribute.options,
         },
       });
-      if (existing) {
-        const updateAttribute: Partial<ProductAttribute> = {
-          id: attribute.id,
-          name: attribute.name,
-          position: attribute.position,
-          visible: attribute.visible,
-          options: attribute.options,
-        };
-        await queryRunner.manager.update(ProductAttribute, { id: attribute.id }, updateAttribute);
+      if (!existing) return await this.insert(queryRunner, attribute);
 
-        return true;
-      } else if (!existing) await this.insertAttribute(queryRunner, attribute);
+      const updateAttribute: Partial<ProductAttribute> = {
+        id: attribute.id,
+        name: attribute.name,
+        position: attribute.position,
+        visible: attribute.visible,
+        options: attribute.options,
+      };
+      await queryRunner.manager.update(ProductAttribute, { id: attribute.id }, updateAttribute);
+
+      return true;
     } catch (error) {
       throw error;
     }
   }
 
-  async selectAttribute(queryRunner: QueryRunner, page: number, size: number): Promise<any> {
+  async selectAll(queryRunner: QueryRunner, attribute: any): Promise<any> {
     try {
-      return await queryRunner.manager.find(ProductAttribute, { skip: (page - 1) * size, take: size });
     } catch (error) {
       throw error;
     }
   }
 
-  async selectAttributeById(queryRunner: QueryRunner, attribute_id: number): Promise<any> {
+  async select(queryRunner: QueryRunner, attribute_id: any): Promise<any> {
     try {
-      return await queryRunner.manager.findOne(ProductAttribute, { where: { id: attribute_id } });
+      const productAttribute = await queryRunner.manager.findOne(ProductAttribute, { where: { id: attribute_id } });
+
+      return productAttribute;
     } catch (error) {
       throw error;
     }
   }
 
-  async deleteAttribute(queryRunner: QueryRunner, attribute_id: number): Promise<any> {
+  async delete(queryRunner: QueryRunner, attribute: any): Promise<any> {
     try {
-      const existing = await queryRunner.manager.findOne(ProductAttribute, { where: { id: attribute_id } });
-      if (existing) {
-        await queryRunner.manager.delete(ProductAttribute, { where: { id: attribute_id } });
-
-        return true;
-      } else if (!existing) false;
     } catch (error) {
       throw error;
     }

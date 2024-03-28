@@ -14,6 +14,6 @@ import { CategoryProductionController } from './controllers/category-production.
   imports: [TypeOrmModule.forFeature(entities, 'staging'), TypeOrmModule.forFeature(entities, 'production')],
   providers: [CategoryService, CategoryWebhookService, CategoryStagingService, CategoryProductionService],
   controllers: [CategoryController, CategoryWebhookController, CategoryStagingController, CategoryProductionController],
-  exports: [CategoryService],
+  exports: [CategoryService, CategoryStagingService, CategoryProductionService],
 })
 export class CategoryModule {}
