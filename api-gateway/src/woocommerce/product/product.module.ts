@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
-import { ProductWebhookService } from './services/product/product-webhook.service';
-import { ProductWebhookController } from './controllers/product/product-webhook.controller';
 import { ProductTagWebhookController } from './controllers/tag/product-tag-webhook.controller';
 import { ProductCategoryWebhookController } from './controllers/category/product-category-webhook.controller';
 import { ProductAttributeWebhookController } from './controllers/attribute/product-attribute-webhook.controller';
@@ -37,7 +35,6 @@ import { ProductProductionController } from './controllers/product/product-produ
     AttributeStagingService,
     AttributeProductionService,
     // Webhook
-    ProductWebhookService,
     ProductTagWebhookService,
     ProductCategoryWebhookService,
     ProductAttributeWebhookService,
@@ -62,7 +59,6 @@ import { ProductProductionController } from './controllers/product/product-produ
     CategoryProductionController,
     AttributeProductionController,
     // Webhook
-    ProductWebhookController,
     ProductTagWebhookController,
     ProductCategoryWebhookController,
     ProductAttributeWebhookController,

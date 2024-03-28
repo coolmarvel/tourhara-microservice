@@ -15,7 +15,7 @@ export interface IProductStagingService {
   deleteAProduct(product_id: number): Promise<any>;
 
   /**
-   * Database
+   * Synchronize
    */
   synchronizeProduct(): Promise<any>;
 

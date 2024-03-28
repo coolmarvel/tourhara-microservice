@@ -36,7 +36,7 @@ export class ProductProductionController {
   }
 
   /**
-   * Database
+   * Synchronize
    */
   @MessagePattern({ cmd: 'synchronizeProduct_woocommerce_production' })
   async synchronizeProduct() {
@@ -54,5 +54,15 @@ export class ProductProductionController {
   @MessagePattern({ cmd: 'productUpdated_production' })
   async productUpdated(payload: any) {
     return await this.productProductionService.productUpdated(payload);
+  }
+
+  @MessagePattern({ cmd: 'productDeleted_production' })
+  async productDeleted(payload: any) {
+    return await this.productProductionService.productDeleted(payload);
+  }
+
+  @MessagePattern({ cmd: 'productRestored_production' })
+  async productRestored(payload: any) {
+    return await this.productProductionService.productRestored(payload);
   }
 }

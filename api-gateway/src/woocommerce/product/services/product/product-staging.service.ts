@@ -51,7 +51,7 @@ export class ProductStagingService implements IProductStagingService {
   }
 
   /**
-   * Database
+   * Synchronize
    */
   async synchronizeProduct(): Promise<any> {
     const pattern = { cmd: 'synchronizeProduct_woocommerce_staging' };

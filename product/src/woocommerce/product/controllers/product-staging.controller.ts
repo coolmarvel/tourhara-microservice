@@ -36,7 +36,7 @@ export class ProductStagingController {
   }
 
   /**
-   * Database
+   * Synchronize
    */
   @MessagePattern({ cmd: 'synchronizeProduct_woocommerce_staging' })
   async synchronizeProduct() {

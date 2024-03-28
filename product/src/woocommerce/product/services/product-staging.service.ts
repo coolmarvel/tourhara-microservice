@@ -79,7 +79,7 @@ export class ProductStagingService implements IProductStagingService {
   }
 
   /**
-   * Database
+   * Synchronize
    */
   async synchronizeProduct(): Promise<any> {
     const queryRunner = this.dataSource.createQueryRunner();

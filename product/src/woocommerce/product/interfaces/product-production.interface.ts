@@ -15,7 +15,7 @@ export interface IProductProductionService {
   deleteAProduct(product_id: number): Promise<any>;
 
   /**
-   * Database
+   * Synchronize
    */
   synchronizeProduct(): Promise<any>;
 

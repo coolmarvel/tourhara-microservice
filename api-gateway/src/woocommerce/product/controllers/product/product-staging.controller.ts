@@ -50,7 +50,7 @@ export class ProductStagingController {
   }
 
   /**
-   * Database
+   * Synchronize
    */
   @Public()
   @Post('synchronize')

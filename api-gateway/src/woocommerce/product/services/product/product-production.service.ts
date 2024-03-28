@@ -7,6 +7,9 @@ import { IProductProductionService } from 'src/woocommerce/product/interfaces/pr
 export class ProductProductionService implements IProductProductionService {
   constructor(@Inject('PRODUCT_SERVICE') private client: ClientProxy) {}
 
+  /**
+   * WooCommerce
+   */
   async createAProduct(data: any): Promise<any> {
     const pattern = { cmd: 'createAProduct_woocommerce_production' };
     const payload = data;
@@ -47,9 +50,43 @@ export class ProductProductionService implements IProductProductionService {
     return result;
   }
 
+  /**
+   * Synchronize
+   */
   async synchronizeProduct(): Promise<any> {
     const pattern = { cmd: 'synchronizeProduct_woocommerce_production' };
     const payload = {};
+    const result = await firstValueFrom(this.client.send(pattern, payload));
+
+    return result;
+  }
+
+  /**
+   * Webhook
+   */
+  async productCreated(payload: any): Promise<any> {
+    const pattern = { cmd: 'productCreated_production' };
+    const result = await firstValueFrom(this.client.send(pattern, payload));
+
+    return result;
+  }
+
+  async productUpdated(payload: any): Promise<any> {
+    const pattern = { cmd: 'productUpdated_production' };
+    const result = await firstValueFrom(this.client.send(pattern, payload));
+
+    return result;
+  }
+
+  async productDeleted(payload: any): Promise<any> {
+    const pattern = { cmd: 'productDeleted_production' };
+    const result = await firstValueFrom(this.client.send(pattern, payload));
+
+    return result;
+  }
+
+  async productRestored(payload: any): Promise<any> {
+    const pattern = { cmd: 'productRestored_production' };
     const result = await firstValueFrom(this.client.send(pattern, payload));
 
     return result;

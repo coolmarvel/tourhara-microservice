@@ -30,7 +30,7 @@ export class ProductProductionService implements IProductProductionService {
   }
 
   /**
-   * Database
+   * Synchronize
    */
   async createAProduct(data: any): Promise<any> {
     const product = await this.wooCommerce
@@ -79,7 +79,7 @@ export class ProductProductionService implements IProductProductionService {
   }
 
   /**
-   * Database
+   * Synchronize
    */
   async synchronizeProduct(): Promise<any> {
     const queryRunner = this.dataSource.createQueryRunner();
@@ -272,22 +272,135 @@ export class ProductProductionService implements IProductProductionService {
    * Webhook
    */
   async productCreated(payload: any): Promise<any> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+
     try {
-    } catch (error) {}
+      await queryRunner.startTransaction();
+
+      const categories = payload.categories;
+      for (const category of categories) {
+        await this.categoryProductionService.insert(queryRunner, category);
+      }
+
+      const tags = payload.tags;
+      for (const tag of tags) {
+        await this.tagProductionService.insert(queryRunner, tag);
+      }
+
+      const attributes = payload.attributes;
+      for (const attribute of attributes) {
+        await this.attributeProductionService.insert(queryRunner, attribute);
+      }
+
+      const images = payload.images;
+      for (const image of images) {
+        await this.insert(queryRunner, image, null);
+      }
+
+      await this.insert(queryRunner, null, payload);
+
+      await queryRunner.commitTransaction();
+      return true;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async productUpdated(payload: any): Promise<any> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+
     try {
-    } catch (error) {}
+      await queryRunner.startTransaction();
+
+      const existingProduct = await queryRunner.manager.findOne(Product, { where: { id: payload.id } });
+      if (!existingProduct) return false;
+
+      const categories = payload.categories;
+      for (const category of categories) {
+        await this.categoryProductionService.update(queryRunner, category);
+      }
+
+      const tags = payload.tags;
+      for (const tag of tags) {
+        await this.tagProductionService.update(queryRunner, tag);
+      }
+
+      const attributes = payload.attributes;
+      for (const attribute of attributes) {
+        await this.attributeProductionService.update(queryRunner, attribute);
+      }
+
+      const images = payload.images;
+      for (const image of images) {
+        await this.update(queryRunner, image, null);
+      }
+
+      const product = payload;
+      await this.update(queryRunner, null, product);
+
+      await queryRunner.commitTransaction();
+
+      return true;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async productDeleted(payload: any): Promise<any> {
+    console.log(payload);
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+
     try {
-    } catch (error) {}
+      await queryRunner.startTransaction();
+
+      const existingProduct = await queryRunner.manager.findOne(Product, { where: { id: payload.id } });
+      if (!existingProduct) return true;
+
+      await queryRunner.manager.delete(Product, existingProduct.productId);
+
+      await queryRunner.commitTransaction();
+
+      return true;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async productRestored(payload: any): Promise<any> {
+    console.log(payload);
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+
     try {
-    } catch (error) {}
+      await queryRunner.startTransaction();
+
+      const existingProduct = await queryRunner.manager.findOne(Product, { where: { id: payload.id } });
+      if (existingProduct) return await this.productUpdated(payload);
+
+      await this.productCreated(payload);
+
+      await queryRunner.commitTransaction();
+
+      return true;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 }
