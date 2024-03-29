@@ -19,8 +19,9 @@ export class CreateReqDto {
 }
 
 export class RetrieveReqDto {
-  @IsString()
-  order_id: string;
+  @IsInt()
+  @Transform((param) => Number(param.value))
+  order_id: number;
 }
 
 export class ListReqDto {
@@ -34,14 +35,16 @@ export class ListReqDto {
 }
 
 export class UpdateReqDto {
-  @IsString()
-  order_id: string;
+  @IsInt()
+  @Transform((param) => Number(param.value))
+  order_id: number;
 
   @IsObject()
   data: any;
 }
 
 export class DeleteReqDto {
-  @IsString()
-  order_id: string;
+  @IsInt()
+  @Transform((param) => Number(param.value))
+  order_id: number;
 }

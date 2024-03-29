@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { IProductProductionService } from '../interfaces/product-production.interface';
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
@@ -9,9 +8,10 @@ import { TagProductionService } from 'src/woocommerce/tag/services/tag-productio
 import { AttributeProductionService } from 'src/woocommerce/attribute/services/attribute-production.service';
 import { ProductImage } from '../entities/product-image.entity';
 import { Product } from '../entities/product.entity';
+import { IProductService } from '../interfaces/product.interface';
 
 @Injectable()
-export class ProductProductionService implements IProductProductionService {
+export class ProductProductionService implements IProductService {
   private wooCommerce: WooCommerceRestApi;
 
   constructor(

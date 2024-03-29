@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { IUsimProductionService } from '../interfaces/usim-production.interface';
 import { QueryRunner } from 'typeorm';
 import { SnapInfo } from '../entities/snap-info.entity';
 import { UsimInfo } from '../entities/usim-info.entity';
 import { H2ousim } from '../entities/h2ousim.entity';
+import { IUsimService } from '../interfaces/usim.interface';
 
 @Injectable()
-export class UsimProductionService implements IUsimProductionService {
+export class UsimProductionService implements IUsimService {
   async insert(queryRunner: QueryRunner, snapInfo: any, usimInfo: any, h2ousim: any, orderId: any): Promise<any> {
     try {
       const existingOrderSnapInfo = await queryRunner.manager.findOne(SnapInfo, { where: { orderId: orderId } });

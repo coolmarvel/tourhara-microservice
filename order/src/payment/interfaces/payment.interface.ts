@@ -1,5 +1,5 @@
 import { QueryRunner } from 'typeorm';
 
 export interface IPaymentService {
-  savePayment_prod(queryRunner: QueryRunner, orderId: string, payment: any): Promise<any>;
+  insert(queryRunner: QueryRunner, payment: any, orderId: string): Promise<any>;
 }

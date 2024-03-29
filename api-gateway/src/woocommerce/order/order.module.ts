@@ -1,25 +1,25 @@
 import { Module } from '@nestjs/common';
-import { OrderService } from './services/order.service';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
-import { OrderController } from './controllers/order.controller';
-import { OrderWebhookService } from './services/order-webhook.service';
-import { OrderWebhookController } from './controllers/order-webhook.controller';
+import OrderStagingService from './services/order-staging.service';
+import { OrderProductionService } from './services/order-production.service';
+import { OrderStagingController } from './controllers/order-staging.controller';
+import { OrderProductionController } from './controllers/order-production.controller';
 
 @Module({
   providers: [
-    OrderService,
-    OrderWebhookService,
     {
       provide: 'ORDER_SERVICE',
       useFactory: () => {
         return ClientProxyFactory.create({
           transport: Transport.TCP,
-          options: { host: process.env.ORDER_DOCKER_FLAG === 'true' ? process.env.ORDER_DOCKER_HOST : '127.0.0.1', port: Number(process.env.ORDER_DOCKER_PORT) },
+          options: { host: process.env.ORDER_DOCKER_FLAG === 'true' ? process.env.ORDER_DOCKER_HOST : 'localhost', port: Number(process.env.ORDER_DOCKER_PORT) },
         });
       },
     },
+    OrderStagingService,
+    OrderProductionService,
   ],
-  exports: [OrderService],
-  controllers: [OrderController, OrderWebhookController],
+  exports: [OrderStagingService, OrderProductionService],
+  controllers: [OrderStagingController, OrderProductionController],
 })
 export class OrderModule {}

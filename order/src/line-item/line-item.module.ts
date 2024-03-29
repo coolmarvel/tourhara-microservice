@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { LineItemService } from './services/line-item.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import entities from './entities';
 import { LineItemStagingService } from './services/line-item-staging.service';
@@ -7,7 +6,7 @@ import { LineItemProductionService } from './services/line-item-production.servi
 
 @Module({
   imports: [TypeOrmModule.forFeature(entities, 'staging'), TypeOrmModule.forFeature(entities, 'production')],
-  providers: [LineItemService, LineItemStagingService, LineItemProductionService],
-  exports: [LineItemService, LineItemStagingService, LineItemProductionService],
+  providers: [LineItemStagingService, LineItemProductionService],
+  exports: [LineItemStagingService, LineItemProductionService],
 })
 export class LineItemModule {}

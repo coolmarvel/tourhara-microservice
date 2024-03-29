@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { IJfkProductionService } from '../interfaces/jfk-production.interface';
 import { QueryRunner } from 'typeorm';
 import { JfkOneway } from '../entities/jfk-oneway.entity';
 import { JfkShuttleRt } from '../entities/jfk-shuttle-rt.entity';
+import { IJfkService } from '../interfaces/jfk.interface';
 
 @Injectable()
-export class JfkProductionService implements IJfkProductionService {
+export class JfkProductionService implements IJfkService {
   async insert(queryRunner: QueryRunner, jfkOneway: any, jfkShuttleRt: any, orderId: string): Promise<any> {
     try {
       const existingOrderJfkOneway = await queryRunner.manager.findOne(JfkOneway, { where: { orderId: orderId } });

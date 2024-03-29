@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { ICategoryProductionService } from '../interfaces/category-production.interface';
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 import { ConfigService } from '@nestjs/config';
 import { QueryRunner } from 'typeorm';
 import { ProductCategory } from '../entities/category.entity';
 import { ProductCategoryImage } from '../entities/category-image.entity';
+import { ICategoryService } from '../interfaces/category.interface';
 
 @Injectable()
-export class CategoryProductionService implements ICategoryProductionService {
+export class CategoryProductionService implements ICategoryService {
   private wooCommerce: WooCommerceRestApi;
 
   constructor(private configService: ConfigService) {

@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { IGuestHouseProductionService } from '../interfaces/guest-house-production.interface';
 import { QueryRunner } from 'typeorm';
 import { GuestHouse } from '../entities/guest-house.entity';
+import { IGuestHouseService } from '../interfaces/guest-house.interface';
 
 @Injectable()
-export class GuestHouseProductionService implements IGuestHouseProductionService {
+export class GuestHouseProductionService implements IGuestHouseService {
   async insert(queryRunner: QueryRunner, guestHouse: any, orderId: string): Promise<any> {
     try {
       const existingOrderGuestHouse = await queryRunner.manager.findOne(GuestHouse, { where: { orderId: orderId } });

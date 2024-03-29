@@ -6,14 +6,16 @@ import { Observable } from 'rxjs';
 import { IS_PUBLIC_KEY } from 'src/common/decorators/public.decorator';
 import { ROLES_KEY } from 'src/common/decorators/role.decorator';
 import { Role } from 'src/user/constants/user.enum';
-import { UserService } from 'src/user/services/user.service';
+import { UserProductionService } from 'src/user/services/user-production.service';
+import { UserStagingService } from 'src/user/services/user-staging.service';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
   constructor(
     private reflector: Reflector,
     private jwtService: JwtService,
-    private userService: UserService,
+    private userStagingService: UserStagingService,
+    private userProductionService: UserProductionService,
   ) {
     super();
   }
@@ -33,16 +35,16 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     if (!token) throw new UnauthorizedException('accessToken is required.');
 
     const decoded = this.jwtService.decode(token);
-    if (!['/api/auth/stag/refresh', '/api/auth/prod/refresh'].includes(url) && decoded['tokenType'] === 'refresh') {
+    if (!['/api/auth/staging/refresh', '/api/auth/production/refresh'].includes(url) && decoded['tokenType'] === 'refresh') {
       throw new UnauthorizedException('accessToken is required.');
     }
 
     const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [context.getHandler(), context.getClass()]);
     if (requiredRoles) {
       const userId = decoded['sub'];
-      const isStag = url.includes('/stag/');
-      
-      const checkUserIsAdmin = isStag ? this.userService.checkUserIsAdmin_stag(userId) : this.userService.checkUserIsAdmin_prod(userId);
+      const isStaging = url.includes('/staging/');
+
+      const checkUserIsAdmin = isStaging ? this.userStagingService.checkUserIsAdmin(userId) : this.userProductionService.checkUserIsAdmin(userId);
 
       return checkUserIsAdmin;
     }

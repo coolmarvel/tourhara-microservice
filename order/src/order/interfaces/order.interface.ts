@@ -1,30 +1,40 @@
 import { QueryRunner } from 'typeorm';
 
 export interface IOrderService {
-  createAnOrder_stag(payment: object, billing: object, shipping: object, line_items: object, shipping_lines: object): Promise<any>;
+  /**
+   * WooCommerce
+   */
+  createAnOrder(payload: any): Promise<any>;
 
-  retrieveAnOrder_stag(order_id: string): Promise<any>;
+  retrieveAnOrder(order_id: number): Promise<any>;
 
-  listAllOrders_stag(page: number, size: number): Promise<any>;
+  listAllOrders(page: number, size: number): Promise<any>;
 
-  updateAnOrder_stag(order_id: string, data: any): Promise<any>;
+  updateAnOrder(order_id: number, data: any): Promise<any>;
 
-  deleteAnOrder_stag(order_id: string): Promise<any>;
+  deleteAnOrder(order_id: number): Promise<any>;
 
-  createAnOrder_prod(payment: object, billing: object, shipping: object, line_items: object, shipping_lines: object): Promise<any>;
+  /**
+   * Synchronize
+   */
+  synchronizeOrder(): Promise<any>;
 
-  retrieveAnOrder_prod(order_id: string): Promise<any>;
+  insert(queryRunner: QueryRunner, order: any, metadata: any, orderId: string): Promise<any>;
 
-  listAllOrders_prod(page: number, size: number): Promise<any>;
+  update(queryRunner: QueryRunner): Promise<any>;
 
-  updateAnOrder_prod(order_id: string, data: any): Promise<any>;
+  select(queryRunner: QueryRunner): Promise<any>;
 
-  deleteAnOrder_prod(order_id: string): Promise<any>;
+  delete(queryRunner: QueryRunner): Promise<any>;
 
-  // --
-  insertOrder_prod(): Promise<any>;
+  /**
+   * Webhook
+   */
+  orderCreated(payload: any): Promise<any>;
 
-  saveOrderMetadata_prod(queryRunner: QueryRunner, orderId: string, metadatas: any): Promise<any>;
+  orderUpdated(payload: any): Promise<any>;
 
-  saveLineItems_prod(queryRunner: QueryRunner, orderId: string, lineItems: any): Promise<any>;
+  orderDeleted(payload: any): Promise<any>;
+
+  orderRestored(payload: any): Promise<any>;
 }

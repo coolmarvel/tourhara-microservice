@@ -1,26 +1,32 @@
 import { CreateOrderReqDto } from '../dtos/req.dto';
 
 export interface IOrderService {
-  createAnOrder_stag(data: CreateOrderReqDto): Promise<any>;
+  /**
+   * WooCommerce
+   */
+  createAnOrder(payload: any): Promise<any>;
 
-  retrieveAnOrder_stag(order_id: string): Promise<any>;
+  retrieveAnOrder(order_id: number): Promise<any>;
 
-  listAllOrders_stag(page: number, size: number): Promise<any>;
+  listAllOrders(page: number, size: number): Promise<any>;
 
-  updateAnOrder_stag(order_id: string, data: any): Promise<any>;
+  updateAnOrder(order_id: number, data: any): Promise<any>;
 
-  deleteAnOrder_stag(order_id: string): Promise<any>;
+  deleteAnOrder(order_id: number): Promise<any>;
 
-  createAnOrder_prod(data: CreateOrderReqDto): Promise<any>;
+  /**
+   * Synchronize
+   */
+  synchronizeOrder(): Promise<any>;
 
-  retrieveAnOrder_prod(order_id: string): Promise<any>;
+  /**
+   * Webhook
+   */
+  orderCreated(payload: any): Promise<any>;
 
-  listAllOrders_prod(page: number, size: number): Promise<any>;
+  orderUpdated(payload: any): Promise<any>;
 
-  updateAnOrder_prod(order_id: string, data: any): Promise<any>;
+  orderDeleted(payload: any): Promise<any>;
 
-  deleteAnOrder_prod(order_id: string): Promise<any>;
-
-  // --
-  insertOrder_prod(): Promise<any>;
+  orderRestored(payload: any): Promise<any>;
 }

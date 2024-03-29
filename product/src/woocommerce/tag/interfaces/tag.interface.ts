@@ -1,6 +1,6 @@
 import { QueryRunner } from 'typeorm';
 
-export interface ITagProductionService {
+export interface ITagService {
   /**
    * Webhook
    */

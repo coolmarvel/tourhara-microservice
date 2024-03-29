@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ICouponeLineProductionService } from '../interfaces/coupone-line-production.interface';
+import { ICouponeLineService } from '../interfaces/coupone-line.interface';
 
 @Injectable()
-export class CouponeLineProductionService implements ICouponeLineProductionService {}
+export class CouponeLineProductionService implements ICouponeLineService {}

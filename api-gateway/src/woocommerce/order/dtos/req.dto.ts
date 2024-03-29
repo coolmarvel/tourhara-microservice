@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 
 export class CreateOrderReqDto {
   @ApiProperty({ required: true, example: 'bacs' })
@@ -54,12 +55,14 @@ export class CreateOrderReqDto {
 
 export class RetrieveOrderReqDto {
   @ApiProperty({ required: true })
-  order_id: string;
+  @Transform((param) => Number(param.value))
+  order_id: number;
 }
 
 export class UpdateOrderParamReqDto {
   @ApiProperty({ required: true })
-  order_id: string;
+  @Transform((param) => Number(param.value))
+  order_id: number;
 }
 
 export class UpdateOrderBodyReqDto {
@@ -69,7 +72,8 @@ export class UpdateOrderBodyReqDto {
 
 export class DeleteOrderReqDto {
   @ApiProperty({ required: true })
-  order_id: string;
+  @Transform((param) => Number(param.value))
+  order_id: number;
 }
 
 // WEBHOOK DTO
