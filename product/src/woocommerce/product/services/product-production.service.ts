@@ -30,7 +30,7 @@ export class ProductProductionService implements IProductProductionService {
   }
 
   /**
-   * Synchronize
+   * WooCommerce
    */
   async createAProduct(data: any): Promise<any> {
     const product = await this.wooCommerce
@@ -244,7 +244,85 @@ export class ProductProductionService implements IProductProductionService {
     }
   }
 
-  async update(queryRunner: QueryRunner, image: any, product: any): Promise<any> {}
+  async update(queryRunner: QueryRunner, image: any, product: any): Promise<any> {
+    try {
+      // product-image update
+      if (image !== null && product === null) {
+        const existingProductImage = await queryRunner.manager.findOne(ProductImage, { where: { id: image.id } });
+        if (!existingProductImage) return await this.insert(queryRunner, image, null);
+
+        const updateProductImage: Partial<ProductImage> = {
+          name: image.name,
+          src: image.src,
+          alt: image.alt === '' ? null : image.alt,
+          dateCreated: image.date_created,
+          dateCreatedGmt: image.date_created_gmt,
+          dateModified: image.date_modified,
+          dateModifiedGmt: image.date_modified_gmt,
+        };
+        await queryRunner.manager.update(ProductImage, { id: image.id }, updateProductImage);
+      }
+
+      // product update
+      if (image === null && product !== null) {
+        const productCategoryIds: string[] = [];
+        const productTagIds: string[] = [];
+        const productAttributeIds: string[] = [];
+        const productImageIds: string[] = [];
+
+        const categories = product.categories;
+        for (const category of categories) {
+          const productCategory = await this.categoryProductionService.select(queryRunner, category.id);
+          productCategoryIds.push(productCategory.productCategoryId);
+        }
+
+        const tags = product.tags;
+        for (const tag of tags) {
+          const productTag = await this.tagProductionService.select(queryRunner, tag.id);
+          productTagIds.push(productTag.productTagId);
+        }
+
+        const attributes = product.attributes;
+        for (const attribute of attributes) {
+          const productAttribute = await this.attributeProductionService.select(queryRunner, attribute.id);
+          productAttributeIds.push(productAttribute.productAttributeId);
+        }
+
+        const images = product.images;
+        for (const image of images) {
+          const productImage = await this.select(queryRunner, image.id, null);
+          productImageIds.push(productImage.productImageId);
+        }
+
+        const updateProduct: Partial<Product> = {
+          name: product.name,
+          slug: product.slug,
+          type: product.type,
+          status: product.status,
+          featured: product.featured,
+          price: product.price === '' ? null : product.price,
+          regularPrice: product.regular_price === '' ? null : product.regular_price,
+          onSale: product.on_sale,
+          salePrice: product.sale_price === '' ? null : product.sale_price,
+          purchasable: product.purchasable === '' ? null : product.purchasable,
+          productCategoryId: productCategoryIds.length === 0 ? null : productCategoryIds,
+          productTagId: productTagIds.length === 0 ? null : productTagIds,
+          productImageId: productImageIds.length === 0 ? null : productImageIds,
+          productAttributeId: productAttributeIds.length === 0 ? null : productAttributeIds,
+          variations: product.variations.length === 0 ? null : product.variations,
+          dateCreated: product.date_created,
+          dateCreatedGmt: product.date_created_gmt,
+          dateModified: product.date_modified,
+          dateModifiedGmt: product.date_modified_gmt,
+        };
+        await queryRunner.manager.update(Product, { id: product.id }, updateProduct);
+      }
+
+      return true;
+    } catch (error) {
+      throw error;
+    }
+  }
 
   async selectAll(queryRunner: QueryRunner, image: any, product: any): Promise<any> {}
 
@@ -266,8 +344,18 @@ export class ProductProductionService implements IProductProductionService {
     }
   }
 
-  async delete(queryRunner: QueryRunner, image: any, product: any): Promise<any> {}
+  async delete(queryRunner: QueryRunner, image: any, product: any): Promise<any> {
+    try {
+      const existingProduct = await queryRunner.manager.findOne(Product, { where: { id: product.id } });
+      if (!existingProduct) return true;
 
+      await queryRunner.manager.delete(Product, existingProduct.productId);
+
+      return true;
+    } catch (error) {
+      throw error;
+    }
+  }
   /**
    * Webhook
    */

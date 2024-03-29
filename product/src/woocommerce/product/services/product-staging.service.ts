@@ -5,9 +5,9 @@ import { ConfigService } from '@nestjs/config';
 import { ProductImage } from '../entities/product-image.entity';
 import { DataSource, QueryRunner } from 'typeorm';
 import { Product } from '../entities/product.entity';
-import { TagProductionService } from 'src/woocommerce/tag/services/tag-production.service';
-import { CategoryProductionService } from 'src/woocommerce/category/services/category-production.service';
-import { AttributeProductionService } from 'src/woocommerce/attribute/services/attribute-production.service';
+import { TagStagingService } from 'src/woocommerce/tag/services/tag-staging.service';
+import { CategoryStagingService } from 'src/woocommerce/category/services/category-staging.service';
+import { AttributeStagingService } from 'src/woocommerce/attribute/services/attribute-staging.service';
 import { InjectDataSource } from '@nestjs/typeorm';
 
 @Injectable()
@@ -16,9 +16,9 @@ export class ProductStagingService implements IProductStagingService {
 
   constructor(
     private configService: ConfigService,
-    private tagProductionService: TagProductionService,
-    private categoryProductionService: CategoryProductionService,
-    private attributeProductionService: AttributeProductionService,
+    private tagStagingService: TagStagingService,
+    private categoryStagingService: CategoryStagingService,
+    private attributeStagingService: AttributeStagingService,
     @InjectDataSource('staging') private dataSource: DataSource,
   ) {
     this.wooCommerce = new WooCommerceRestApi({
@@ -97,10 +97,10 @@ export class ProductStagingService implements IProductStagingService {
         console.log(`Product Category migration (page: ${i})`);
 
         if (categoriesFlag) {
-          const categories = await this.categoryProductionService.listAllProductCategories(i, 10);
+          const categories = await this.categoryStagingService.listAllProductCategories(i, 10);
           for (const category of categories) {
             // TODO. product category, category-image save
-            const productCategory = await this.categoryProductionService.insert(queryRunner, category);
+            const productCategory = await this.categoryStagingService.insert(queryRunner, category);
           }
 
           categoriesFlag = categories.length > 0;
@@ -112,10 +112,10 @@ export class ProductStagingService implements IProductStagingService {
         console.log(`Product Tag migration (page: ${i})`);
 
         if (tagsFlag) {
-          const tags = await this.tagProductionService.listAllProductTags(i, 10);
+          const tags = await this.tagStagingService.listAllProductTags(i, 10);
           for (const tag of tags) {
             // TODO. tag save
-            const productTag = await this.tagProductionService.insert(queryRunner, tag);
+            const productTag = await this.tagStagingService.insert(queryRunner, tag);
           }
 
           tagsFlag = tags.length > 0;
@@ -132,7 +132,7 @@ export class ProductStagingService implements IProductStagingService {
             const attributes = product.attributes;
             for (const attribute of attributes) {
               // TODO. product-attribute save
-              const productAttribute = await this.attributeProductionService.insert(queryRunner, attribute);
+              const productAttribute = await this.attributeStagingService.insert(queryRunner, attribute);
             }
 
             const images = product.images;
@@ -190,19 +190,19 @@ export class ProductStagingService implements IProductStagingService {
 
         const categories = product.categories;
         for (const category of categories) {
-          const productCategory = await this.categoryProductionService.select(queryRunner, category.id);
+          const productCategory = await this.categoryStagingService.select(queryRunner, category.id);
           productCategoryIds.push(productCategory.productCategoryId);
         }
 
         const tags = product.tags;
         for (const tag of tags) {
-          const productTag = await this.tagProductionService.select(queryRunner, tag.id);
+          const productTag = await this.tagStagingService.select(queryRunner, tag.id);
           productTagIds.push(productTag.productTagId);
         }
 
         const attributes = product.attributes;
         for (const attribute of attributes) {
-          const productAttribute = await this.attributeProductionService.select(queryRunner, attribute.id);
+          const productAttribute = await this.attributeStagingService.select(queryRunner, attribute.id);
           productAttributeIds.push(productAttribute.productAttributeId);
         }
 
@@ -272,19 +272,19 @@ export class ProductStagingService implements IProductStagingService {
 
         const categories = product.categories;
         for (const category of categories) {
-          const productCategory = await this.categoryProductionService.select(queryRunner, category.id);
+          const productCategory = await this.categoryStagingService.select(queryRunner, category.id);
           productCategoryIds.push(productCategory.productCategoryId);
         }
 
         const tags = product.tags;
         for (const tag of tags) {
-          const productTag = await this.tagProductionService.select(queryRunner, tag.id);
+          const productTag = await this.tagStagingService.select(queryRunner, tag.id);
           productTagIds.push(productTag.productTagId);
         }
 
         const attributes = product.attributes;
         for (const attribute of attributes) {
-          const productAttribute = await this.attributeProductionService.select(queryRunner, attribute.id);
+          const productAttribute = await this.attributeStagingService.select(queryRunner, attribute.id);
           productAttributeIds.push(productAttribute.productAttributeId);
         }
 
@@ -327,20 +327,35 @@ export class ProductStagingService implements IProductStagingService {
   async selectAll(queryRunner: QueryRunner, image: any, product: any): Promise<any> {}
 
   async select(queryRunner: QueryRunner, image_id: any, product_id: any): Promise<any> {
-    if (image_id !== null && product_id === null) {
-      const productImage = await queryRunner.manager.findOne(ProductImage, { where: { id: image_id } });
+    try {
+      if (image_id !== null && product_id === null) {
+        const productImage = await queryRunner.manager.findOne(ProductImage, { where: { id: image_id } });
 
-      return productImage;
-    }
+        return productImage;
+      }
 
-    if (image_id === null && product_id !== null) {
-      const product = await queryRunner.manager.findOne(Product, { where: { id: product_id } });
+      if (image_id === null && product_id !== null) {
+        const product = await queryRunner.manager.findOne(Product, { where: { id: product_id } });
 
-      return product;
+        return product;
+      }
+    } catch (error) {
+      throw error;
     }
   }
 
-  async delete(queryRunner: QueryRunner, image: any, product: any): Promise<any> {}
+  async delete(queryRunner: QueryRunner, image: any, product: any): Promise<any> {
+    try {
+      const existingProduct = await queryRunner.manager.findOne(Product, { where: { id: product.id } });
+      if (!existingProduct) return true;
+
+      await queryRunner.manager.delete(Product, existingProduct.productId);
+
+      return true;
+    } catch (error) {
+      throw error;
+    }
+  }
 
   /**
    * Webhook
@@ -354,17 +369,17 @@ export class ProductStagingService implements IProductStagingService {
 
       const categories = payload.categories;
       for (const category of categories) {
-        await this.categoryProductionService.insert(queryRunner, category);
+        await this.categoryStagingService.insert(queryRunner, category);
       }
 
       const tags = payload.tags;
       for (const tag of tags) {
-        await this.tagProductionService.insert(queryRunner, tag);
+        await this.tagStagingService.insert(queryRunner, tag);
       }
 
       const attributes = payload.attributes;
       for (const attribute of attributes) {
-        await this.attributeProductionService.insert(queryRunner, attribute);
+        await this.attributeStagingService.insert(queryRunner, attribute);
       }
 
       const images = payload.images;
@@ -396,17 +411,17 @@ export class ProductStagingService implements IProductStagingService {
 
       const categories = payload.categories;
       for (const category of categories) {
-        await this.categoryProductionService.update(queryRunner, category);
+        await this.categoryStagingService.update(queryRunner, category);
       }
 
       const tags = payload.tags;
       for (const tag of tags) {
-        await this.tagProductionService.update(queryRunner, tag);
+        await this.tagStagingService.update(queryRunner, tag);
       }
 
       const attributes = payload.attributes;
       for (const attribute of attributes) {
-        await this.attributeProductionService.update(queryRunner, attribute);
+        await this.attributeStagingService.update(queryRunner, attribute);
       }
 
       const images = payload.images;
@@ -429,18 +444,13 @@ export class ProductStagingService implements IProductStagingService {
   }
 
   async productDeleted(payload: any): Promise<any> {
-    console.log(payload);
-
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
 
     try {
       await queryRunner.startTransaction();
 
-      const existingProduct = await queryRunner.manager.findOne(Product, { where: { id: payload.id } });
-      if (!existingProduct) return true;
-
-      await queryRunner.manager.delete(Product, existingProduct.productId);
+      await this.delete(queryRunner, null, payload);
 
       await queryRunner.commitTransaction();
 
@@ -454,8 +464,6 @@ export class ProductStagingService implements IProductStagingService {
   }
 
   async productRestored(payload: any): Promise<any> {
-    console.log(payload);
-
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
 

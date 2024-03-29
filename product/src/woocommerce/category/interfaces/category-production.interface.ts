@@ -1,6 +1,9 @@
 import { QueryRunner } from 'typeorm';
 
 export interface ICategoryProductionService {
+  /**
+   * WooCommerce
+   */
   createAProductCategory(data: any): Promise<any>;
 
   retrieveAProductCategory(category_id: number): Promise<any>;
@@ -11,6 +14,9 @@ export interface ICategoryProductionService {
 
   deleteAProductCategory(category_id: number): Promise<any>;
 
+  /**
+   * Synchronize
+   */
   insert(queryRunner: QueryRunner, category: any): Promise<any>;
 
   update(queryRunner: QueryRunner, category: any): Promise<any>;

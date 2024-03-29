@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { CouponLineService } from './services/coupon-line.service';
-import { CouponLineController } from './controllers/coupon-line.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import entities from './entities';
+import { CouponeLineStagingService } from './services/coupon-line-staging.service';
+import { CouponeLineProductionService } from './services/coupone-line-production.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature(entities, 'staging'), TypeOrmModule.forFeature(entities, 'production')],
-  providers: [CouponLineService],
-  controllers: [CouponLineController],
+  providers: [CouponeLineStagingService, CouponeLineProductionService],
+  exports: [CouponeLineStagingService, CouponeLineProductionService],
 })
 export class CouponLineModule {}

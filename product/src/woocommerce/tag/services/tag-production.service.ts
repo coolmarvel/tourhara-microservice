@@ -2,14 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { ITagProductionService } from '../interfaces/tag-production.interface';
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 import { ConfigService } from '@nestjs/config';
-import { QueryRunner } from 'typeorm';
+import { DataSource, QueryRunner } from 'typeorm';
 import { ProductTag } from '../entities/tag.entity';
+import { InjectDataSource } from '@nestjs/typeorm';
 
 @Injectable()
 export class TagProductionService implements ITagProductionService {
   private wooCommerce: WooCommerceRestApi;
 
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    @InjectDataSource('production') private dataSource: DataSource,
+  ) {
     this.wooCommerce = new WooCommerceRestApi({
       url: this.configService.get('wc-prod.url'),
       consumerKey: this.configService.get('wc-prod.key'),
@@ -18,6 +22,9 @@ export class TagProductionService implements ITagProductionService {
     });
   }
 
+  /**
+   * WooCommerce
+   */
   async createAProductTag(data: any): Promise<any> {
     const tag = await this.wooCommerce
       .post('products/tags', data)
@@ -65,9 +72,8 @@ export class TagProductionService implements ITagProductionService {
   }
 
   /**
-   * Database Query Method
+   * Synchronize
    */
-
   async insert(queryRunner: QueryRunner, tag: any): Promise<any> {
     try {
       const existingProductTag = await queryRunner.manager.findOne(ProductTag, { where: { id: tag.id } });
@@ -123,8 +129,12 @@ export class TagProductionService implements ITagProductionService {
     }
   }
 
-  async delete(queryRunner: QueryRunner, category: any): Promise<any> {
+  async delete(queryRunner: QueryRunner, tag: any): Promise<any> {
     try {
+      const existingProductTag = await queryRunner.manager.findOne(ProductTag, { where: { id: tag.id } });
+      if (!existingProductTag) return true;
+
+      await queryRunner.manager.delete(ProductTag, existingProductTag.productTagId);
     } catch (error) {
       throw error;
     }

@@ -19,6 +19,9 @@ export class CategoryStagingService implements ICategoryStagingService {
     });
   }
 
+  /**
+   * WooCommerce
+   */
   async createAProductCategory(data: any): Promise<any> {
     const category = await this.wooCommerce
       .post('products/categories', data)
@@ -66,7 +69,7 @@ export class CategoryStagingService implements ICategoryStagingService {
   }
 
   /**
-   * Database Query Method
+   * Synchronize
    */
   async insert(queryRunner: QueryRunner, category: any): Promise<any> {
     try {

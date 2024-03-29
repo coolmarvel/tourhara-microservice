@@ -23,7 +23,13 @@ async function bootstrap() {
 
   app.use(['/docs', '/docs-json'], basicAuth({ challenge: true, users: { [configService.get('swagger.username')]: configService.get('swagger.password') } }));
 
-  const config = new DocumentBuilder().setTitle('').setDescription('').setVersion('1.0.0').addServer('/').addBearerAuth().build();
+  const config = new DocumentBuilder()
+    .setTitle('MSA Project')
+    .setDescription('BackOffcie with WooCommerce')
+    .setVersion('1.0.0')
+    .addServer('/')
+    .addBearerAuth()
+    .build();
   const customOptions: SwaggerCustomOptions = { swaggerOptions: { persistAuthorization: true } };
   const document = SwaggerModule.createDocument(app, config);
 
