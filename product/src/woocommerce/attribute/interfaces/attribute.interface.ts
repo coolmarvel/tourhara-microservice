@@ -1,6 +1,6 @@
 import { QueryRunner } from 'typeorm';
 
-export interface IAttributeProductionService {
+export interface IAttributeService {
   /**
    * WooCommerce
    */

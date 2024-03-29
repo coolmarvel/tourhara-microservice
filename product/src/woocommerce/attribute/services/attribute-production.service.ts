@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { IAttributeProductionService } from '../interfaces/attribute-production.interface';
 
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 import { ConfigService } from '@nestjs/config';
 import { QueryRunner } from 'typeorm';
 import { ProductAttribute } from '../entities/attribute.entity';
+import { IAttributeService } from '../interfaces/attribute.interface';
 
 @Injectable()
-export class AttributeProductionService implements IAttributeProductionService {
+export class AttributeProductionService implements IAttributeService {
   private wooCommerce: WooCommerceRestApi;
 
   constructor(private configService: ConfigService) {

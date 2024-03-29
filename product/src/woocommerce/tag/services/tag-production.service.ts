@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { ITagProductionService } from '../interfaces/tag-production.interface';
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 import { ConfigService } from '@nestjs/config';
 import { DataSource, QueryRunner } from 'typeorm';
 import { ProductTag } from '../entities/tag.entity';
 import { InjectDataSource } from '@nestjs/typeorm';
+import { ITagService } from '../interfaces/tag.interface';
 
 @Injectable()
-export class TagProductionService implements ITagProductionService {
+export class TagProductionService implements ITagService {
   private wooCommerce: WooCommerceRestApi;
 
   constructor(

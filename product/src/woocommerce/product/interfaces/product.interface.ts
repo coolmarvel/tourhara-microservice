@@ -1,6 +1,6 @@
 import { QueryRunner } from 'typeorm';
 
-export interface IProductStagingService {
+export interface IProductService {
   /**
    * WooCommerce
    */
