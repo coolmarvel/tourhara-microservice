@@ -14,6 +14,7 @@ import { UsimStagingService } from 'src/usim/services/usim-staging.service';
 import { JfkStagingService } from 'src/jfk/services/jfk-staging.service';
 import { OrderMetadata } from '../entities/order-metadata.entity';
 import { IOrderService } from '../interfaces/order.interface';
+import { LineItemStagingService } from 'src/line-item/services/line-item-staging.service';
 
 @Injectable()
 export class OrderStagingService implements IOrderService {
@@ -24,6 +25,7 @@ export class OrderStagingService implements IOrderService {
     @InjectDataSource('staging') private dataSource: DataSource,
 
     private readonly guestHouseService: GuestHouseStagingService,
+    private readonly lineItemService: LineItemStagingService,
     private readonly shippingService: ShippingStagingService,
     private readonly billingService: BillingStagingService,
     private readonly paymentService: PaymentStagingService,
@@ -93,7 +95,8 @@ export class OrderStagingService implements IOrderService {
     try {
       await queryRunner.startTransaction();
 
-      for (let i = 1; i < Infinity; i++) {
+      console.log('Order migration start');
+      for (let i = 1; i < 10; i++) {
         const orders = await this.listAllOrders(i, 10);
         if (orders.length === 0) break;
 
@@ -153,12 +156,14 @@ export class OrderStagingService implements IOrderService {
             // TODO. order-line-items save
             const lineItems = order.line_items;
             for (const lineItem of lineItems) {
+              await this.lineItemService.insert(queryRunner, lineItem, orderId);
             }
           }
         }
 
         await queryRunner.commitTransaction();
       }
+      console.log('Order migration end');
 
       return true;
     } catch (error) {

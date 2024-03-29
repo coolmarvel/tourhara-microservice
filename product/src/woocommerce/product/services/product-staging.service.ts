@@ -92,6 +92,7 @@ export class ProductStagingService implements IProductService {
     try {
       await queryRunner.startTransaction();
 
+      console.log('Product migration start');
       for (let i = 1; i < Infinity; i++) {
         if (categoriesFlag === false) break;
         console.log(`Product Category migration (page: ${i})`);
@@ -150,6 +151,7 @@ export class ProductStagingService implements IProductService {
       }
 
       await queryRunner.commitTransaction();
+      console.log('Product migration end');
 
       return true;
     } catch (error) {

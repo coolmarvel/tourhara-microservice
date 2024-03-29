@@ -55,7 +55,7 @@ export class ProductStagingService implements IProductStagingService {
    */
   async synchronizeProduct(): Promise<any> {
     const pattern = { cmd: 'synchronizeProduct_woocommerce_staging' };
-    const payload = null;
+    const payload = {};
     const result = await firstValueFrom(this.client.send(pattern, payload));
 
     return result;
