@@ -1,5 +1,5 @@
 import { QueryRunner } from 'typeorm';
 
 export interface IShippingService {
-  saveShipping_prod(queryRunner: QueryRunner, orderId: string, shipping: any): Promise<any>;
+  insert(queryRunner: QueryRunner, shipping: any, orderId: string): Promise<any>;
 }

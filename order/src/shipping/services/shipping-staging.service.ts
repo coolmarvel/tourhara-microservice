@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { IShippingStagingService } from '../interfaces/shipping-staging.interface';
 import { QueryRunner } from 'typeorm';
 import { Shipping } from '../entities/shipping.entity';
+import { IShippingService } from '../interfaces/shipping.interface';
 
 @Injectable()
-export class ShippingStagingService implements IShippingStagingService {
+export default class ShippingStagingService implements IShippingService {
   async insert(queryRunner: QueryRunner, shipping: any, orderId: string): Promise<any> {
     try {
       const existingOrderShipping = await queryRunner.manager.findOne(Shipping, { where: { orderId: orderId } });

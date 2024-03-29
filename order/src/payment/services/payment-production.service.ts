@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { IPaymentProductionService } from '../interfaces/payment-production.interface';
 import { QueryRunner } from 'typeorm';
 import { Payment } from '../entities/payment.entity';
+import { IPaymentService } from '../interfaces/payment.interface';
 
 @Injectable()
-export class PaymentProductionService implements IPaymentProductionService {
+export class PaymentProductionService implements IPaymentService {
   async insert(queryRunner: QueryRunner, payment: any, orderId: string): Promise<any> {
     try {
       const existingOrderPayment = await queryRunner.manager.findOne(Payment, { where: { orderId: orderId } });

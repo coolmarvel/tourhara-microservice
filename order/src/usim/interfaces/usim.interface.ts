@@ -1,9 +1,5 @@
 import { QueryRunner } from 'typeorm';
 
 export interface IUsimService {
-  saveSnapInfo_prod(queryRunner: QueryRunner, orderId: string, snapInfo: any): Promise<any>;
-
-  saveUsimInfo_prod(queryRunner: QueryRunner, orderId: string, usimInfo: any): Promise<any>;
-
-  saveH2ousim_prod(queryRunner: QueryRunner, orderId: string, h2ousim: any): Promise<any>;
+  insert(queryRunner: QueryRunner, snapInfo: any, usimInfo: any, h2ousim: any, orderId: string): Promise<any>;
 }

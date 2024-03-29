@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { OrderService } from './services/order.service';
-import { OrderController } from './controllers/order.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import entities from './entities';
 import { BillingModule } from 'src/billing/billing.module';
@@ -10,8 +8,6 @@ import { GuestHouseModule } from 'src/guest-house/guest-house.module';
 import { TourModule } from 'src/tour/tour.module';
 import { UsimModule } from 'src/usim/usim.module';
 import { JfkModule } from 'src/jfk/jfk.module';
-import { OrderWebhookService } from './services/order-webhook.service';
-import { OrderWebhookController } from './controllers/order-webhook.controller';
 import { OrderStagingService } from './services/order-staging.service';
 import { OrderProductionService } from './services/order-production.service';
 import { OrderStagingController } from './controllers/order-staging.controller';
@@ -29,7 +25,7 @@ import { OrderProductionController } from './controllers/order-production.contro
     TypeOrmModule.forFeature(entities, 'staging'),
     TypeOrmModule.forFeature(entities, 'production'),
   ],
-  providers: [OrderService, OrderWebhookService, OrderStagingService, OrderProductionService],
-  controllers: [OrderController, OrderWebhookController, OrderStagingController, OrderProductionController],
+  providers: [OrderStagingService, OrderProductionService],
+  controllers: [OrderStagingController, OrderProductionController],
 })
 export class OrderModule {}

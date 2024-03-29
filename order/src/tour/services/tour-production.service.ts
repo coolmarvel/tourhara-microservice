@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { ITourProductionService } from '../interfaces/tour-production.interface';
 import { QueryRunner } from 'typeorm';
 import { Tour } from '../entities/tour.entity';
 import { TourInfo } from '../entities/tour-info.entity';
+import { ITourService } from '../interfaces/tour.interface';
 
 @Injectable()
-export class TourProductionService implements ITourProductionService {
+export class TourProductionService implements ITourService {
   async insert(queryRunner: QueryRunner, tour: any, tourInfo: any, orderId: string): Promise<any> {
     try {
       const existingOrderTour = await queryRunner.manager.findOne(Tour, { where: { orderId: orderId } });

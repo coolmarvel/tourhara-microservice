@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { IBillingStagingService } from '../interfaces/billing-staging.interface';
 import { Billing } from '../entities/billing.entity';
 import { QueryRunner } from 'typeorm';
+import { IBillingService } from '../interfaces/billing.interface';
 
 @Injectable()
-export class BillingStagingService implements IBillingStagingService {
+export class BillingStagingService implements IBillingService {
   async insert(queryRunner: QueryRunner, billing: any, orderId: string): Promise<any> {
     try {
       const existingOrderBilling = await queryRunner.manager.findOne(Billing, { where: { orderId: orderId } });
