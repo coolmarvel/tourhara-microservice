@@ -7,7 +7,7 @@ import { RefreshToken } from '../entities/refresh-token.entity';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
-export class AuthService implements IAuthService {
+export class AuthService {
   constructor(
     private jwtService: JwtService,
     private userService: UserService,
