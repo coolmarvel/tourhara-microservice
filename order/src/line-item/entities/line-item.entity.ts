@@ -11,8 +11,8 @@ export class LineItem {
   @Column({ nullable: true })
   name: string;
 
-  @Column('bigint', { name: 'product_id', nullable: true })
-  productId: number;
+  @Column('uuid', { name: 'product_id', nullable: true })
+  productId: string;
 
   @Column({ nullable: true })
   quantity: number;

@@ -12,6 +12,7 @@ import { OrderStagingService } from './services/order-staging.service';
 import { OrderProductionService } from './services/order-production.service';
 import { OrderStagingController } from './controllers/order-staging.controller';
 import { OrderProductionController } from './controllers/order-production.controller';
+import { LineItemModule } from 'src/line-item/line-item.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { OrderProductionController } from './controllers/order-production.contro
     TourModule,
     UsimModule,
     JfkModule,
+    LineItemModule,
     TypeOrmModule.forFeature(entities, 'staging'),
     TypeOrmModule.forFeature(entities, 'production'),
   ],
