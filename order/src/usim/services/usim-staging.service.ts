@@ -47,6 +47,8 @@ export class UsimStagingService implements IUsimService {
       };
       const orderH2ousimEntity = queryRunner.manager.create(H2ousim, newOrderH2ousim);
       await queryRunner.manager.save(orderH2ousimEntity);
+
+      return true;
     } catch (error) {
       throw error;
     }

@@ -93,12 +93,12 @@ export class OrderStagingService implements IOrderService {
     await queryRunner.connect();
 
     try {
-      await queryRunner.startTransaction();
-
       console.log('Order migration start');
-      for (let i = 1; i < 10; i++) {
+      for (let i = 11; i < 20; i++) {
         const orders = await this.listAllOrders(i, 10);
         if (orders.length === 0) break;
+
+        await queryRunner.startTransaction();
 
         console.log(`Order migration (page: ${i})`);
         for (const order of orders) {
