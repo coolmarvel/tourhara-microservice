@@ -17,7 +17,7 @@ export interface IOrderService {
   /**
    * Synchronize
    */
-  synchronizeOrder(): Promise<any>;
+  synchronizeOrder(errorNumber: number): Promise<any>;
 
   insert(queryRunner: QueryRunner, order: any, metadata: any, orderId: string): Promise<any>;
 

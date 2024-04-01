@@ -30,6 +30,7 @@ export class BillingStagingService implements IBillingService {
 
       return true;
     } catch (error) {
+      console.error('billing insert error');
       throw error;
     }
   }

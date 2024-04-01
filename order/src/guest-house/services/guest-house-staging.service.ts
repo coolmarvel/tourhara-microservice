@@ -24,6 +24,7 @@ export class GuestHouseStagingService implements IGuestHouseService {
 
       return true;
     } catch (error) {
+      console.error('guest-house insert error');
       throw error;
     }
   }

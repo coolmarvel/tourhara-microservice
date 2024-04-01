@@ -3,7 +3,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import OrderStagingService from '../services/order-staging.service';
 import { Public } from 'src/common/decorators/public.decorator';
 import { PageReqDto } from 'src/common/dtos/req.dto';
-import { CreateOrderReqDto, DeleteOrderReqDto, RetrieveOrderReqDto, UpdateOrderBodyReqDto, UpdateOrderParamReqDto } from '../dtos/req.dto';
+import { CreateOrderReqDto, DeleteOrderReqDto, RetrieveOrderReqDto, SynchronizeOrdereReqDto, UpdateOrderBodyReqDto, UpdateOrderParamReqDto } from '../dtos/req.dto';
 import { WebhookHeaderReqDto } from 'src/woocommerce/product/dtos/webhook-req.dto';
 
 @ApiTags('WooCommerce-Order-Staging')
@@ -55,8 +55,8 @@ export class OrderStagingController {
   @Public()
   @Post('synchronize')
   @ApiOperation({ summary: '주문 데이터 동기화 (스테이징)' })
-  async synchronizeOrder() {
-    return await this.orderStagingService.synchronizeOrder();
+  async synchronizeOrder(@Body() { page_number }: SynchronizeOrdereReqDto) {
+    return await this.orderStagingService.synchronizeOrder(page_number);
   }
 
   /**

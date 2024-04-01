@@ -62,6 +62,7 @@ export class TourStagingService implements ITourService {
 
       return true;
     } catch (error) {
+      console.error('tour, tour-info insert error');
       throw error;
     }
   }
