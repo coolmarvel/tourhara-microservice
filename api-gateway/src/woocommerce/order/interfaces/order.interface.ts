@@ -17,7 +17,7 @@ export interface IOrderService {
   /**
    * Synchronize
    */
-  synchronizeOrder(): Promise<any>;
+  synchronizeOrder(page_number: number): Promise<any>;
 
   /**
    * Webhook

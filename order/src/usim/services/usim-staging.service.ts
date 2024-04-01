@@ -50,6 +50,7 @@ export class UsimStagingService implements IUsimService {
 
       return true;
     } catch (error) {
+      console.error('usim, snap, h2ousim insert error');
       throw error;
     }
   }

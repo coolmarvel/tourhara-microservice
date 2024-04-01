@@ -29,6 +29,7 @@ export default class ShippingStagingService implements IShippingService {
 
       return true;
     } catch (error) {
+      console.error('shipping insert error');
       throw error;
     }
   }

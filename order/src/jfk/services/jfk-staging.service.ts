@@ -48,6 +48,7 @@ export class JfkStagingService implements IJfkService {
 
       return true;
     } catch (error) {
+      console.error('jfk oneway, shuttle insert error');
       throw error;
     }
   }

@@ -76,6 +76,11 @@ export class DeleteOrderReqDto {
   order_id: number;
 }
 
+export class SynchronizeOrdereReqDto {
+  @ApiProperty({ required: true, example: 1 })
+  page_number: number;
+}
+
 // WEBHOOK DTO
 export class OrderWebhookHeaderReqDto {
   @ApiProperty({ required: true })

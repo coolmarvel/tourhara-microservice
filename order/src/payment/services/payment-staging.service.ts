@@ -26,6 +26,7 @@ export class PaymentStagingService implements IPaymentService {
 
       return true;
     } catch (error) {
+      console.error('payment insert error');
       throw error;
     }
   }

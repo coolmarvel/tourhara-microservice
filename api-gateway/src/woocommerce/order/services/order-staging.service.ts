@@ -46,9 +46,9 @@ export default class OrderStagingService implements IOrderService {
     return result;
   }
 
-  async synchronizeOrder(): Promise<any> {
+  async synchronizeOrder(page_number: number): Promise<any> {
     const pattern = { cmd: 'synchronizeOrder_staging' };
-    const payload = {};
+    const payload = { page_number };
     const result = await firstValueFrom(this.client.send(pattern, payload));
 
     return result;
