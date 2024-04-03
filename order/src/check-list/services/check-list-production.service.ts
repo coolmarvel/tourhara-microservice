@@ -4,9 +4,6 @@ import { QueryRunner } from 'typeorm';
 
 @Injectable()
 export class CheckListProductionService implements ICheckListService {
-  select(queryRunner: QueryRunner, data: any): Promise<any> {
-    throw new Error('Method not implemented.');
-  }
   async insert(queryRunner: QueryRunner, data: any): Promise<any> {
     try {
     } catch (error) {
@@ -19,5 +16,9 @@ export class CheckListProductionService implements ICheckListService {
     } catch (error) {
       throw error;
     }
+  }
+
+  async select(queryRunner: QueryRunner): Promise<any> {
+    throw new Error('Method not implemented.');
   }
 }

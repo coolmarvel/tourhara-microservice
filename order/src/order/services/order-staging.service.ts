@@ -15,6 +15,7 @@ import { JfkStagingService } from 'src/jfk/services/jfk-staging.service';
 import { OrderMetadata } from '../entities/order-metadata.entity';
 import { IOrderService } from '../interfaces/order.interface';
 import { LineItemStagingService } from 'src/line-item/services/line-item-staging.service';
+import { CheckListStagingService } from 'src/check-list/services/check-list-staging.service';
 
 @Injectable()
 export class OrderStagingService implements IOrderService {
@@ -32,6 +33,7 @@ export class OrderStagingService implements IOrderService {
     private readonly tourService: TourStagingService,
     private readonly usimService: UsimStagingService,
     private readonly jfkService: JfkStagingService,
+    private readonly checkListService: CheckListStagingService,
   ) {
     this.wooCommerce = new WooCommerceRestApi({
       url: this.configService.get('wc-stag.url'),
@@ -57,8 +59,16 @@ export class OrderStagingService implements IOrderService {
     return order;
   }
 
-  async listAllOrders(page: number, size: number): Promise<any> {
-    const params = { page, per_page: size };
+  async listAllOrders(page: number, size: number, date: string): Promise<any> {
+    const beforeDate = new Date(date);
+    beforeDate.setDate(beforeDate.getDate() + 1);
+
+    const params = {
+      page,
+      per_page: size,
+      after: `${date}T00:00:00`,
+      before: `${beforeDate.toISOString().split('T')[0]}T00:00:00`,
+    };
     const orders = await this.wooCommerce
       .get('orders', params)
       .then((response: any) => response?.data)
@@ -94,19 +104,32 @@ export class OrderStagingService implements IOrderService {
 
     try {
       console.log('Order migration start');
+
+      const size = 10;
+      let total: number = 0;
+      const date = await this.checkListService.select(queryRunner);
+      console.log('date: ', date);
       for (let i = page_number; i < Infinity; i++) {
         page_number = i;
-        const orders = await this.listAllOrders(i, 10);
+        const orders = await this.listAllOrders(i, size, date);
+        total += orders.length;
 
+        await queryRunner.startTransaction();
         if (orders.length === 0) {
+          const data = {
+            date: date,
+            page: i - 1,
+            perPage: size,
+            total: total,
+          };
+          await this.checkListService.insert(queryRunner, data);
+
           await queryRunner.commitTransaction();
           break;
         }
 
         console.log(`Order migration (page: ${i}, orders: ${orders.length})`);
         for (const order of orders) {
-          await queryRunner.startTransaction();
-
           // order save
           const orderId = await this.insert(queryRunner, order, null, null);
           if (orderId !== false) {
@@ -163,9 +186,10 @@ export class OrderStagingService implements IOrderService {
               await this.lineItemService.insert(queryRunner, lineItem, orderId);
             }
           }
-          await queryRunner.commitTransaction();
         }
+        await queryRunner.commitTransaction();
       }
+
       console.log('Order migration end');
     } catch (error) {
       console.error(`Error occurred during order migration for page: ${page_number}`, error);

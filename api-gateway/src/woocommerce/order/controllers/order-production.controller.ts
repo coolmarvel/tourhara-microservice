@@ -16,35 +16,35 @@ export class OrderProductionController {
    */
   @Public()
   @Post()
-  @ApiOperation({ summary: '단일 주문 생성 API (스테이징)' })
+  @ApiOperation({ summary: '단일 주문 생성 API (프로덕션)' })
   async createAnOrder(@Body() data: CreateOrderReqDto) {
     return await this.orderProductionService.createAnOrder(data);
   }
 
   @Public()
   @Get(':order_id')
-  @ApiOperation({ summary: '단일 주문 조회 API (스테이징)' })
+  @ApiOperation({ summary: '단일 주문 조회 API (프로덕션)' })
   async retrieveAnOrder(@Param() { order_id }: RetrieveOrderReqDto) {
     return await this.orderProductionService.retrieveAnOrder(order_id);
   }
 
   @Public()
   @Get()
-  @ApiOperation({ summary: '주문 리스트 조회 API (스테이징)' })
+  @ApiOperation({ summary: '주문 리스트 조회 API (프로덕션)' })
   async listAllOrders(@Query() { page, size }: PageReqDto) {
     return await this.orderProductionService.listAllOrders(page, size);
   }
 
   @Public()
   @Put(':order_id')
-  @ApiOperation({ summary: '단일 주문 갱신 API (스테이징)' })
+  @ApiOperation({ summary: '단일 주문 갱신 API (프로덕션)' })
   async updateAnOrder(@Param() { order_id }: UpdateOrderParamReqDto, @Body() data: UpdateOrderBodyReqDto) {
     return await this.orderProductionService.updateAnOrder(order_id, data);
   }
 
   @Public()
   @Delete(':order_id')
-  @ApiOperation({ summary: '단일 주문 삭제 API (스테이징)' })
+  @ApiOperation({ summary: '단일 주문 삭제 API (프로덕션)' })
   async deleteAnOrder(@Param() { order_id }: DeleteOrderReqDto) {
     return await this.orderProductionService.deleteAnOrder(order_id);
   }

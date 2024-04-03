@@ -5,5 +5,5 @@ export interface ICheckListService {
 
   update(queryRunner: QueryRunner, data: any): Promise<any>;
 
-  select(queryRunner: QueryRunner, data: any): Promise<any>;
+  select(queryRunner: QueryRunner): Promise<any>;
 }

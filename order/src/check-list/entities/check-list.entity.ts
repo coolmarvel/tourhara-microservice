@@ -6,7 +6,7 @@ export class CheckList {
   checkListId: string;
 
   @Column({ name: 'iso_date' })
-  isoDate: Date;
+  isoDate: string;
 
   @Column('bigint')
   page: number;
@@ -14,8 +14,11 @@ export class CheckList {
   @Column('bigint', { name: 'per_page' })
   perPage: number;
 
-  @Column('bigint', { name: 'total' })
-  total: number;
+  @Column('bigint', { name: 'daily_total' })
+  dailyTotal: bigint;
+
+  @Column('bigint', { name: 'acc_total' })
+  accTotal: bigint;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

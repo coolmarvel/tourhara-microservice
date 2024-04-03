@@ -14,6 +14,7 @@ import { GuestHouseModule } from './guest-house/guest-house.module';
 import { UsimModule } from './usim/usim.module';
 import { JfkModule } from './jfk/jfk.module';
 import { CouponLineModule } from './coupon-line/coupon-line.module';
+import { CheckListModule } from './check-list/check-list.module';
 import config from './config';
 
 @Module({
@@ -62,6 +63,7 @@ import config from './config';
     UsimModule,
     JfkModule,
     CouponLineModule,
+    CheckListModule,
   ],
   controllers: [AppController],
   providers: [AppService],

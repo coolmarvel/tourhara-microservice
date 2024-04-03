@@ -1,5 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
+import { IsInt } from 'class-validator';
 
 export class CreateOrderReqDto {
   @ApiProperty({ required: true, example: 'bacs' })
@@ -106,3 +107,18 @@ export class OrderWebhookHeaderReqDto {
 }
 
 export class OrderCreatedBodyReqDto {}
+
+export class ListAllOrdersReqDto {
+  @ApiPropertyOptional({ description: '페이지. default = 1' })
+  @Transform((param) => Number(param.value))
+  @IsInt()
+  page?: number = 1;
+
+  @ApiPropertyOptional({ description: '페이지당 데이터 갯수. default = 10' })
+  @Transform((param) => Number(param.value))
+  @IsInt()
+  size?: number = 10;
+
+  @ApiPropertyOptional({ description: '날짜. default = 2018-08-20' })
+  date?: string = '2018-08-20';
+}

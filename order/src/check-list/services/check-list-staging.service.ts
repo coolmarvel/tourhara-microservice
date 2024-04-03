@@ -8,14 +8,18 @@ export class CheckListStagingService implements ICheckListService {
   async insert(queryRunner: QueryRunner, data: any): Promise<any> {
     try {
       const existingCheckList = await queryRunner.manager.findOne(CheckList, { where: { isoDate: data.date } });
-      if (existingCheckList) {
-        await this.update(queryRunner, data);
-      } else {
+      if (existingCheckList) await this.update(queryRunner, data);
+      else {
+        const prevDate = new Date(data.date);
+        prevDate.setDate(prevDate.getDate() - 1);
+        const prevResult = await queryRunner.manager.findOne(CheckList, { where: { isoDate: prevDate.toISOString().split('T')[0] } });
+
         const newCheckList = {
           isoDate: data.date,
           page: data.page,
           perPage: data.perPage,
-          total: data.total,
+          dailyTotal: BigInt(data.total),
+          accTotal: prevResult === null ? BigInt(data.total) : BigInt(prevResult.accTotal) + BigInt(data.total),
         };
         const checkListEntity = queryRunner.manager.create(CheckList, newCheckList);
         await queryRunner.manager.save(checkListEntity);
@@ -35,9 +39,12 @@ export class CheckListStagingService implements ICheckListService {
         isoDate: data.date,
         page: data.page,
         perPage: data.perPage,
-        total: data.total,
+        dailyTotal: data.total,
       };
       await queryRunner.manager.update(CheckList, { isoDate: data.date }, updateCheckList);
+
+      // const params = [data.date, data.page, data.perPage, data.total];
+      // await queryRunner.manager.query(`UPDATE check_list SET page=${params[1]}, per_page=${params[2]}, daily_total=${params[3]} WHERE iso_date='${params[0]}';`);
 
       return true;
     } catch (error) {
@@ -46,15 +53,17 @@ export class CheckListStagingService implements ICheckListService {
     }
   }
 
-  async select(queryRunner: QueryRunner, data: any): Promise<any> {
+  async select(queryRunner: QueryRunner): Promise<any> {
     try {
-      const existingCheckList = await queryRunner.manager.findOne(CheckList, { where: { isoDate: new Date('2018-08-20') } });
+      const existingCheckList = await queryRunner.manager.findOne(CheckList, { where: { isoDate: '2018-08-20' } });
 
-      if (!existingCheckList) return { isoDate: '2018-08-20' };
+      if (!existingCheckList) return '2018-08-20';
       else {
         const checkList = await queryRunner.manager.query(`SELECT * FROM check_list WHERE iso_date=(SELECT MAX(iso_date) FROM check_list)`);
+        const date = new Date(checkList[0].iso_date);
+        date.setDate(date.getDate() + 1);
 
-        if (checkList) return { isoDate: checkList.isoDate };
+        return date.toISOString().split('T')[0];
       }
     } catch (error) {
       console.error('select check-list error');
