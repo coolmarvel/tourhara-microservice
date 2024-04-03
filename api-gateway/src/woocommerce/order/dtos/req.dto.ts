@@ -119,6 +119,6 @@ export class ListAllOrdersReqDto {
   @IsInt()
   size?: number = 10;
 
-  @ApiPropertyOptional({ description: '날짜. default = 2018-08-20' })
-  date?: string = '2018-08-20';
+  @ApiPropertyOptional({ description: '날짜. default = 2024-01-01' })
+  date?: string = '2024-01-01';
 }

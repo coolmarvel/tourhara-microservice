@@ -33,7 +33,7 @@ export class ListReqDto {
   @IsInt()
   size?: number = 10;
 
-  date?: string = '2018-08-20';
+  date?: string = '2024-01-01';
 }
 
 export class UpdateReqDto {

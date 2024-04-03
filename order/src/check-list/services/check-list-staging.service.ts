@@ -52,9 +52,9 @@ export class CheckListStagingService implements ICheckListService {
 
   async select(queryRunner: QueryRunner): Promise<any> {
     try {
-      const existingCheckList = await queryRunner.manager.findOne(CheckList, { where: { isoDate: '2018-08-20' } });
+      const existingCheckList = await queryRunner.manager.findOne(CheckList, { where: { isoDate: '2024-01-01' } });
 
-      if (!existingCheckList) return '2018-08-20';
+      if (!existingCheckList) return '2024-01-01';
       else {
         const checkList = await queryRunner.manager.query(`SELECT * FROM check_list WHERE iso_date=(SELECT MAX(iso_date) FROM check_list)`);
         const date = new Date(checkList[0].iso_date);
