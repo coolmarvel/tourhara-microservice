@@ -43,9 +43,6 @@ export class CheckListStagingService implements ICheckListService {
       };
       await queryRunner.manager.update(CheckList, { isoDate: data.date }, updateCheckList);
 
-      // const params = [data.date, data.page, data.perPage, data.total];
-      // await queryRunner.manager.query(`UPDATE check_list SET page=${params[1]}, per_page=${params[2]}, daily_total=${params[3]} WHERE iso_date='${params[0]}';`);
-
       return true;
     } catch (error) {
       console.error('check-list update error');
