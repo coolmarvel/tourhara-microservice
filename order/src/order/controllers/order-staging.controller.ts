@@ -1,4 +1,4 @@
-import { Body, Controller } from '@nestjs/common';
+import { Body, Controller, HttpStatus } from '@nestjs/common';
 import { OrderStagingService } from '../services/order-staging.service';
 import { MessagePattern } from '@nestjs/microservices';
 import { CreateReqDto, DeleteReqDto, ListReqDto, RetrieveReqDto, UpdateReqDto } from '../dtos/req.dto';
@@ -34,7 +34,9 @@ export class OrderStagingController {
 
   @MessagePattern({ cmd: 'synchronizeOrder_staging' })
   async synchronizeOrder() {
-    return await this.orderStagingService.synchronizeOrder(1);
+    const result = await this.orderStagingService.synchronizeOrder(1);
+    if (result) return HttpStatus.OK;
+    else if (!result) return HttpStatus.NO_CONTENT;
   }
 
   @MessagePattern({ cmd: 'orderCreated_staging' })

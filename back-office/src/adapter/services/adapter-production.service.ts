@@ -3,7 +3,11 @@ import { IAdapterService } from '../interfaces/adapter.interface';
 
 @Injectable()
 export class AdapterProductionService implements IAdapterService {
-  async getAllCategories(): Promise<any> {
+  async getAllProductCategories(): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
+
+  async getAllProduct(): Promise<any> {
     throw new Error('Method not implemented.');
   }
 }
