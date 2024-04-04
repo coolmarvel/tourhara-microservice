@@ -54,7 +54,7 @@ export class OrderProductionController {
    */
   @Public()
   @Post('synchronize')
-  @ApiOperation({ summary: '주문 데이터 동기화 (스테이징)' })
+  @ApiOperation({ summary: '주문 데이터 동기화 (프로덕션)' })
   async synchronizeOrder() {
     return await this.orderProductionService.synchronizeOrder();
   }
@@ -64,7 +64,7 @@ export class OrderProductionController {
    */
   @Public()
   @Post('webhook-created')
-  @ApiOperation({ summary: '단일 주문 생성 WEBHOOK (스테이징)' })
+  @ApiOperation({ summary: '단일 주문 생성 WEBHOOK (프로덕션)' })
   async orderCreated(@Headers() header: WebhookHeaderReqDto, @Body() data: any) {
     if (header['x-wc-webhook-topic'] !== 'order.created') return HttpStatus.NO_CONTENT;
     console.log(header);
@@ -77,7 +77,7 @@ export class OrderProductionController {
 
   @Public()
   @Post('webhook-updated')
-  @ApiOperation({ summary: '단일 주문 갱신 WEBHOOK (스테이징)' })
+  @ApiOperation({ summary: '단일 주문 갱신 WEBHOOK (프로덕션)' })
   async orderUpdated(@Headers() header: WebhookHeaderReqDto, @Body() data: any) {
     if (header['x-wc-webhook-topic'] !== 'order.updated') return HttpStatus.NO_CONTENT;
     console.log(header);
@@ -88,7 +88,7 @@ export class OrderProductionController {
 
   @Public()
   @Post('webhook-deleted')
-  @ApiOperation({ summary: '단일 주문 삭제 WEBHOOK (스테이징)' })
+  @ApiOperation({ summary: '단일 주문 삭제 WEBHOOK (프로덕션)' })
   async orderDeleted(@Headers() header: WebhookHeaderReqDto, @Body() data: any) {
     if (header['x-wc-webhook-topic'] !== 'order.deleted') return HttpStatus.NO_CONTENT;
     console.log(header);
@@ -98,7 +98,7 @@ export class OrderProductionController {
 
   @Public()
   @Post('webhook-restored')
-  @ApiOperation({ summary: '단일 주문 복원 WEBHOOK (스테이징)' })
+  @ApiOperation({ summary: '단일 주문 복원 WEBHOOK (프로덕션)' })
   async orderRestored(@Headers() header: WebhookHeaderReqDto, @Body() data: any) {
     if (header['x-wc-webhook-topic'] !== 'order.restored') return HttpStatus.NO_CONTENT;
     console.log(header);
