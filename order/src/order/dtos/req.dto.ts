@@ -32,6 +32,8 @@ export class ListReqDto {
   @Transform((param) => Number(param.value))
   @IsInt()
   size?: number = 10;
+
+  date?: string = '2024-01-01';
 }
 
 export class UpdateReqDto {

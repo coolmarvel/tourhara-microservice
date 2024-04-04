@@ -18,8 +18,8 @@ export class OrderProductionController {
   }
 
   @MessagePattern({ cmd: 'listAllOrders_production' })
-  async listAllOrders({ page, size }: ListReqDto) {
-    return await this.orderProductionService.listAllOrders(page, size);
+  async listAllOrders({ page, size, date }: ListReqDto) {
+    return await this.orderProductionService.listAllOrders(page, size, date);
   }
 
   @MessagePattern({ cmd: 'updateAnOrder_production' })

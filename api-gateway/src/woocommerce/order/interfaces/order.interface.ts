@@ -8,7 +8,7 @@ export interface IOrderService {
 
   retrieveAnOrder(order_id: number): Promise<any>;
 
-  listAllOrders(page: number, size: number): Promise<any>;
+  listAllOrders(page: number, size: number, date: string): Promise<any>;
 
   updateAnOrder(order_id: number, data: any): Promise<any>;
 
@@ -17,7 +17,7 @@ export interface IOrderService {
   /**
    * Synchronize
    */
-  synchronizeOrder(page_number: number): Promise<any>;
+  synchronizeOrder(): Promise<any>;
 
   /**
    * Webhook

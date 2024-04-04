@@ -18,8 +18,8 @@ export class OrderStagingController {
   }
 
   @MessagePattern({ cmd: 'listAllOrders_staging' })
-  async listAllOrders({ page, size }: ListReqDto) {
-    return await this.orderStagingService.listAllOrders(page, size);
+  async listAllOrders({ page, size, date }: ListReqDto) {
+    return await this.orderStagingService.listAllOrders(page, size, date);
   }
 
   @MessagePattern({ cmd: 'updateAnOrder_staging' })
@@ -33,8 +33,8 @@ export class OrderStagingController {
   }
 
   @MessagePattern({ cmd: 'synchronizeOrder_staging' })
-  async synchronizeOrder({ page_number }: { page_number: number }) {
-    return await this.orderStagingService.synchronizeOrder(page_number);
+  async synchronizeOrder() {
+    return await this.orderStagingService.synchronizeOrder(1);
   }
 
   @MessagePattern({ cmd: 'orderCreated_staging' })

@@ -22,9 +22,9 @@ export default class OrderStagingService implements IOrderService {
     return result;
   }
 
-  async listAllOrders(page: number, size: number): Promise<any> {
+  async listAllOrders(page: number, size: number, date: string): Promise<any> {
     const pattern = { cmd: 'listAllOrders_staging' };
-    const payload = { page, size };
+    const payload = { page, size, date };
     const result = await firstValueFrom(this.client.send(pattern, payload));
 
     return result;
@@ -46,9 +46,9 @@ export default class OrderStagingService implements IOrderService {
     return result;
   }
 
-  async synchronizeOrder(page_number: number): Promise<any> {
+  async synchronizeOrder(): Promise<any> {
     const pattern = { cmd: 'synchronizeOrder_staging' };
-    const payload = { page_number };
+    const payload = {};
     const result = await firstValueFrom(this.client.send(pattern, payload));
 
     return result;

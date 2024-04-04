@@ -3,8 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { OrderModule } from './order/order.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule, TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { AdapterModule } from './adapter/adapter.module';
+import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
+
 import { BillingModule } from './billing/billing.module';
 import { ShippingModule } from './shipping/shipping.module';
 import { LineItemModule } from './line-item/line-item.module';
@@ -14,6 +14,8 @@ import { GuestHouseModule } from './guest-house/guest-house.module';
 import { UsimModule } from './usim/usim.module';
 import { JfkModule } from './jfk/jfk.module';
 import { CouponLineModule } from './coupon-line/coupon-line.module';
+import { CheckListModule } from './check-list/check-list.module';
+
 import config from './config';
 
 @Module({
@@ -52,7 +54,6 @@ import config from './config';
         }) as TypeOrmModuleAsyncOptions,
     }),
     OrderModule,
-    AdapterModule,
     BillingModule,
     ShippingModule,
     LineItemModule,
@@ -62,6 +63,7 @@ import config from './config';
     UsimModule,
     JfkModule,
     CouponLineModule,
+    CheckListModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -10,7 +10,7 @@ export class OrderProductionService implements IOrderService {
   retrieveAnOrder(order_id: number): Promise<any> {
     throw new Error('Method not implemented.');
   }
-  listAllOrders(page: number, size: number): Promise<any> {
+  listAllOrders(page: number, size: number, date: string): Promise<any> {
     throw new Error('Method not implemented.');
   }
   updateAnOrder(order_id: number, data: any): Promise<any> {
