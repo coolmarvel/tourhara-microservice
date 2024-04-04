@@ -56,7 +56,9 @@ export class OrderStagingController {
   @Post('synchronize')
   @ApiOperation({ summary: '주문 데이터 동기화 (스테이징)' })
   async synchronizeOrder() {
-    return await this.orderStagingService.synchronizeOrder();
+    const result = await this.orderStagingService.synchronizeOrder();
+    if (result == true) return HttpStatus.OK;
+    else if (result == false) return HttpStatus.NO_CONTENT;
   }
 
   /**
