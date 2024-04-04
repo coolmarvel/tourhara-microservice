@@ -34,9 +34,7 @@ export class OrderStagingController {
 
   @MessagePattern({ cmd: 'synchronizeOrder_staging' })
   async synchronizeOrder() {
-    const result = await this.orderStagingService.synchronizeOrder(1);
-    if (result) return HttpStatus.OK;
-    else if (!result) return HttpStatus.NO_CONTENT;
+    return await this.orderStagingService.synchronizeOrder(1);
   }
 
   @MessagePattern({ cmd: 'orderCreated_staging' })
