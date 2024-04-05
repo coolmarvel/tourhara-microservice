@@ -251,63 +251,72 @@ export class OrderStagingService implements IOrderService {
               await queryRunner.commitTransaction();
             }
             break;
-          }
-          page_number = i;
-          total += orders.length;
-          console.log(`Staging Order migration (page: ${i}, orders: ${orders.length}) for date:`, date);
-          await queryRunner.startTransaction();
-          for (const order of orders) {
-            // order save
-            const orderId = await this.insert(queryRunner, order, null, null);
-            if (orderId !== false) {
-              // billing save
-              const billing = order.billing;
-              await this.billingService.insert(queryRunner, billing, orderId);
-              // shipping save
-              const shipping = order.shipping;
-              await this.shippingService.insert(queryRunner, shipping, orderId);
-              // payment save
-              const payment = {
-                paymentMethod: order.payment_method,
-                paymentMethodTitle: order.payment_method_title,
-                transactionId: order.transaction_id,
-                paymentUrl: order.payment_url,
-                needsPayment: order.needs_payment,
-                needsProcessing: order.needs_processing,
-                datePaid: order.date_paid,
-                datePaidGmt: order.date_paid_gmt,
-              };
-              await this.paymentService.insert(queryRunner, payment, orderId);
-              // guest-house save
-              const guestHouse = order.guest_house;
-              await this.guestHouseService.insert(queryRunner, guestHouse, orderId);
-              // tour, tour-info save
-              const tour = order.tour;
-              const tourInfo = order.tour_info;
-              await this.tourService.insert(queryRunner, tour, tourInfo, orderId);
-              // snap-info, usim-info, h2ousim save
-              const snapInfo = order.snap_info;
-              const usimInfo = order.usim_info;
-              const h2ousim = order.h2ousim;
-              await this.usimService.insert(queryRunner, snapInfo, usimInfo, h2ousim, orderId);
-              // jfk-oneway, jfk-shuttle-rt save
-              const jfkOneway = order.jfk_oneway;
-              const jfkShuttleRt = order.jfk_shuttle_rt;
-              await this.jfkService.insert(queryRunner, jfkOneway, jfkShuttleRt, orderId);
-              // TODO. order-metadata save
-              const metadatas = order.meta_data;
-              for (const metadata of metadatas) {
-                await this.insert(queryRunner, null, metadata, orderId);
-              }
-              // TODO. order-line-items save
-              const lineItems = order.line_items;
-              for (const lineItem of lineItems) {
-                await this.lineItemService.insert(queryRunner, lineItem, orderId);
+          } else {
+            page_number = i;
+            total += orders.length;
+            console.log(`Staging Order migration (page: ${i}, orders: ${orders.length}) for date:`, date);
+            await queryRunner.startTransaction();
+            for (const order of orders) {
+              // order save
+              const orderId = await this.insert(queryRunner, order, null, null);
+              if (orderId !== false) {
+                // billing save
+                const billing = order.billing;
+                await this.billingService.insert(queryRunner, billing, orderId);
+
+                // shipping save
+                const shipping = order.shipping;
+                await this.shippingService.insert(queryRunner, shipping, orderId);
+
+                // payment save
+                const payment = {
+                  paymentMethod: order.payment_method,
+                  paymentMethodTitle: order.payment_method_title,
+                  transactionId: order.transaction_id,
+                  paymentUrl: order.payment_url,
+                  needsPayment: order.needs_payment,
+                  needsProcessing: order.needs_processing,
+                  datePaid: order.date_paid,
+                  datePaidGmt: order.date_paid_gmt,
+                };
+                await this.paymentService.insert(queryRunner, payment, orderId);
+
+                // guest-house save
+                const guestHouse = order.guest_house;
+                await this.guestHouseService.insert(queryRunner, guestHouse, orderId);
+
+                // tour, tour-info save
+                const tour = order.tour;
+                const tourInfo = order.tour_info;
+                await this.tourService.insert(queryRunner, tour, tourInfo, orderId);
+
+                // snap-info, usim-info, h2ousim save
+                const snapInfo = order.snap_info;
+                const usimInfo = order.usim_info;
+                const h2ousim = order.h2ousim;
+                await this.usimService.insert(queryRunner, snapInfo, usimInfo, h2ousim, orderId);
+
+                // jfk-oneway, jfk-shuttle-rt save
+                const jfkOneway = order.jfk_oneway;
+                const jfkShuttleRt = order.jfk_shuttle_rt;
+                await this.jfkService.insert(queryRunner, jfkOneway, jfkShuttleRt, orderId);
+
+                // order-metadata save
+                const metadatas = order.meta_data;
+                for (const metadata of metadatas) {
+                  await this.insert(queryRunner, null, metadata, orderId);
+                }
+
+                // order-line-items save
+                const lineItems = order.line_items;
+                for (const lineItem of lineItems) {
+                  await this.lineItemService.insert(queryRunner, lineItem, orderId);
+                }
               }
             }
+            await queryRunner.commitTransaction();
           }
-          await queryRunner.commitTransaction();
-          
+
           await this.sleep(30000);
         }
         console.log('Staging Order migration end for date:', date);
@@ -319,16 +328,16 @@ export class OrderStagingService implements IOrderService {
     } catch (error) {
       console.error(`Error occurred during order migration for page: ${page_number}`, error);
 
-      if (error.message.includes('Transaction is not started yet')) {
-        console.error(`Transaction not started error caught for page: ${page_number}, retrying...`);
-        // await this.synchronizeOrder(page_number);
-      } else if (error.message.includes("Cannot read properties of undefined (reading 'length')")) {
-        console.error(`Woocommerce API error caught for page: ${page_number}, retrying...`);
-        // await this.synchronizeOrder(page_number);
-      } else {
-        console.error(error.message);
-        await queryRunner.rollbackTransaction();
-      }
+      // if (error.message.includes('Transaction is not started yet')) {
+      //   console.error(`Transaction not started error caught for page: ${page_number}, retrying...`);
+      //   // await this.synchronizeOrder(page_number);
+      // } else if (error.message.includes("Cannot read properties of undefined (reading 'length')")) {
+      //   console.error(`Woocommerce API error caught for page: ${page_number}, retrying...`);
+      //   // await this.synchronizeOrder(page_number);
+      // } else {
+      //   console.error(error.message);
+      //   await queryRunner.rollbackTransaction();
+      // }
 
       return false;
     } finally {
