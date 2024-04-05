@@ -95,7 +95,7 @@ export class OrderStagingService implements IOrderService {
     return order;
   }
 
-  sleep(ms: number) {
+  async sleep(ms: number) {
     const wakeUpTime = Date.now() + ms;
     while (Date.now() < wakeUpTime) {}
   }
@@ -233,7 +233,7 @@ export class OrderStagingService implements IOrderService {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
-      const size: number = 100;
+      const size: number = 50;
       let date = await this.checkListService.select(queryRunner);
       let continueDate = new Date(date);
 
@@ -241,7 +241,6 @@ export class OrderStagingService implements IOrderService {
         console.log('Staging Order migration start for date:', date);
         let total: number = 0;
         for (let i = 1; ; i++) {
-          this.sleep(30000);
           const orders = await this.listAllOrders(i, size, date);
           if (orders.length === 0) {
             if (total > 0) {
@@ -308,6 +307,8 @@ export class OrderStagingService implements IOrderService {
             }
           }
           await queryRunner.commitTransaction();
+          
+          await this.sleep(30000);
         }
         console.log('Staging Order migration end for date:', date);
         return true;
