@@ -60,21 +60,21 @@ export class OrderStagingService implements IOrderService {
   }
 
   async listAllOrders(page: number, size: number, date: string): Promise<any> {
-    const beforeDate = new Date(date);
-    beforeDate.setDate(beforeDate.getDate() + 1);
+    return new Promise((resolve, reject) => {
+      const beforeDate = new Date(date);
+      beforeDate.setDate(beforeDate.getDate() + 1);
 
-    const params = {
-      page,
-      per_page: size,
-      after: `${date}T00:00:00`,
-      before: `${beforeDate.toISOString().split('T')[0]}T00:00:00`,
-    };
-    const orders = await this.wooCommerce
-      .get('orders', params)
-      .then((response: any) => response?.data)
-      .catch((error: any) => error?.response?.data);
-
-    return orders;
+      const params = {
+        page,
+        per_page: size,
+        after: `${date}T00:00:00`,
+        before: `${beforeDate.toISOString().split('T')[0]}T00:00:00`,
+      };
+      this.wooCommerce.get('orders', params).then((response: any) => {
+        if (response && response.data) resolve(response.data);
+        else reject(new Error('No data found in response'));
+      });
+    });
   }
 
   async updateAnOrder(order_id: number, data: any): Promise<any> {
@@ -249,6 +249,7 @@ export class OrderStagingService implements IOrderService {
               await queryRunner.startTransaction();
               await this.checkListService.insert(queryRunner, data);
               await queryRunner.commitTransaction();
+              console.log('Staging Order migration check');
             }
             break;
           } else {
