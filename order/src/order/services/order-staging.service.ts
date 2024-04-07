@@ -260,17 +260,15 @@ export class OrderStagingService implements IOrderService {
             for (const order of orders) {
               // order save
               const orderId = await this.insert(queryRunner, order, null, null);
-              console.log('order migrate success');
+
               if (orderId !== false) {
                 // billing save
                 const billing = order.billing;
                 await this.billingService.insert(queryRunner, billing, orderId);
-                console.log('billing migrate success');
 
                 // shipping save
                 const shipping = order.shipping;
                 await this.shippingService.insert(queryRunner, shipping, orderId);
-                console.log('shipping migrate success');
 
                 // payment save
                 const payment = {
@@ -284,45 +282,38 @@ export class OrderStagingService implements IOrderService {
                   datePaidGmt: order.date_paid_gmt,
                 };
                 await this.paymentService.insert(queryRunner, payment, orderId);
-                console.log('payment migrate success');
 
                 // guest-house save
                 const guestHouse = order.guest_house;
                 await this.guestHouseService.insert(queryRunner, guestHouse, orderId);
-                console.log('guest-house migrate success');
 
                 // tour, tour-info save
                 const tour = order.tour;
                 const tourInfo = order.tour_info;
                 await this.tourService.insert(queryRunner, tour, tourInfo, orderId);
-                console.log('tour, tour-info migrate success');
 
                 // snap-info, usim-info, h2ousim save
                 const snapInfo = order.snap_info;
                 const usimInfo = order.usim_info;
                 const h2ousim = order.h2ousim;
                 await this.usimService.insert(queryRunner, snapInfo, usimInfo, h2ousim, orderId);
-                console.log('snap-info, usim-info, h2ousim migrate success');
 
                 // jfk-oneway, jfk-shuttle-rt save
                 const jfkOneway = order.jfk_oneway;
                 const jfkShuttleRt = order.jfk_shuttle_rt;
                 await this.jfkService.insert(queryRunner, jfkOneway, jfkShuttleRt, orderId);
-                console.log('jfk-oneway, jfk-shuttle-rt migrate success');
 
                 // order-metadata save
                 const metadatas = order.meta_data;
                 for (const metadata of metadatas) {
                   await this.insert(queryRunner, null, metadata, orderId);
                 }
-                console.log('order-metadata migrate success');
 
                 // order-line-items save
                 const lineItems = order.line_items;
                 for (const lineItem of lineItems) {
                   await this.lineItemService.insert(queryRunner, lineItem, orderId);
                 }
-                console.log('line-items migrate success');
               }
             }
             await queryRunner.commitTransaction();
