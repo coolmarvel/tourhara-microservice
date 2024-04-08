@@ -1,7 +1,17 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, VERSION_NEUTRAL } from '@nestjs/common';
 import { AdapterStagingService } from '../services/adapter-staging.service';
 
-@Controller()
+@Controller({ path: 'api', version: VERSION_NEUTRAL })
 export class AdapterStagingController {
   constructor(private readonly adapterService: AdapterStagingService) {}
+
+  @Get('categories')
+  async getAllProductCateogires() {
+    return await this.adapterService.getAllProductCategories();
+  }
+
+  @Get('products')
+  async getAllProduct() {
+    return await this.adapterService.getAllProduct();
+  }
 }

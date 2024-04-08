@@ -1,3 +1,5 @@
 export interface IAdapterService {
-  getAllCategories(): Promise<any>;
+  getAllProductCategories(): Promise<any>;
+
+  getAllProduct(): Promise<any>;
 }

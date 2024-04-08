@@ -19,6 +19,7 @@ import { ProductAttribute } from './products/attribute.entity';
 import { ProductCategoryImage } from './products/category-image.entity';
 import { ProductCategory } from './products/category.entity';
 import { ProductImage } from './products/product-image.entity';
+import { ProductType } from './products/product-type.entity';
 import { Product } from './products/product.entity';
 import { ProductTag } from './products/tag.entity';
 
@@ -47,4 +48,6 @@ export default [
   ProductAttribute,
   ProductCategory,
   ProductCategoryImage,
+  // Adapter-Product
+  ProductType,
 ];
