@@ -107,6 +107,7 @@ export class ProductStagingService implements IProductService {
           categoriesFlag = categories.length > 0;
         }
       }
+      console.log('Product Category migration success');
 
       for (let i = 1; i < Infinity; i++) {
         if (tagsFlag === false) break;
@@ -122,6 +123,7 @@ export class ProductStagingService implements IProductService {
           tagsFlag = tags.length > 0;
         }
       }
+      console.log('Product Tag migration success');
 
       for (let i = 1; i < Infinity; i++) {
         if (productsFlag === false) break;
@@ -149,6 +151,7 @@ export class ProductStagingService implements IProductService {
           productsFlag = products.length > 0;
         }
       }
+      console.log('Product Attribute migration success');
 
       await queryRunner.commitTransaction();
       console.log('Product migration end');
