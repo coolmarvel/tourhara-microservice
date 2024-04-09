@@ -1,13 +1,14 @@
-import { Column, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { ProductTypeEnum } from 'src/adapter/constants/product-type.enum';
 
+@Entity()
 export class ProductType {
   @PrimaryGeneratedColumn('uuid', { name: 'product_type_id' })
   productTypeId: string;
 
-  @Column('enum', { name: 'product_type' })
-  productType: ProductTypeEnum;
+  @Column('enum', { enum: ProductTypeEnum, nullable: true })
+  type: ProductTypeEnum;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
