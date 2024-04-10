@@ -92,12 +92,12 @@ export class AdapterStagingService implements IAdapterService, IProductAdapterSe
     await queryRunner.connect();
 
     try {
-      const categories = await queryRunner.manager.query(`
+      const products = await queryRunner.manager.query(`
       SELECT product_id, id, name, slug, type, price, regular_price, on_sale, sale_price
       FROM product
       WHERE purchasable=true AND product_type_id IS NOT NULL;`);
 
-      return categories;
+      return products;
     } catch (error) {
       await queryRunner.rollbackTransaction();
     } finally {
@@ -115,6 +115,7 @@ export class AdapterStagingService implements IAdapterService, IProductAdapterSe
         .createQueryBuilder(Product, 'product')
         .select(['product.productId', 'product.id', 'product.name', 'product.price', 'product.regularPrice', 'product.salePrice', 'product.onSale', 'product.productCategoryId'])
         .where('product.purchasable=:purchasable', { purchasable: true })
+        .where('product.productTypeId=:productTypeId', { productTypeId: null })
         .getMany();
 
       // 2단계: 각 Product의 Category 정보 조회
