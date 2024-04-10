@@ -9,6 +9,8 @@ import { CategoryStagingService } from 'src/woocommerce/category/services/catego
 import { AttributeStagingService } from 'src/woocommerce/attribute/services/attribute-staging.service';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { IProductService } from '../interfaces/product.interface';
+import { ProductTypeEnum } from '../constants/product-type.enum';
+import { ProductType } from '../entities/product-type.entity';
 
 @Injectable()
 export class ProductStagingService implements IProductService {
@@ -152,6 +154,22 @@ export class ProductStagingService implements IProductService {
         }
       }
       console.log('Product Attribute migration success');
+
+      const productTypes: ProductTypeEnum[] = [
+        ProductTypeEnum.TICKET,
+        ProductTypeEnum.TOUR,
+        ProductTypeEnum.MUSICAL,
+        ProductTypeEnum.USIM,
+        ProductTypeEnum.SNAP,
+        ProductTypeEnum.STAY,
+        ProductTypeEnum.AIRPORT,
+      ];
+      for (let i = 0; i < productTypes.length; i++) {
+        const newProductType = { type: productTypes[i] };
+        const productTypeEntity = queryRunner.manager.create(ProductType, newProductType);
+        await queryRunner.manager.save(productTypeEntity);
+      }
+      console.log('Product Type migration success');
 
       await queryRunner.commitTransaction();
       console.log('Product migration end');

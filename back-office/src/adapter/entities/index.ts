@@ -48,6 +48,5 @@ export default [
   ProductAttribute,
   ProductCategory,
   ProductCategoryImage,
-  // Adapter-Product
   ProductType,
 ];

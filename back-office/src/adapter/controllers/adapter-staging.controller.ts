@@ -14,4 +14,9 @@ export class AdapterStagingController {
   async getAllProduct() {
     return await this.adapterService.getAllProduct();
   }
+
+  @Get('types')
+  async getAllProductTypes() {
+    return await this.adapterService.getAllProductTypes();
+  }
 }

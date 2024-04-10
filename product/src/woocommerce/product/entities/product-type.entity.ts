@@ -1,6 +1,5 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-
-import { ProductTypeEnum } from 'src/adapter/constants/product-type.enum';
+import { ProductTypeEnum } from '../constants/product-type.enum';
 
 @Entity()
 export class ProductType {
