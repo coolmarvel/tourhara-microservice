@@ -93,7 +93,9 @@ export class AdapterStagingService implements IAdapterService, IProductAdapterSe
 
     try {
       const categories = await queryRunner.manager.query(`
-      SELECT product_category_id, id, name FROM product_category;`);
+      SELECT product_id, id, name, slug, type, price, regular_price, on_sale, sale_price
+      FROM product
+      WHERE purchasable=true AND product_type_id IS NOT NULL;`);
 
       return categories;
     } catch (error) {
