@@ -19,4 +19,14 @@ export class AdapterStagingController {
   async getAllProductTypes() {
     return await this.adapterService.getAllProductTypes();
   }
+
+  @Get('specified')
+  async getAllSpecifiedProduct() {
+    return await this.adapterService.getAllSpecifiedProduct();
+  }
+
+  @Get('not-specified')
+  async getAllNotSpecifiedProduct() {
+    return await this.adapterService.getAllNotSpecifiedProduct();
+  }
 }
