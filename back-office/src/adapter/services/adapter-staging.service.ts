@@ -8,7 +8,7 @@ import { ProductCategory } from '../entities/products/category.entity';
 import { IProductAdapterService } from '../interfaces/product-adapter.interface';
 
 @Injectable()
-export class AdapterStagingService implements IAdapterService, IProductAdapterService {
+export class AdapterStagingService implements IProductAdapterService {
   constructor(
     private configService: ConfigService,
     @InjectDataSource('staging') private readonly dataSource: DataSource,
@@ -145,8 +145,25 @@ export class AdapterStagingService implements IAdapterService, IProductAdapterSe
       WHERE purchasable=true AND product_type_id IS NULL;`);
 
       return products;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+  }
 
-      return products;
+  async updateProductType(product_id: string, product_type_id: string): Promise<any> {
+    const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+
+    try {
+      await queryRunner.startTransaction();
+
+      const updateProduct: Partial<Product> = { productTypeId: product_type_id };
+      await queryRunner.manager.update(Product, { productId: product_id }, updateProduct);
+
+      await queryRunner.commitTransaction();
+      return true;
     } catch (error) {
       await queryRunner.rollbackTransaction();
     } finally {
