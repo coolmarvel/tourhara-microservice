@@ -34,4 +34,9 @@ export class AdapterStagingController {
   async updateProductType(@Param() { product_id }: { product_id: string }, @Query() { product_type_id }: { product_type_id: string }) {
     return await this.adapterService.updateProductType(product_id, product_type_id);
   }
+
+  @Get('orders/:product_id')
+  async getOrdersWithSpecifiedType(@Param() { product_id }: { product_id: string }) {
+    return await this.adapterService.getOrdersWithSpecifiedType(product_id);
+  }
 }

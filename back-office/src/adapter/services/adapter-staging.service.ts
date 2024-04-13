@@ -71,22 +71,6 @@ export class AdapterStagingService implements IProductAdapterService {
     }
   }
 
-  async getAllProductTypes(): Promise<any> {
-    const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-
-    try {
-      const prodyctTypes = await queryRunner.manager.query(`
-      SELECT product_type_id, type FROM product_type;`);
-
-      return prodyctTypes;
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-    } finally {
-      await queryRunner.release();
-    }
-  }
-
   async getAllSpecifiedProduct(): Promise<any> {
     const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -152,6 +136,22 @@ export class AdapterStagingService implements IProductAdapterService {
     }
   }
 
+  async getAllProductTypes(): Promise<any> {
+    const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+
+    try {
+      const prodyctTypes = await queryRunner.manager.query(`
+      SELECT product_type_id, type FROM product_type;`);
+
+      return prodyctTypes;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
   async updateProductType(product_id: string, product_type_id: string): Promise<any> {
     const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -164,6 +164,24 @@ export class AdapterStagingService implements IProductAdapterService {
 
       await queryRunner.commitTransaction();
       return true;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async getOrdersWithSpecifiedType(product_id: string): Promise<any> {
+    const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+
+    try {
+      const orders = await queryRunner.manager.query(`
+      SELECT name, quantity, total, subtotal, price, order_id
+      FROM line_item
+      WHERE product_id='${product_id}';`);
+
+      return orders;
     } catch (error) {
       await queryRunner.rollbackTransaction();
     } finally {
