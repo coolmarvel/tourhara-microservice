@@ -3,13 +3,13 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 @Entity()
 export class OrderMetadata {
   @PrimaryGeneratedColumn('uuid', { name: 'order_metadata_id' })
-  orderMetadataId: string;
-
-  @Column('bigint', { nullable: true })
-  id: number;
+  orderMetadataId!: string;
 
   @Column({ nullable: true })
-  key: string;
+  id!: string;
+
+  @Column({ nullable: true })
+  key!: string;
 
   @Column({
     type: 'text',
@@ -19,14 +19,14 @@ export class OrderMetadata {
     },
     nullable: true,
   })
-  value: string[] | null;
+  value!: string[] | null;
 
   @Column('uuid', { name: 'order_id' })
-  orderId: string;
+  orderId!: string;
 
   @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
+  updatedAt!: Date;
 }

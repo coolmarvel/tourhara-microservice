@@ -5,8 +5,8 @@ export class LineItemMetadata {
   @PrimaryGeneratedColumn('uuid', { name: 'line_item_metadata_id' })
   lineItemMetadataId: string;
 
-  @Column('bigint', { nullable: true })
-  id: number;
+  @Column({ nullable: true })
+  id: string;
 
   @Column({ nullable: true })
   key: string;

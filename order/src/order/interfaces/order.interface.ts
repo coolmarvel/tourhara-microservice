@@ -14,18 +14,7 @@ export interface IOrderService {
 
   deleteAnOrder(order_id: number): Promise<any>;
 
-  /**
-   * Synchronize
-   */
-  synchronizeOrder(errorNumber: number): Promise<any>;
-
-  insert(queryRunner: QueryRunner, order: any, metadata: any, orderId: string): Promise<any>;
-
-  update(queryRunner: QueryRunner): Promise<any>;
-
-  select(queryRunner: QueryRunner): Promise<any>;
-
-  delete(queryRunner: QueryRunner): Promise<any>;
+  insert(queryRunner: QueryRunner, order: any, metadata: any): Promise<any>;
 
   /**
    * Webhook

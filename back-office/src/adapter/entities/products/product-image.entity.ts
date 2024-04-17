@@ -5,7 +5,7 @@ export class ProductImage {
   @PrimaryGeneratedColumn('uuid', { name: 'product_image_id' })
   productImageId: string;
 
-  @Column('bigint', { nullable: true })
+  @Column({ nullable: true })
   id: string;
 
   @Column({ nullable: true })

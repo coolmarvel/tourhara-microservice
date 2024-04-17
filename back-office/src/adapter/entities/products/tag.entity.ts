@@ -5,8 +5,8 @@ export class ProductTag {
   @PrimaryGeneratedColumn('uuid', { name: 'product_tag_id' })
   productTagId: string;
 
-  @Column('bigint', { nullable: true })
-  id: number;
+  @Column({ nullable: true })
+  id: string;
 
   @Column({ nullable: true })
   name: string;
@@ -15,7 +15,7 @@ export class ProductTag {
   slug: string;
 
   @Column({ nullable: true })
-  count: number;
+  count: string;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

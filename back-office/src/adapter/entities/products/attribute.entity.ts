@@ -5,8 +5,8 @@ export class ProductAttribute {
   @PrimaryGeneratedColumn('uuid', { name: 'product_attribute_id' })
   productAttributeId: string;
 
-  @Column('bigint', { nullable: true })
-  id: number;
+  @Column({ nullable: true })
+  id: string;
 
   @Column({ nullable: true })
   name: string;

@@ -8,17 +8,17 @@ export class CheckList {
   @Column({ name: 'iso_date' })
   isoDate: string;
 
-  @Column('bigint')
-  page: number;
+  @Column()
+  page: string;
 
-  @Column('bigint', { name: 'per_page' })
-  perPage: number;
+  @Column({ name: 'per_page' })
+  perPage: string;
 
-  @Column('bigint', { name: 'daily_total' })
-  dailyTotal: bigint;
+  @Column({ name: 'daily_total' })
+  dailyTotal: string;
 
-  @Column('bigint', { name: 'acc_total' })
-  accTotal: bigint;
+  @Column({ name: 'acc_total' })
+  accTotal: string;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
