@@ -26,7 +26,12 @@ export class OrderStagingService implements IOrderService {
   async createAnOrder(payload: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        return resolve(true);
+        const order = await this.wooCommerce
+          .post(`orders`, payload)
+          .then((response: any) => response.data)
+          .catch((error: any) => error.response.data);
+
+        return resolve(order);
       } catch (error) {
         return reject(error);
       }
@@ -140,6 +145,8 @@ export class OrderStagingService implements IOrderService {
   async orderCreated(payload: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
+        console.log(payload);
+        
         return resolve(true);
       } catch (error) {
         return reject(error);
