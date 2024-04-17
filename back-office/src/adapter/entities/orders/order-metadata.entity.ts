@@ -5,8 +5,8 @@ export class OrderMetadata {
   @PrimaryGeneratedColumn('uuid', { name: 'order_metadata_id' })
   orderMetadataId: string;
 
-  @Column('bigint', { nullable: true })
-  id: number;
+  @Column({ nullable: true })
+  id: string;
 
   @Column({ nullable: true })
   key: string;

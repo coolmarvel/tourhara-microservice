@@ -5,8 +5,8 @@ export class ProductCategoryImage {
   @PrimaryGeneratedColumn('uuid', { name: 'product_cateogry_image_id' })
   productCategoryImageId: string;
 
-  @Column('bigint', { nullable: true })
-  id: number;
+  @Column({ nullable: true })
+  id: string;
 
   @Column({ nullable: true })
   name: string;

@@ -5,8 +5,8 @@ export class Product {
   @PrimaryGeneratedColumn('uuid', { name: 'product_id' })
   productId: string;
 
-  @Column('bigint', { nullable: true })
-  id: number;
+  @Column({ nullable: true })
+  id: string;
 
   @Column({ nullable: true })
   name: string;
@@ -98,10 +98,10 @@ export class Product {
   @Column({ name: 'date_created_gmt', nullable: true })
   dateCreatedGmt: Date;
 
-  @Column({ name: 'date_midified', nullable: true })
+  @Column({ name: 'date_modified', nullable: true })
   dateModified: Date;
 
-  @Column({ name: 'date_midified_gmt', nullable: true })
+  @Column({ name: 'date_modified_gmt', nullable: true })
   dateModifiedGmt: Date;
 
   @Column('uuid', { name: 'product_type_id', nullable: true })

@@ -5,8 +5,8 @@ export class LineItem {
   @PrimaryGeneratedColumn('uuid', { name: 'line_item_id' })
   lineItemId: string;
 
-  @Column('bigint', { nullable: true })
-  id: number;
+  @Column({ nullable: true })
+  id: string;
 
   @Column({ nullable: true })
   name: string;
@@ -15,7 +15,7 @@ export class LineItem {
   productId: string;
 
   @Column({ nullable: true })
-  quantity: number;
+  quantity: string;
 
   @Column({ name: 'tax_class', nullable: true })
   taxClass: string;
@@ -46,6 +46,7 @@ export class LineItem {
 
   @Column({
     type: 'text',
+    name: 'bundled_items',
     transformer: {
       to: (value: string[] | null): string | null => (value ? JSON.stringify(value) : null),
       from: (value: string): string[] | null => (value ? JSON.parse(value) : null),

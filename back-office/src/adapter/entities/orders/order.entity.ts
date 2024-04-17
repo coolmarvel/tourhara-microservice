@@ -1,10 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { OrderStatus } from '../../constants/order-status.enum';
 
 @Entity()
@@ -12,8 +6,8 @@ export class Order {
   @PrimaryGeneratedColumn('uuid', { name: 'order_id' })
   orderId: string;
 
-  @Column('bigint')
-  id: number;
+  @Column()
+  id: string;
 
   @Column('enum', { enum: OrderStatus, nullable: true })
   status: OrderStatus;

@@ -5,11 +5,11 @@ export class ProductCategory {
   @PrimaryGeneratedColumn('uuid', { name: 'product_category_id' })
   productCategoryId: string;
 
-  @Column('bigint', { nullable: true })
-  id: number;
+  @Column({ nullable: true })
+  id: string;
 
-  @Column('bigint', { nullable: true })
-  parent: number;
+  @Column({ nullable: true })
+  parent: string;
 
   @Column({ nullable: true })
   name: string;

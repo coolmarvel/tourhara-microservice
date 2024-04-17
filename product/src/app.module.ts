@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
-import { WoocommerceModule } from './woocommerce/woocommerce.module';
+import { ProductModule } from './product/product.module';
 import config from './config';
 
 @Module({
@@ -41,7 +41,7 @@ import config from './config';
           synchronize: true,
         }) as TypeOrmModuleAsyncOptions,
     }),
-    WoocommerceModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [AppService],

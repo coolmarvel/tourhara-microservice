@@ -7,7 +7,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import config from './config';
 import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
-import { WoocommerceModule } from './woocommerce/woocommerce.module';
+import { OrderModule } from './order/order.module';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -46,7 +47,8 @@ import { WoocommerceModule } from './woocommerce/woocommerce.module';
     }),
     UserModule,
     AuthModule,
-    WoocommerceModule,
+    OrderModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [AppService],
