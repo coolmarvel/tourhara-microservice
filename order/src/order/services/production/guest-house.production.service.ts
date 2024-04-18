@@ -37,4 +37,28 @@ export class GuestHouseProductionService implements IGuestHouseService {
       }
     });
   }
+
+  async update(queryRunner: QueryRunner, guestHouse: any, orderId: string): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const existingGuestHouse = await queryRunner.manager.query(`
+        SELECT order_id FROM \`guest_house\` WHERE order_id='${orderId}';`);
+        if (existingGuestHouse.length === 0) return resolve(await this.insert(queryRunner, guestHouse, orderId));
+
+        await queryRunner.manager.query(`
+        UPDATE \`guest_house\` SET
+        reserved_name=${guestHouse.reserved_name === '' ? null : `'${guestHouse.reserved_name}'`},
+        sex_age=${guestHouse.sex_age === '' ? null : `'${guestHouse.sex_age}'`},
+        mobile_guest=${guestHouse.mobile_guest === '' ? null : `'${guestHouse.mobile_guest}'`},
+        departure=${guestHouse.departure === '' ? null : `'${guestHouse.departure}'`},
+        arrival_time=${guestHouse.arrival_time === '' ? null : `'${guestHouse.arrival_time}'`},
+        security_deposit=${guestHouse.security_deposit === '' ? null : `'${guestHouse.security_deposit}'`},
+        updated_at=NOW() WHERE order_id='${orderId}';`);
+
+        return resolve(true);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
 }

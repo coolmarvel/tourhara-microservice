@@ -25,10 +25,12 @@ import { PaymentProductionService } from './services/production/payment.producti
 import { ShippingProductionService } from './services/production/shipping.production.service';
 import { TourProductionService } from './services/production/tour.production.service';
 import { UsimProductionService } from './services/production/usim.production.service';
+import { OrderStagingController } from './controllers/staging/order.staging.controller';
+import { OrderProductionController } from './controllers/production/order.production.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature(entities, 'staging'), TypeOrmModule.forFeature(entities, 'production')],
-  controllers: [],
+  controllers: [OrderStagingController, OrderProductionController],
   providers: [
     // Staging
     BillingStagingService,

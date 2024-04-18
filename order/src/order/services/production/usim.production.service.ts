@@ -69,4 +69,51 @@ export class UsimProductionService implements IUsimService {
       }
     });
   }
+
+  async update(queryRunner: QueryRunner, snapInfo: any, usimInfo: any, h2ousim: any, orderId: string): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const existingSnapInfo = await queryRunner.manager.query(`
+        SELECT order_id FROM \`snap_info\` WHERE order_id='${orderId}';`);
+        const existingUsimInfo = await queryRunner.manager.query(`
+        SELECT order_id FROM \`usim_info\` WHERE order_id='${orderId}';`);
+        const existingH2ousim = await queryRunner.manager.query(`
+        SELECT order_id FROM \`h2ousim\` WHERE order_id='${orderId}';`);
+        if (existingH2ousim.length === 0 && existingUsimInfo.length === 0 && existingSnapInfo.length === 0) {
+          return resolve(await this.insert(queryRunner, snapInfo, usimInfo, h2ousim, orderId));
+        }
+
+        await queryRunner.manager.query(`
+        UPDATE \`snap_info\` SET
+        mobile_snap=${snapInfo.mobile_snap === '' ? null : `'${snapInfo.mobile_snap}'`},
+        updated_at=NOW() WHERE order_id='${orderId}';`);
+
+        await queryRunner.manager.query(`
+        UPDATE \`usim_info\` SET
+        delivery_option2=${usimInfo.delivery_option2 === '' ? null : `'${usimInfo.delivery_option2}'`},
+        departure_date2=${usimInfo.departure_date2 === '' ? null : `'${usimInfo.departure_date2}'`},
+        att_tmobile_date=${usimInfo.att_tmobile_date === '' ? null : `'${usimInfo.att_tmobile_date}'`},
+        usim_name=${usimInfo.usim_name === '' ? null : `'${usimInfo.usim_name}'`},
+        usim_address_1=${usimInfo.usim_address_1 === '' ? null : `'${usimInfo.usim_address_1}'`},
+        usim_address_2=${usimInfo.usim_address_2 === '' ? null : `'${usimInfo.usim_address_2}'`},
+        usim_postcode=${usimInfo.usim_postcode === '' ? null : `'${usimInfo.usim_postcode}'`},
+        esim_device=${usimInfo.esim_device === '' ? null : `'${usimInfo.esim_device}'`},
+        esim_eid=${usimInfo.esim_eid === '' ? null : `'${usimInfo.esim_eid}'`},
+        esim_imei=${usimInfo.esim_imei === '' ? null : `'${usimInfo.esim_imei}'`},
+        notice_check_simcard=${usimInfo.notice_check_simcard === '' ? null : `'${usimInfo.notice_check_simcard}'`},
+        updated_at=NOW() WHERE order_id='${orderId}';`);
+
+        await queryRunner.manager.query(`
+        UPDATE \`h2ousim\` SET 
+        usim_extension=${h2ousim.usim_extension === '' ? null : `'${h2ousim.usim_extension}'`},
+        eid_number=${h2ousim.eid_number === '' ? null : `'${h2ousim.eid_number}'`},
+        previous_order_number=${h2ousim.previous_order_number === '' ? null : `'${h2ousim.previous_order_number}'`},
+        updated_at=NOW() WHERE order_id='${orderId}';`);
+
+        return resolve(true);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
 }

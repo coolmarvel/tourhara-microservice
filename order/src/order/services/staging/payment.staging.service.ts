@@ -38,4 +38,30 @@ export class PaymentStagingService implements IPaymentService {
       }
     });
   }
+
+  async update(queryRunner: QueryRunner, payment: any, orderId: string): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const existingPayment = await queryRunner.manager.query(`
+        SELECT order_id FROM \`payment\` WHERE order_id='${orderId}';`);
+        if (existingPayment.length === 0) return resolve(await this.insert(queryRunner, payment, orderId));
+
+        await queryRunner.manager.query(`
+        UPDATE \`payment\` SET
+        payment_method=${payment.payment_method ? `'${payment.payment_method}'` : null},
+        payment_method_title=${payment.payment_method_title ? `'${payment.payment_method_title}'` : null},
+        transaction_id=${payment.transaction_id ? `'${payment.transaction_id}'` : null},
+        payment_url=${payment.payment_url ? `'${payment.payment_url}'` : null},
+        needs_payment=${payment.needs_payment === '' ? null : payment.needs_payment},
+        needs_processing=${payment.needs_processing === '' ? null : payment.needs_processing},
+        date_paid=${payment.date_paid ? `'${payment.date_paid}'` : null},
+        date_paid_gmt=${payment.date_paid_gmt ? `'${payment.date_paid_gmt}'` : null},
+        updated_at=NOW() WHERE order_id='${orderId}';`);
+
+        return resolve(true);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
 }

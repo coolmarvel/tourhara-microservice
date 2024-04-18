@@ -41,4 +41,34 @@ export class ShippingProductionService implements IShippingService {
       }
     });
   }
+
+  async update(queryRunner: QueryRunner, shipping: any, orderId: string): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const existingShipping = await queryRunner.manager.query(`
+        SELECT order_id FROM \`shipping\` WHERE order_id='${orderId}';`);
+        if (existingShipping.length === 0) return resolve(await this.insert(queryRunner, shipping, orderId));
+
+        await queryRunner.manager.query(`
+        UPDATE \`shipping\` SET
+        first_name=${shipping.first_name === '' ? null : `'${shipping.first_name}'`},
+        last_name=${shipping.last_name === '' ? null : `'${shipping.last_name}'`},
+        company=${shipping.company === '' ? null : `'${shipping.company}'`},
+        address_1=${shipping.address_1 === '' ? null : `'${shipping.address_1}'`},
+        address_2=${shipping.address_2 === '' ? null : `'${shipping.address_2}'`},
+        city=${shipping.city === '' ? null : `'${shipping.city}'`},
+        state=${shipping.state === '' ? null : `'${shipping.state}'`},
+        postcode=${shipping.postcode === '' ? null : `'${shipping.postcode}'`},
+        country=${shipping.country === '' ? null : `'${shipping.country}'`},
+        phone=${shipping.phone === '' ? null : `'${shipping.phone}'`},
+        shipping_mobile=${shipping.shipping_mobile === '' ? null : `'${shipping.shipping_mobile}'`},
+        updated_at=NOW() WHERE order_id='${orderId}';
+        `);
+
+        return resolve(true);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
 }

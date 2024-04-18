@@ -7,6 +7,8 @@ import { OrderProductionController } from './controllers/production/order.produc
 
 @Module({
   providers: [
+    OrderStagingService,
+    OrderProductionService,
     {
       provide: 'ORDER_SERVICE',
       useFactory: () => {
@@ -16,10 +18,8 @@ import { OrderProductionController } from './controllers/production/order.produc
         });
       },
     },
-    OrderStagingService,
-    OrderProductionService,
   ],
-  exports: [OrderStagingService, OrderProductionService],
   controllers: [OrderStagingController, OrderProductionController],
+  exports: [OrderStagingService, OrderProductionService],
 })
 export class OrderModule {}

@@ -14,7 +14,12 @@ export interface IOrderService {
 
   deleteAnOrder(order_id: number): Promise<any>;
 
-  insert(queryRunner: QueryRunner, order: any, metadata: any): Promise<any>;
+  /**
+   * Database
+   */
+  insert(queryRunner: QueryRunner, order: any): Promise<any>;
+
+  update(queryRunner: QueryRunner, order: any): Promise<any>;
 
   /**
    * Webhook

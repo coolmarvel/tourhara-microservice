@@ -27,7 +27,6 @@ async function bootstrap() {
     .setTitle('MSA Project')
     .setDescription('BackOffcie with WooCommerce')
     .setVersion('1.0.0')
-    .addServer('/')
     .addBearerAuth()
     .build();
   const customOptions: SwaggerCustomOptions = { swaggerOptions: { persistAuthorization: true } };
