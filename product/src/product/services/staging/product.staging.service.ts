@@ -108,12 +108,16 @@ export class ProductStagingService implements IProductService {
 
   async insert(queryRunner: QueryRunner, product: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
-      const tagIds: string[] = [];
-      const imageIds: string[] = [];
-      const categoryIds: string[] = [];
-      const attributeIds: string[] = [];
-
       try {
+        const existingProduct = await queryRunner.manager.query(`
+        SELECT id FROM \`product\` WHERE id='${product.id}'`);
+        if (existingProduct.length > 0) return resolve(true);
+
+        const tagIds: string[] = [];
+        const imageIds: string[] = [];
+        const categoryIds: string[] = [];
+        const attributeIds: string[] = [];
+
         const tags = product.tags;
         for (const tag of tags) {
           const productTag = await this.tagService.select(queryRunner, tag.id);
@@ -199,6 +203,10 @@ export class ProductStagingService implements IProductService {
       await queryRunner.connect();
 
       try {
+        const existingProduct = await queryRunner.manager.query(`
+        SELECT id FROM \`product\` WHERE id='${payload.id}'`);
+        if (existingProduct.length > 0) return resolve(true);
+
         await queryRunner.startTransaction();
 
         const categories = payload.categories;

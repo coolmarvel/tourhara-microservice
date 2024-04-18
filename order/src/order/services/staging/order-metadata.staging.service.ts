@@ -32,4 +32,25 @@ export class OrderMetadataStagingService implements IOrderMetadataService {
       }
     });
   }
+
+  async update(queryRunner: QueryRunner, metadata: any, orderId: string): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const existingMetadata = await queryRunner.manager.query(`
+        SELECT id FROM \`order_metadata\` WHERE id='${metadata.id}';`);
+        if (existingMetadata.length === 0) return resolve(await this.insert(queryRunner, metadata, orderId));
+
+        await queryRunner.manager.query(`
+        UPDATE \`order_metadata\` SET 
+        id='${metadata.id}',
+        key='${metadata.key}',
+        value='${metadata.value}',
+        updated_at=NOW() WHERE order_id='${orderId}';`);
+
+        return resolve(true);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
 }

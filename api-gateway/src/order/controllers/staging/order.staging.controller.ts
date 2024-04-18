@@ -55,9 +55,7 @@ export class OrderStagingController {
   @Post('created')
   @ApiOperation({ summary: '단일 주문 생성 WEBHOOK (스테이징)' })
   async orderCreated(@Headers() header: WebhookHeaderReqDto, @Body() data: any) {
-    if (header['x-wc-webhook-topic'] !== 'order.created') return HttpStatus.NO_CONTENT;
-    console.log('header');
-    console.log(header);
+    if (header['x-wc-webhook-topic'] !== 'order.created') return HttpStatus.OK;
 
     const result = await this.orderStagingService.orderCreated(data);
 
@@ -69,8 +67,9 @@ export class OrderStagingController {
   @Post('updated')
   @ApiOperation({ summary: '단일 주문 갱신 WEBHOOK (스테이징)' })
   async orderUpdated(@Headers() header: WebhookHeaderReqDto, @Body() data: any) {
-    if (header['x-wc-webhook-topic'] !== 'order.updated') return HttpStatus.NO_CONTENT;
+    console.log('header');
     console.log(header);
+    if (header['x-wc-webhook-topic'] !== 'order.updated') return HttpStatus.OK;
 
     const result = await this.orderStagingService.orderUpdated(data);
     if (result) return HttpStatus.OK;
@@ -80,8 +79,7 @@ export class OrderStagingController {
   @Post('deleted')
   @ApiOperation({ summary: '단일 주문 삭제 WEBHOOK (스테이징)' })
   async orderDeleted(@Headers() header: WebhookHeaderReqDto, @Body() data: any) {
-    if (header['x-wc-webhook-topic'] !== 'order.deleted') return HttpStatus.NO_CONTENT;
-    console.log(header);
+    if (header['x-wc-webhook-topic'] !== 'order.deleted') return HttpStatus.OK;
 
     return await this.orderStagingService.orderDeleted(data);
   }
@@ -90,8 +88,7 @@ export class OrderStagingController {
   @Post('restored')
   @ApiOperation({ summary: '단일 주문 복원 WEBHOOK (스테이징)' })
   async orderRestored(@Headers() header: WebhookHeaderReqDto, @Body() data: any) {
-    if (header['x-wc-webhook-topic'] !== 'order.restored') return HttpStatus.NO_CONTENT;
-    console.log(header);
+    if (header['x-wc-webhook-topic'] !== 'order.restored') return HttpStatus.OK;
 
     return await this.orderStagingService.orderRestored(data);
   }
