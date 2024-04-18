@@ -112,7 +112,6 @@ export class CategoryStagingService implements ICategoryService {
           '${category.name}',
           '${category.slug}',
           ${null},
-          '${category.description}',
           NOW(), NOW()
         );`);
 
@@ -120,6 +119,28 @@ export class CategoryStagingService implements ICategoryService {
       } catch (error) {
         console.error('Category Service Insert Error');
         console.error(error);
+        return reject(error);
+      }
+    });
+  }
+
+  async update(queryRunner: QueryRunner, category: any): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const existingCategory = await queryRunner.manager.query(`
+        SELECT * FROM \`product_category\` WHERE id='${category.id}';`);
+        if (existingCategory.length === 0) return resolve(await this.insert(queryRunner, category));
+
+        await queryRunner.manager.query(`
+        UPDATE \`product_category\` SET 
+        parent='${category.parent}',
+        name='${category.name}',
+        slug='${category.slug}',
+        description=${null},
+        updated_at=NOW() WHERE id='${category.id}';`);
+
+        return resolve(existingCategory[0].product_category_id);
+      } catch (error) {
         return reject(error);
       }
     });

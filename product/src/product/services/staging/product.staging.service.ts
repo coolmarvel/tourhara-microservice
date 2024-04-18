@@ -182,6 +182,72 @@ export class ProductStagingService implements IProductService {
     });
   }
 
+  async update(queryRunner: QueryRunner, product: any): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const existingProduct = await queryRunner.manager.query(`
+        SELECT id FROM \`product\` WHERE id='${product.id}'`);
+        if (existingProduct.length === 0) return resolve(await this.insert(queryRunner, product));
+
+        const tagIds: string[] = [];
+        const imageIds: string[] = [];
+        const categoryIds: string[] = [];
+        const attributeIds: string[] = [];
+
+        const tags = product.tags;
+        for (const tag of tags) {
+          const productTag = await this.tagService.select(queryRunner, tag.id);
+          tagIds.push(productTag.product_tag_id);
+        }
+
+        const images = product.images;
+        for (const image of images) {
+          const productImage = await this.productImageService.select(queryRunner, image.id);
+          imageIds.push(productImage.product_image_id);
+        }
+
+        const categories = product.categories;
+        for (const category of categories) {
+          const productCategory = await this.categoryService.select(queryRunner, category.id);
+          categoryIds.push(productCategory.product_category_id);
+        }
+
+        const attributes = product.attributes;
+        for (const attribute of attributes) {
+          const productAttribute = await this.attributeService.select(queryRunner, attribute.id);
+          attributeIds.push(productAttribute.product_attribute_id);
+        }
+
+        await queryRunner.manager.query(`
+        UPDATE \`product\` SET 
+        name='${product.name}',
+        slug=${product.slug === '' ? null : `'${product.slug}'`},
+        type='${product.type}',
+        status='${product.status}',
+        featured=${product.featured},
+        price=${product.price === '' ? null : `'${product.price}'`},
+        regular_price=${product.regular_price === '' ? null : `'${product.regular_price}'`},
+        on_sale=${product.on_sale},
+        sale_price=${product.sale_price === '' ? null : `'${product.sale_price}'`},
+        purchasable=${product.purchasable === '' ? null : product.purchasable},
+        product_category_id=${categoryIds.length === 0 ? null : `'${categoryIds}'`},
+        product_tag_id=${tagIds.length === 0 ? null : `'${tagIds}'`},
+        product_image_id=${imageIds.length === 0 ? null : `'${imageIds}'`},
+        product_attribute_id=${attributeIds.length === 0 ? null : `'${attributeIds}'`},
+        variations=${product.variations.length === 0 ? null : `'${product.variations}'`},
+        date_created=${product.date_created !== null ? `'${product.date_created}'` : null},
+        date_created_gmt=${product.date_created_gmt !== null ? `'${product.date_created_gmt}'` : null},
+        date_modified=${product.date_modified !== null ? `'${product.date_modified}'` : null},
+        date_modified_gmt=${product.date_modified_gmt !== null ? `'${product.date_modified_gmt}'` : null},
+        updated_at=NOW() WHERE id='${product.id}';`);
+
+        return resolve(true);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
+
   async select(queryRunner: QueryRunner, id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
@@ -203,35 +269,36 @@ export class ProductStagingService implements IProductService {
       await queryRunner.connect();
 
       try {
-        const existingProduct = await queryRunner.manager.query(`
-        SELECT id FROM \`product\` WHERE id='${payload.id}'`);
-        if (existingProduct.length > 0) return resolve(true);
+        console.log(payload);
+        // const existingProduct = await queryRunner.manager.query(`
+        // SELECT id FROM \`product\` WHERE id='${payload.id}'`);
+        // if (existingProduct.length > 0) return resolve(true);
 
-        await queryRunner.startTransaction();
+        // await queryRunner.startTransaction();
 
-        const categories = payload.categories;
-        for (const category of categories) {
-          await this.categoryService.insert(queryRunner, category);
-        }
+        // const categories = payload.categories;
+        // for (const category of categories) {
+        //   await this.categoryService.insert(queryRunner, category);
+        // }
 
-        const tags = payload.tags;
-        for (const tag of tags) {
-          await this.tagService.insert(queryRunner, tag);
-        }
+        // const tags = payload.tags;
+        // for (const tag of tags) {
+        //   await this.tagService.insert(queryRunner, tag);
+        // }
 
-        const attributes = payload.attributes;
-        for (const attribute of attributes) {
-          await this.attributeService.insert(queryRunner, attribute);
-        }
+        // const attributes = payload.attributes;
+        // for (const attribute of attributes) {
+        //   await this.attributeService.insert(queryRunner, attribute);
+        // }
 
-        const images = payload.images;
-        for (const image of images) {
-          await this.productImageService.insert(queryRunner, image);
-        }
+        // const images = payload.images;
+        // for (const image of images) {
+        //   await this.productImageService.insert(queryRunner, image);
+        // }
 
-        await this.insert(queryRunner, payload);
+        // await this.insert(queryRunner, payload);
 
-        await queryRunner.commitTransaction();
+        // await queryRunner.commitTransaction();
 
         return resolve(true);
       } catch (error) {
@@ -249,34 +316,32 @@ export class ProductStagingService implements IProductService {
       await queryRunner.connect();
 
       try {
-        // await queryRunner.startTransaction();
+        console.log(payload);
+        await queryRunner.startTransaction();
 
-        // const existingProduct = await queryRunner.manager.findOne(Product, { where: { id: payload.id } });
-        // if (!existingProduct) return false;
+        const categories = payload.categories;
+        for (const category of categories) {
+          await this.categoryService.update(queryRunner, category);
+        }
 
-        // const categories = payload.categories;
-        // for (const category of categories) {
-        //   await this.categoryService.update(queryRunner, category);
-        // }
+        const tags = payload.tags;
+        for (const tag of tags) {
+          await this.tagService.update(queryRunner, tag);
+        }
 
-        // const tags = payload.tags;
-        // for (const tag of tags) {
-        //   await this.tagService.update(queryRunner, tag);
-        // }
+        const attributes = payload.attributes;
+        for (const attribute of attributes) {
+          await this.attributeService.update(queryRunner, attribute);
+        }
 
-        // const attributes = payload.attributes;
-        // for (const attribute of attributes) {
-        //   await this.attributeService.update(queryRunner, attribute);
-        // }
+        const images = payload.images;
+        for (const image of images) {
+          await this.productImageService.update(queryRunner, image);
+        }
 
-        // const images = payload.images;
-        // for (const image of images) {
-        //   await this.update(queryRunner, image);
-        // }
+        await this.update(queryRunner, payload);
 
-        // await this.update(queryRunner, payload);
-
-        // await queryRunner.commitTransaction();
+        await queryRunner.commitTransaction();
 
         return resolve(true);
       } catch (error) {

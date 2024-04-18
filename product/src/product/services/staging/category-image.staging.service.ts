@@ -39,4 +39,29 @@ export class CategoryImageStagingService implements ICategoryImageService {
       }
     });
   }
+
+  async update(queryRunner: QueryRunner, categoryImage: any, categoryId: string): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const existingCategoryImage = await queryRunner.manager.query(`
+        SELECT * FROM \`product_category_image\` WHERE id='${categoryImage.id}';`);
+        if (existingCategoryImage.length === 0) return resolve(await this.insert(queryRunner, categoryImage, categoryId));
+
+        await queryRunner.manager.query(`
+        UPDATE \`product_category_image\` SET 
+        name=${categoryImage.name === '' ? null : `'${categoryImage.name}'`},
+        src='${categoryImage.src}',
+        alt=${categoryImage.alt === '' ? null : `'${categoryImage.alt}'`},
+        date_created=${categoryImage.date_created === null ? null : `'${categoryImage.date_created}'`},
+        date_created_gmt=${categoryImage.date_created_gmt === null ? null : `'${categoryImage.date_created_gmt}'`},
+        date_modified=${categoryImage.date_modified === null ? null : `'${categoryImage.date_modified}'`},
+        date_modified_gmt=${categoryImage.date_modified_gmt === null ? null : `'${categoryImage.date_modified_gmt}'`},
+        updated_at=NOW() WHERE product_category_id='${categoryId}';`);
+
+        return resolve(existingCategoryImage[0].product_category_image_id);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
 }

@@ -286,7 +286,6 @@ export class OrderStagingService implements IOrderService {
 
       try {
         console.log(payload);
-
         await queryRunner.startTransaction();
 
         // order update

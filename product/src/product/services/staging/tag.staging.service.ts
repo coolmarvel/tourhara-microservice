@@ -94,15 +94,15 @@ export class TagStagingService implements ITagService {
     });
   }
 
-  async insert(queryRunnery: QueryRunner, tag: any): Promise<any> {
+  async insert(queryRunner: QueryRunner, tag: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingTag = await queryRunnery.manager.query(`
+        const existingTag = await queryRunner.manager.query(`
         SELECT id FROM \`product_tag\` WHERE id='${tag.id}'`);
         if (existingTag.length > 0) return resolve(true);
 
         const productTagId = uuid();
-        await queryRunnery.manager.query(`
+        await queryRunner.manager.query(`
         INSERT INTO \`product_tag\` (
           product_tag_id, id, name, slug, count, created_at, updated_at
         ) VALUES (
@@ -118,6 +118,27 @@ export class TagStagingService implements ITagService {
       } catch (error) {
         console.error('Tag Service Insert Error');
         console.error(error);
+        return reject(error);
+      }
+    });
+  }
+
+  async update(queryRunner: QueryRunner, tag: any): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const existingTag = await queryRunner.manager.query(`
+        SELECT * FROM \`product_tag\` WHERE id='${tag.id}'`);
+        if (existingTag.length === 0) return resolve(await this.insert(queryRunner, tag));
+
+        await queryRunner.manager.query(`
+        UPDATE \`product_tag\` SET 
+        name=${tag.name === '' ? null : `'${tag.name}'`},
+        slug=${tag.slug === '' ? null : `'${tag.slug}'`},
+        count='${tag.count}',
+        updated_at=NOW() WHERE id='${tag.id}';`);
+
+        return resolve(existingTag[0].product_tag_id);
+      } catch (error) {
         return reject(error);
       }
     });
