@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { IAdapterService } from '../interfaces/adapter.interface';
+import { IAdapterService } from '../../interfaces/adapter.interface';
 import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource, QueryRunner } from 'typeorm';
-import { Product } from '../entities/products/product.entity';
-import { ProductCategory } from '../entities/products/category.entity';
-import { IProductAdapterService } from '../interfaces/product-adapter.interface';
+import { Product } from '../../entities/products/product.entity';
+import { ProductCategory } from '../../entities/products/category.entity';
+import { IProductAdapterService } from '../../interfaces/product-adapter.interface';
 
 @Injectable()
 export class AdapterStagingService implements IProductAdapterService {

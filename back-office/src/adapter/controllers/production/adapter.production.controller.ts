@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { AdapterProductionService } from '../services/adapter-production.service';
+import { AdapterProductionService } from '../../services/production/adapter.production.service';
 
 @Controller()
 export class AdapterProductionController {

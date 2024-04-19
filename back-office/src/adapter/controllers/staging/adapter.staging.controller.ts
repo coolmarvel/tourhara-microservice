@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Put, Query, VERSION_NEUTRAL } from '@nestjs/common';
-import { AdapterStagingService } from '../services/adapter-staging.service';
+import { AdapterStagingService } from '../../services/staging/adapter.staging.service';
 
 @Controller({ path: 'api', version: VERSION_NEUTRAL })
 export class AdapterStagingController {

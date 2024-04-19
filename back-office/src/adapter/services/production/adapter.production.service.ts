@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IAdapterService } from '../interfaces/adapter.interface';
+import { IAdapterService } from '../../interfaces/adapter.interface';
 
 @Injectable()
 export class AdapterProductionService implements IAdapterService {
