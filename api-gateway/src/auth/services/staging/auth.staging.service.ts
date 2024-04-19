@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { IAuthService, RefreshResponse, SigninResponse, SignupResponse } from '../interfaces/auth.interface';
+import { IAuthService, RefreshResponse, SigninResponse, SignupResponse } from '../../interfaces/auth.interface';
 import { JwtService } from '@nestjs/jwt';
-import { UserStagingService } from 'src/user/services/user-staging.service';
+import { UserStagingService } from 'src/user/services/staging/user.staging.service';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
-import { RefreshToken } from '../entities/refresh-token.entity';
+import { RefreshToken } from '../../entities/refresh-token.entity';
 
 @Injectable()
 export class AuthStagingService implements IAuthService {
