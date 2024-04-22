@@ -2,7 +2,7 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 
 @Entity()
 export class ProductCategoryImage {
-  @PrimaryGeneratedColumn('uuid', { name: 'product_cateogry_image_id' })
+  @PrimaryGeneratedColumn('uuid', { name: 'product_category_image_id' })
   productCategoryImageId!: string;
 
   @Column({ nullable: true })
