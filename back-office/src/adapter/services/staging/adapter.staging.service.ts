@@ -18,16 +18,18 @@ export class AdapterStagingService implements IProductAdapterService {
     const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
 
-    try {
-      const categories = await queryRunner.manager.query(`
-      SELECT product_category_id, id, name FROM product_category;`);
+    return new Promise(async (resolve, reject) => {
+      try {
+        const categories = await queryRunner.manager.query(`SELECT * FROM product_category;`);
 
-      return categories;
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-    } finally {
-      await queryRunner.release();
-    }
+        return resolve(categories);
+      } catch (error) {
+        await queryRunner.rollbackTransaction();
+        return reject(error);
+      } finally {
+        await queryRunner.release();
+      }
+    });
   }
 
   async getAllProduct(): Promise<any> {
