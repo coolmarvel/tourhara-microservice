@@ -8,14 +8,11 @@ export class LineItemProductionService implements ILineItemService {
   async insert(queryRunner: QueryRunner, lineItem: any, orderId: string): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingLineItem = await queryRunner.manager.query(`
-        SELECT id FROM \`line_item\` WHERE id='${lineItem.id}'`);
+        const existingLineItem = await queryRunner.manager.query(`SELECT * FROM \`line_item\` WHERE id=?;`, [lineItem.id]);
         if (existingLineItem.length > 0) return resolve(true);
 
-        const product = await queryRunner.manager.query(`
-        SELECT product_id FROM \`product\` WHERE id='${lineItem.product_id}';`);
-        const productImage = await queryRunner.manager.query(`
-        SELECT product_image_id FROM \`product_image\` WHERE id='${lineItem.image.id}';`);
+        const product = await queryRunner.manager.query(`SELECT * FROM \`product\` WHERE id=?;`, [lineItem.product_id]);
+        const productImage = await queryRunner.manager.query(`SELECT * FROM \`product_image\` WHERE id=?;`, [lineItem.image.id]);
 
         // Step 1: Extract text inside <a> tags.
         const lineItemNameMatches = lineItem.name.match(/<a [^>]*>(.*?)<\/a>/);
@@ -33,29 +30,30 @@ export class LineItemProductionService implements ILineItemService {
         lineItemBundledItemTitle = lineItemBundledItemTitle.replace(/<img[^>]*>/g, '').trim();
 
         const lineItemId = uuid();
-        await queryRunner.manager.query(`
-        INSERT INTO \`line_item\` (
-          line_item_id, id, name, product_id, quantity, tax_class, total, subtotal, subtotal_tax, price,
-          product_image_id, parent_name, bundled_by, bundled_item_title, bundled_items, order_id,
-          created_at ,updated_at
-        ) VALUES (
-          '${lineItemId}',
-          '${lineItem.id}',
-          '${lineItemName}',
-          '${product[0].product_id}',
-          '${lineItem.quantity}',
-          ${lineItem.tax_class === '' ? null : `'${lineItem.tax_class}'`},
-          '${lineItem.total}',
-          '${lineItem.subtotal}',
-          '${lineItem.subtotal_tax}',
-          '${lineItem.price}',
-          ${productImage.length === 0 ? null : `'${productImage[0].product_image_id}'`},
-          ${lineItem.parent_name === null ? null : `'${lineItem.parent_name}'`},
-          ${lineItem.bundled_by === '' ? null : `'${lineItem.bundled_by}'`},
-          ${lineItemBundledItemTitle === '' ? null : `'${lineItemBundledItemTitle}'`},
-          ${lineItem.bundled_items.length === 0 ? null : `'${lineItem.bundled_items}'`},
-          '${orderId}', NOW(), NOW()
-        );`);
+        await queryRunner.manager.query(
+          `INSERT INTO \`line_item\` (
+            line_item_id,id,name,product_id,quantity,tax_class,total,subtotal,subtotal_tax,price,product_image_id,
+            parent_name,bundled_by,bundled_item_title,bundled_items,order_id,created_at,updated_at
+          ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW());`,
+          [
+            lineItemId,
+            lineItem.id,
+            lineItemName,
+            product[0].product_id,
+            lineItem.quantity,
+            lineItem.tax_class === '' ? null : lineItem.tax_class,
+            lineItem.total,
+            lineItem.subtotal,
+            lineItem.subtotal_tax,
+            lineItem.price,
+            productImage.length === 0 ? null : productImage[0].product_image_id,
+            lineItem.parent_name === null ? null : lineItem.parent_name,
+            lineItem.bundled_by === '' ? null : lineItem.bundled_by,
+            lineItemBundledItemTitle === '' ? null : lineItemBundledItemTitle,
+            lineItem.bundled_items.length === 0 ? null : `'${lineItem.bundled_items}'`,
+            orderId,
+          ],
+        );
 
         return resolve(lineItemId);
       } catch (error) {
@@ -69,14 +67,11 @@ export class LineItemProductionService implements ILineItemService {
   async update(queryRunner: QueryRunner, lineItem: any, orderId: string): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingLineItem = await queryRunner.manager.query(`
-        SELECT id FROM \`line_item\` WHERE id='${lineItem.id}'`);
+        const existingLineItem = await queryRunner.manager.query(`SELECT * FROM \`line_item\` WHERE id=?;`, [lineItem.id]);
         if (existingLineItem.length === 0) return resolve(await this.insert(queryRunner, lineItem, orderId));
 
-        const product = await queryRunner.manager.query(`
-        SELECT product_id FROM \`product\` WHERE id='${lineItem.product_id}';`);
-        const productImage = await queryRunner.manager.query(`
-        SELECT product_image_id FROM \`product_image\` WHERE id='${lineItem.image.id}';`);
+        const product = await queryRunner.manager.query(`SELECT * FROM \`product\` WHERE id=?;`, [lineItem.product_id]);
+        const productImage = await queryRunner.manager.query(`SELECT * FROM \`product_image\` WHERE id=?;`, [lineItem.image.id]);
 
         // Step 1: Extract text inside <a> tags.
         const lineItemNameMatches = lineItem.name.match(/<a [^>]*>(.*?)<\/a>/);
@@ -93,26 +88,34 @@ export class LineItemProductionService implements ILineItemService {
         lineItemName = lineItemName.replace(/<img[^>]*>/g, '').trim();
         lineItemBundledItemTitle = lineItemBundledItemTitle.replace(/<img[^>]*>/g, '').trim();
 
-        await queryRunner.manager.query(`
-        UPDATE \`line_item\` SET 
-        id='${lineItem.id}',
-        name='${lineItemName}',
-        product_id='${product[0].product_id}',
-        quantity='${lineItem.quantity}',
-        tax_class=${lineItem.tax_class === '' ? null : `'${lineItem.tax_class}'`},
-        total='${lineItem.total}',
-        subtotal='${lineItem.subtotal}',
-        subtotal_tax='${lineItem.subtotal_tax}',
-        price='${lineItem.price}',
-        product_image_id=${productImage.length === 0 ? null : `'${productImage[0].product_image_id}'`},
-        parent_name=${lineItem.parent_name === null ? null : `'${lineItem.parent_name}'`},
-        bundled_by=${lineItem.bundled_by === '' ? null : `'${lineItem.bundled_by}'`},
-        bundled_item_title=${lineItemBundledItemTitle === '' ? null : `'${lineItemBundledItemTitle}'`},
-        bundled_items=${lineItem.bundled_items.length === 0 ? null : `'${lineItem.bundled_items}'`},
-        updated_at=NOW() WHERE order_id='${orderId}';`);
+        await queryRunner.manager.query(
+          `UPDATE \`line_item\` SET 
+            id=?,name=?,product_id=?,quantity=?,tax_class=?,total=?,subtotal=?,subtotal_tax=?,price=?,
+            product_image_id=?,parent_name=?,bundled_by=?,bundled_item_title=?,bundled_items=?,updated_at=NOW()
+          WHERE order_id=?;`,
+          [
+            lineItem.id,
+            lineItemName,
+            product[0].product_id,
+            lineItem.quantity,
+            lineItem.tax_class === '' ? null : lineItem.tax_class,
+            lineItem.total,
+            lineItem.subtotal,
+            lineItem.subtotal_tax,
+            lineItem.price,
+            productImage.length === 0 ? null : productImage[0].product_image_id,
+            lineItem.parent_name === null ? null : lineItem.parent_name,
+            lineItem.bundled_by === '' ? null : lineItem.bundled_by,
+            lineItemBundledItemTitle === '' ? null : lineItemBundledItemTitle,
+            lineItem.bundled_items.length === 0 ? null : `'${lineItem.bundled_items}'`,
+            orderId,
+          ],
+        );
 
         return resolve(existingLineItem[0].line_item_id);
       } catch (error) {
+        console.error('LineItem Service Update Error');
+        console.error(error);
         return reject(error);
       }
     });

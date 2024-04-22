@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
-import { UserStagingService } from './services/user-staging.service';
-import { UserProductionService } from './services/user-production.service';
+import { UserStagingService } from './services/staging/user.staging.service';
+import { UserProductionService } from './services/production/user.production.service';
 
 @Module({
   providers: [

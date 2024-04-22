@@ -123,6 +123,27 @@ export class TagProductionService implements ITagService {
     });
   }
 
+  async update(queryRunner: QueryRunner, tag: any): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const existingTag = await queryRunner.manager.query(`
+        SELECT * FROM \`product_tag\` WHERE id='${tag.id}'`);
+        if (existingTag.length === 0) return resolve(await this.insert(queryRunner, tag));
+
+        await queryRunner.manager.query(`
+        UPDATE \`product_tag\` SET 
+        name=${tag.name === '' ? null : `'${tag.name}'`},
+        slug=${tag.slug === '' ? null : `'${tag.slug}'`},
+        count='${tag.count}',
+        updated_at=NOW() WHERE id='${tag.id}';`);
+
+        return resolve(existingTag[0].product_tag_id);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
+
   async select(queryRunner: QueryRunner, id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {

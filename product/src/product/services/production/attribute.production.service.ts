@@ -130,6 +130,30 @@ export class AttributeProductionService implements IAttributeService {
     });
   }
 
+  async update(queryRunner: QueryRunner, attribute: any): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const existingAttribute = await queryRunner.manager.query(`
+        SELECT * FROM \`product_attribute\`
+        WHERE id='${attribute.id}' AND name='${attribute.name}' AND position=${attribute.position}
+        AND visible=${attribute.visible} AND options='${attribute.options}';`);
+        if (existingAttribute.length === 0) return resolve(await this.insert(queryRunner, attribute));
+
+        await queryRunner.manager.query(`
+        UPDATE \`product_attribute\` SET 
+        name='${attribute.name}',
+        position=${attribute.position},
+        visible=${attribute.visible},
+        options='${attribute.options}',
+        updated_at=NOW() WHERE id='${attribute.id}';`);
+
+        return resolve(existingAttribute[0].product_attribute_id);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
+
   async select(queryRunner: QueryRunner, id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {

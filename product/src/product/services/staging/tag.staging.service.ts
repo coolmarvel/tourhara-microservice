@@ -94,25 +94,19 @@ export class TagStagingService implements ITagService {
     });
   }
 
-  async insert(queryRunnery: QueryRunner, tag: any): Promise<any> {
+  async insert(queryRunner: QueryRunner, tag: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingTag = await queryRunnery.manager.query(`
-        SELECT id FROM \`product_tag\` WHERE id='${tag.id}'`);
+        const existingTag = await queryRunner.manager.query(`SELECT * FROM \`product_tag\` WHERE id=?;`, [tag.id]);
         if (existingTag.length > 0) return resolve(true);
 
         const productTagId = uuid();
-        await queryRunnery.manager.query(`
-        INSERT INTO \`product_tag\` (
-          product_tag_id, id, name, slug, count, created_at, updated_at
-        ) VALUES (
-          '${productTagId}',
-          '${tag.id}',
-          ${tag.name === '' ? null : `'${tag.name}'`},
-          ${tag.slug === '' ? null : `'${tag.slug}'`},
-          '${tag.count}',
-          NOW(), NOW()
-        );`);
+        await queryRunner.manager.query(
+          `INSERT INTO \`product_tag\` (
+            product_tag_id,id,name,slug,count,created_at,updated_at
+        ) VALUES (?,?,?,?,?,NOW(),NOW());`,
+          [productTagId, tag.id, tag.name === '' ? null : tag.name, tag.slug === '' ? null : tag.slug, tag.count],
+        );
 
         return resolve(productTagId);
       } catch (error) {
@@ -123,11 +117,30 @@ export class TagStagingService implements ITagService {
     });
   }
 
+  async update(queryRunner: QueryRunner, tag: any): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const existingTag = await queryRunner.manager.query(`SELECT * FROM \`product_tag\` WHERE id=?;`, [tag.id]);
+        if (existingTag.length === 0) return resolve(await this.insert(queryRunner, tag));
+
+        await queryRunner.manager.query(
+          `UPDATE \`product_tag\` SET 
+            name=?,slug=?,count=?,updated_at=NOW()
+          WHERE id=?;`,
+          [tag.name === '' ? null : tag.name, tag.slug === '' ? null : tag.slug, tag.count, tag.id],
+        );
+
+        return resolve(existingTag[0].product_tag_id);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
+
   async select(queryRunner: QueryRunner, id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const tag = await queryRunner.manager.query(`
-        SELECT * FROM \`product_tag\` WHERE id='${id}';`);
+        const tag = await queryRunner.manager.query(`SELECT * FROM \`product_tag\` WHERE id=?;`, [id]);
 
         return resolve(tag[0]);
       } catch (error) {

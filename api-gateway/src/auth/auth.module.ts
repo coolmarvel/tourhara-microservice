@@ -8,10 +8,10 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from 'src/user/user.module';
 import entities from './entities';
-import { AuthStagingService } from './services/auth-staging.service';
-import { AuthProductionService } from './services/auth-production.service';
-import { AuthStagingController } from './controllers/auth-staging.controller';
-import { AuthProductionController } from './controllers/auth-production.controller';
+import { AuthStagingService } from './services/staging/auth.staging.service';
+import { AuthProductionService } from './services/production/auth.production.service';
+import { AuthStagingController } from './controllers/staging/auth.staging.controller';
+import { AuthProductionController } from './controllers/production/auth.production.controller';
 
 @Module({
   imports: [

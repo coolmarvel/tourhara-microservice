@@ -39,6 +39,31 @@ export class ProductImageProductionService implements IProductImageService {
     });
   }
 
+  async update(queryRunner: QueryRunner, productImage: any): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const existingProductImage = await queryRunner.manager.query(`
+        SELECT * FROM \`product_image\` WHERE id='${productImage.id}';`);
+        if (existingProductImage.length === 0) return resolve(await this.insert(queryRunner, productImage));
+
+        await queryRunner.manager.query(`
+        UPDATE \`product_image\` SET 
+        name='${productImage.name}',
+        src='${productImage.src}',
+        alt=${productImage.alt === '' ? null : `'${productImage.alt}'`},
+        date_created='${productImage.date_created}',
+        date_created_gmt='${productImage.date_created_gmt}',
+        date_modified='${productImage.date_modified}',
+        date_modified_gmt='${productImage.date_modified_gmt}',
+        updated_at=NOW() WHERE id='${productImage.id}';`);
+
+        return resolve(existingProductImage[0].product_image_id);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
+
   async select(queryRunner: QueryRunner, id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {

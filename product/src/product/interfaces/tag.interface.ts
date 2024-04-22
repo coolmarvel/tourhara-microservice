@@ -13,5 +13,7 @@ export interface ITagService {
 
   insert(queryRunner: QueryRunner, tag: any): Promise<any>;
 
+  update(queryRunner: QueryRunner, tag: any): Promise<any>;
+
   select(queryRunner: QueryRunner, id: number): Promise<any>;
 }

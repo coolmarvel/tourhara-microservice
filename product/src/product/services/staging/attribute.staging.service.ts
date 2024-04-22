@@ -101,25 +101,22 @@ export class AttributeStagingService implements IAttributeService {
   async insert(queryRunner: QueryRunner, attribute: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingAttribute = await queryRunner.manager.query(`
-        SELECT * FROM \`product_attribute\`
-        WHERE id='${attribute.id}' AND name='${attribute.name}' AND position=${attribute.position}
-        AND visible=${attribute.visible} AND options='${attribute.options}';`);
+        const existingAttribute = await queryRunner.manager.query(`SELECT * FROM \`product_attribute\` WHERE id=? AND name=? AND position=? AND visible=? AND options=?;`, [
+          attribute.id,
+          attribute.name,
+          attribute.position,
+          attribute.visible,
+          `'${attribute.options}'`,
+        ]);
         if (existingAttribute.length > 0) return resolve(true);
 
         const productAttributeId = uuid();
-        await queryRunner.manager.query(`
-        INSERT INTO \`product_attribute\` (
-          product_attribute_id, id, name, position, visible, options, created_at, updated_at
-        ) VALUES (
-          '${productAttributeId}',
-          '${attribute.id}',
-          '${attribute.name}',
-          ${attribute.position},
-          ${attribute.visible},
-          '${attribute.options}',
-          NOW(), NOW()
-        );`);
+        await queryRunner.manager.query(
+          `INSERT INTO \`product_attribute\` (
+            product_attribute_id,id,name,position,visible,options,created_at,updated_at
+          ) VALUES (?,?,?,?,?,?,NOW(),NOW());`,
+          [productAttributeId, attribute.id, attribute.name, attribute.position, attribute.visible, `'${attribute.options}'`],
+        );
 
         return resolve(productAttributeId);
       } catch (error) {
@@ -130,11 +127,36 @@ export class AttributeStagingService implements IAttributeService {
     });
   }
 
+  async update(queryRunner: QueryRunner, attribute: any): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const existingAttribute = await queryRunner.manager.query(`SELECT * FROM \`product_attribute\` WHERE id=? AND name=? AND position=? AND visible=? AND options=?;`, [
+          attribute.id,
+          attribute.name,
+          attribute.position,
+          attribute.visible,
+          `'${attribute.options}'`,
+        ]);
+        if (existingAttribute.length === 0) return resolve(await this.insert(queryRunner, attribute));
+
+        await queryRunner.manager.query(
+          `UPDATE \`product_attribute\` SET 
+            name=?,position=?,visible=?,options=?,updated_at=NOW()
+          WHERE id=?;`,
+          [attribute.name, attribute.position, attribute.visible, `'${attribute.options}'`, attribute.id],
+        );
+
+        return resolve(existingAttribute[0].product_attribute_id);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
+
   async select(queryRunner: QueryRunner, id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const attribute = await queryRunner.manager.query(`
-        SELECT * FROM \`product_attribute\` WHERE id='${id}';`);
+        const attribute = await queryRunner.manager.query(`SELECT * FROM \`product_attribute\` WHERE id=?;`, [id]);
 
         return resolve(attribute[0]);
       } catch (error) {

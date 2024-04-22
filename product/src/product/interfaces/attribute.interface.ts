@@ -19,5 +19,7 @@ export interface IAttributeService {
    */
   insert(queryRunner: QueryRunner, attribute: any): Promise<any>;
 
+  update(queryRunner: QueryRunner, attribute: any): Promise<any>;
+
   select(queryRunner: QueryRunner, id: number): Promise<any>;
 }

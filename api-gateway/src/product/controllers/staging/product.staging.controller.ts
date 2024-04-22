@@ -50,7 +50,7 @@ export class ProductStagingController {
   @Post('created')
   @ApiOperation({ summary: '단일 상품 생성 WEBHOOK (스테이징)' })
   async productCreated(@Headers() header: WebhookHeaderReqDto, @Body() data: any) {
-    if (header['x-wc-webhook-topic'] !== 'product.created') return HttpStatus.NO_CONTENT;
+    if (header['x-wc-webhook-topic'] !== 'product.created') return HttpStatus.OK;
     console.log(header);
 
     const result = await this.productService.productCreated(data);
@@ -63,7 +63,7 @@ export class ProductStagingController {
   @Post('updated')
   @ApiOperation({ summary: '단일 상품 갱신 WEBHOOK (스테이징)' })
   async productUpdated(@Headers() header: WebhookHeaderReqDto, @Body() data: any) {
-    if (header['x-wc-webhook-topic'] !== 'product.updated') return HttpStatus.NO_CONTENT;
+    if (header['x-wc-webhook-topic'] !== 'product.updated') return HttpStatus.OK;
     console.log(header);
 
     const result = await this.productService.productUpdated(data);
@@ -74,7 +74,7 @@ export class ProductStagingController {
   @Post('deleted')
   @ApiOperation({ summary: '단일 상품 삭제 WEBHOOK (스테이징)' })
   async productDeleted(@Headers() header: WebhookHeaderReqDto, @Body() data: any) {
-    if (header['x-wc-webhook-topic'] !== 'product.deleted') return HttpStatus.NO_CONTENT;
+    if (header['x-wc-webhook-topic'] !== 'product.deleted') return HttpStatus.OK;
     console.log(header);
 
     return await this.productService.productDeleted(data);
@@ -84,7 +84,7 @@ export class ProductStagingController {
   @Post('restored')
   @ApiOperation({ summary: '단일 상품 복원 WEBHOOK (스테이징)' })
   async productRestored(@Headers() header: WebhookHeaderReqDto, @Body() data: any) {
-    if (header['x-wc-webhook-topic'] !== 'product.restored') return HttpStatus.NO_CONTENT;
+    if (header['x-wc-webhook-topic'] !== 'product.restored') return HttpStatus.OK;
     console.log(header);
 
     return await this.productService.productRestored(data);

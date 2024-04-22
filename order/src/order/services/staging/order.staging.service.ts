@@ -136,29 +136,29 @@ export class OrderStagingService implements IOrderService {
   async insert(queryRunner: QueryRunner, order: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingOrder = await queryRunner.manager.query(`
-        SELECT order_id FROM \`order\` WHERE id=${order.id};`);
+        const existingOrder = await queryRunner.manager.query(`SELECT * FROM \`order\` WHERE id=?;`, [order.id]);
         if (existingOrder.length > 0) return resolve(true);
 
         const orderId = uuid();
-        await queryRunner.manager.query(`
-        INSERT INTO \`order\` (
-          order_id, id, status, currency, currency_symbol, date_created, date_created_gmt,
-          date_modified, date_modified_gmt, date_completed, date_completed_gmt, created_at, updated_at
-        ) VALUES (
-          '${orderId}',
-          ${order.id},
-          '${OrderStatus[order.status.toUpperCase() as keyof typeof OrderStatus]}',
-          '${order.currency}',
-          '${order.currency_symbol}',
-          ${order.date_created === null ? null : `'${order.date_created}'`},
-          ${order.date_created_gmt === null ? null : `'${order.date_created_gmt}'`},
-          ${order.date_modified === null ? null : `'${order.date_modified}'`},
-          ${order.date_modified_gmt === null ? null : `'${order.date_modified_gmt}'`},
-          ${order.date_completed === null ? null : `'${order.date_completed}'`},
-          ${order.date_completed_gmt === null ? null : `'${order.date_completed_gmt}'`},
-          NOW(), NOW()
-        );`);
+        await queryRunner.manager.query(
+          `INSERT INTO \`order\` (
+            order_id,id,status,currency,currency_symbol,date_created,date_created_gmt,
+            date_modified,date_modified_gmt,date_completed,date_completed_gmt,created_at,updated_at
+          ) VALUES (?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW());`,
+          [
+            orderId,
+            order.id,
+            OrderStatus[order.status.toUpperCase() as keyof typeof OrderStatus],
+            order.currency,
+            order.currency_symbol,
+            order.date_created === null ? null : order.date_created,
+            order.date_created_gmt === null ? null : order.date_created_gmt,
+            order.date_modified === null ? null : order.date_modified,
+            order.date_modified_gmt === null ? null : order.date_modified_gmt,
+            order.date_completed === null ? null : order.date_completed,
+            order.date_completed_gmt === null ? null : order.date_completed_gmt,
+          ],
+        );
 
         return resolve(orderId);
       } catch (error) {
@@ -172,21 +172,28 @@ export class OrderStagingService implements IOrderService {
   async update(queryRunner: QueryRunner, order: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingOrder = await queryRunner.manager.query(`
-        SELECT order_id FROM \`order\` WHERE id=${order.id};`);
+        const existingOrder = await queryRunner.manager.query(`SELECT * FROM \`order\` WHERE id=?;`, [order.id]);
         if (existingOrder.length === 0) return resolve(true);
 
-        await queryRunner.manager.query(`
-        UPDATE \`order\`
-        SET status='${OrderStatus[order.status.toUpperCase() as keyof typeof OrderStatus]}',
-        date_modified=${order.date_modified === null ? null : `'${order.date_modified}'`},
-        date_modified_gmt=${order.date_modified_gmt === null ? null : `'${order.date_modified_gmt}'`},
-        date_completed=${order.date_completed === null ? null : `'${order.date_completed}'`},
-        date_completed_gmt=${order.date_completed_gmt === null ? null : `'${order.date_completed_gmt}'`},
-        updated_at=NOW() WHERE id='${order.id}';`);
+        await queryRunner.manager.query(
+          `UPDATE \`order\` SET 
+            status=?,date_modified=?,date_modified_gmt=?,date_completed=?,
+            date_completed_gmt=?,updated_at=NOW()
+          WHERE id=?;`,
+          [
+            OrderStatus[order.status.toUpperCase() as keyof typeof OrderStatus],
+            order.date_modified === null ? null : order.date_modified,
+            order.date_modified_gmt === null ? null : order.date_modified_gmt,
+            order.date_completed === null ? null : order.date_completed,
+            order.date_completed_gmt === null ? null : order.date_completed_gmt,
+            order.id,
+          ],
+        );
 
         return resolve(existingOrder[0].order_id);
       } catch (error) {
+        console.error('Order Service Update Error');
+        console.error(error);
         return reject(error);
       }
     });
@@ -285,8 +292,7 @@ export class OrderStagingService implements IOrderService {
       await queryRunner.connect();
 
       try {
-        console.log(payload);
-
+        console.log(payload.id);
         await queryRunner.startTransaction();
 
         // order update
