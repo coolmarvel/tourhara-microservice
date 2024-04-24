@@ -98,7 +98,7 @@ export class CategoryStagingService implements ICategoryService {
     return new Promise(async (resolve, reject) => {
       try {
         const existingCategory = await queryRunner.manager.query(`SELECT * FROM \`product_category\` WHERE id=?;`, [category.id]);
-        if (existingCategory.length > 0) return resolve(true);
+        if (existingCategory.length > 0) return resolve(await this.update(queryRunner, category));
 
         const productCategoryId = uuid();
         await queryRunner.manager.query(
@@ -127,11 +127,13 @@ export class CategoryStagingService implements ICategoryService {
           `UPDATE \`product_category\` SET 
             parent=?,name=?,slug=?,description=?,updated_at=NOW()
           WHERE id=?;`,
-          [category.parent, category.name, category.slug, null],
+          [category.parent, category.name, category.slug, null, category.id],
         );
 
         return resolve(existingCategory[0].product_category_id);
       } catch (error) {
+        console.error('Category Service Update Error');
+        console.error(error);
         return reject(error);
       }
     });

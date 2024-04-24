@@ -8,10 +8,8 @@ export class ProductImageStagingService implements IProductImageService {
   async insert(queryRunner: QueryRunner, productImage: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        // const existingProductImage = await queryRunner.manager.query(`
-        // SELECT id FROM \`product_image\` WHERE id='${productImage.id}';`);
         const existingProductImage = await queryRunner.manager.query(`SELECT * FROM \`product_image\` WHERE id=?;`, [productImage.id]);
-        if (existingProductImage.length > 0) return resolve(true);
+        if (existingProductImage.length > 0) return resolve(await this.update(queryRunner, productImage));
 
         const productImageId = uuid();
         await queryRunner.manager.query(
@@ -31,22 +29,6 @@ export class ProductImageStagingService implements IProductImageService {
             productImage.date_modified_gmt,
           ],
         );
-        // await queryRunner.manager.query(`
-        // INSERT INTO \`product_image\` (
-        //   product_image_id, id, name, src, alt, date_created, date_created_gmt,
-        //   date_modified, date_modified_gmt, created_at, updated_at
-        // ) VALUES (
-        //   '${productImageId}',
-        //   '${productImage.id}',
-        //   '${productImage.name}',
-        //   '${productImage.src}',
-        //   ${productImage.alt === '' ? null : `'${productImage.alt}'`},
-        //   '${productImage.date_created}',
-        //   '${productImage.date_created_gmt}',
-        //   '${productImage.date_modified}',
-        //   '${productImage.date_modified_gmt}',
-        //   NOW(), NOW()
-        // );`);
 
         return resolve(productImageId);
       } catch (error) {
@@ -60,8 +42,6 @@ export class ProductImageStagingService implements IProductImageService {
   async update(queryRunner: QueryRunner, productImage: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        // const existingProductImage = await queryRunner.manager.query(`
-        // SELECT * FROM \`product_image\` WHERE id='${productImage.id}';`);
         const existingProductImage = await queryRunner.manager.query(`SELECT * FROM \`product_image\` WHERE id=?;`, [productImage.id]);
         if (existingProductImage.length === 0) return resolve(await this.insert(queryRunner, productImage));
 
@@ -81,19 +61,11 @@ export class ProductImageStagingService implements IProductImageService {
             productImage.id,
           ],
         );
-        // await queryRunner.manager.query(`
-        // UPDATE \`product_image\` SET
-        // name='${productImage.name}',
-        // src='${productImage.src}',
-        // alt=${productImage.alt === '' ? null : `'${productImage.alt}'`},
-        // date_created='${productImage.date_created}',
-        // date_created_gmt='${productImage.date_created_gmt}',
-        // date_modified='${productImage.date_modified}',
-        // date_modified_gmt='${productImage.date_modified_gmt}',
-        // updated_at=NOW() WHERE id='${productImage.id}';`);
 
         return resolve(existingProductImage[0].product_image_id);
       } catch (error) {
+        console.error('ProductImage Service Update Error');
+        console.error(error);
         return reject(error);
       }
     });
@@ -102,8 +74,6 @@ export class ProductImageStagingService implements IProductImageService {
   async select(queryRunner: QueryRunner, id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        // const productImage = await queryRunner.manager.query(`
-        // SELECT * FROM \`product_image\` WHERE id='${id}';`);
         const productImage = await queryRunner.manager.query(`SELECT * FROM \`product_image\` WHERE id=?;`, [id]);
 
         return resolve(productImage[0]);

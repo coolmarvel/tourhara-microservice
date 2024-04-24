@@ -110,7 +110,7 @@ export class ProductStagingService implements IProductService {
     return new Promise(async (resolve, reject) => {
       try {
         const existingProduct = await queryRunner.manager.query(`SELECT * FROM \`product\` WHERE id=?;`, [product.id]);
-        if (existingProduct.length > 0) return resolve(true);
+        if (existingProduct.length > 0) return resolve(await this.update(queryRunner, product));
 
         const tagIds: string[] = [];
         const imageIds: string[] = [];
@@ -234,19 +234,22 @@ export class ProductStagingService implements IProductService {
             product.on_sale,
             product.sale_price === '' ? null : product.sale_price,
             product.purchasable === '' ? null : product.purchasable,
-            categoryIds.length === 0 ? null : categoryIds,
-            tagIds.length === 0 ? null : tagIds,
-            imageIds.length === 0 ? null : imageIds,
-            attributeIds.length === 0 ? null : attributeIds,
-            product.variations.length === 0 ? null : product.variations,
+            categoryIds.length === 0 ? null : `'${categoryIds}'`,
+            tagIds.length === 0 ? null : `'${tagIds}'`,
+            imageIds.length === 0 ? null : `'${imageIds}'`,
+            attributeIds.length === 0 ? null : `'${attributeIds}'`,
+            product.variations.length === 0 ? null : `'${product.variations}'`,
             product.date_created !== null ? product.date_created : null,
             product.date_created_gmt !== null ? product.date_created_gmt : null,
             product.date_modified !== null ? product.date_modified : null,
             product.date_modified_gmt !== null ? product.date_modified_gmt : null,
+            product.id,
           ],
         );
         return resolve(true);
       } catch (error) {
+        console.error('Product Service Update Error');
+        console.error(error);
         return reject(error);
       }
     });

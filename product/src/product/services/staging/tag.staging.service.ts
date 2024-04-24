@@ -98,7 +98,7 @@ export class TagStagingService implements ITagService {
     return new Promise(async (resolve, reject) => {
       try {
         const existingTag = await queryRunner.manager.query(`SELECT * FROM \`product_tag\` WHERE id=?;`, [tag.id]);
-        if (existingTag.length > 0) return resolve(true);
+        if (existingTag.length > 0) return resolve(await this.update(queryRunner, tag));
 
         const productTagId = uuid();
         await queryRunner.manager.query(
@@ -132,6 +132,8 @@ export class TagStagingService implements ITagService {
 
         return resolve(existingTag[0].product_tag_id);
       } catch (error) {
+        console.error('Tag Service Update Error');
+        console.error(error);
         return reject(error);
       }
     });

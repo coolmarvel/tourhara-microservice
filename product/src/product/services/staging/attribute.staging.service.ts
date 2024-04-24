@@ -108,7 +108,7 @@ export class AttributeStagingService implements IAttributeService {
           attribute.visible,
           `'${attribute.options}'`,
         ]);
-        if (existingAttribute.length > 0) return resolve(true);
+        if (existingAttribute.length > 0) return resolve(await this.update(queryRunner, attribute));
 
         const productAttributeId = uuid();
         await queryRunner.manager.query(
@@ -148,6 +148,8 @@ export class AttributeStagingService implements IAttributeService {
 
         return resolve(existingAttribute[0].product_attribute_id);
       } catch (error) {
+        console.error('Attribute Service Update Error');
+        console.error(error);
         return reject(error);
       }
     });

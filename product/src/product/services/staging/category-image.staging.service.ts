@@ -9,7 +9,7 @@ export class CategoryImageStagingService implements ICategoryImageService {
     return new Promise(async (resolve, reject) => {
       try {
         const existingCategoryImage = await queryRunner.manager.query(`SELECT * FROM \`product_category_image\` WHERE id=?;`, [categoryImage.id]);
-        if (existingCategoryImage.length > 0) return resolve(true);
+        if (existingCategoryImage.length > 0) return resolve(await this.update(queryRunner, categoryImage, categoryId));
 
         const categoryImageId = uuid();
         await queryRunner.manager.query(
@@ -64,6 +64,8 @@ export class CategoryImageStagingService implements ICategoryImageService {
 
         return resolve(existingCategoryImage[0].product_category_image_id);
       } catch (error) {
+        console.error('CategoryImage Service Update Error');
+        console.error(error);
         return reject(error);
       }
     });
