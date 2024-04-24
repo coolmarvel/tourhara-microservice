@@ -104,9 +104,6 @@ export class Product {
   @Column({ name: 'date_modified_gmt', nullable: true })
   dateModifiedGmt!: Date;
 
-  @Column('uuid', { name: 'product_type_id', nullable: true })
-  productTypeId!: string;
-
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
 

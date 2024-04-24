@@ -20,6 +20,9 @@ export class ProductCategory {
   @Column({ nullable: true })
   description!: string;
 
+  @Column('uuid', { name: 'product_type_id', nullable: true })
+  productTypeId!: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
 

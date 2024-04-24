@@ -19,14 +19,14 @@ export class PaymentProductionService implements IPaymentService {
           ) VALUES (?,?,?,?,?,?,?,?,?,?,NOW(),NOW());`,
           [
             paymentId,
-            payment.payment_method ? payment.payment_method : null,
-            payment.payment_method_title ? payment.payment_method_title : null,
-            payment.transaction_id ? payment.transaction_id : null,
-            payment.payment_url ? payment.payment_url : null,
-            payment.needs_payment === '' ? null : payment.needs_payment ? 1 : 0, // 문자열 비교 후 불리언을 숫자로 변환
-            payment.needs_processing === '' ? null : payment.needs_processing ? 1 : 0, // 동일하게 처리
-            payment.date_paid ? payment.date_paid : null,
-            payment.date_paid_gmt ? payment.date_paid_gmt : null,
+            payment.payment_method === '' || payment.payment_method == null ? null : payment.payment_method,
+            payment.payment_method_title === '' || payment.payment_method_title == null ? null : payment.payment_method_title,
+            payment.transaction_id === '' || payment.transaction_id == null ? null : payment.transaction_id,
+            payment.payment_url === '' || payment.payment_url == null ? null : payment.payment_url,
+            payment.needs_payment === '' || payment.needs_payment == null ? null : payment.needs_payment,
+            payment.needs_processing === '' || payment.needs_processing == null ? null : payment.needs_processing,
+            payment.date_paid === '' || payment.date_paid == null ? null : payment.date_paid,
+            payment.date_paid_gmt === '' || payment.date_paid_gmt == null ? null : payment.date_paid_gmt,
             orderId,
           ],
         );
@@ -51,14 +51,14 @@ export class PaymentProductionService implements IPaymentService {
             needs_processing=?,date_paid=?,date_paid_gmt=?,updated_at=NOW()
           WHERE order_id=?;`,
           [
-            payment.payment_method ? payment.payment_method : null,
-            payment.payment_method_title ? payment.payment_method_title : null,
-            payment.transaction_id ? payment.transaction_id : null,
-            payment.payment_url ? payment.payment_url : null,
-            payment.needs_payment === '' ? null : payment.needs_payment ? 1 : 0, // 문자열 비교 후 불리언을 숫자로 변환
-            payment.needs_processing === '' ? null : payment.needs_processing ? 1 : 0, // 동일하게 처리
-            payment.date_paid ? payment.date_paid : null,
-            payment.date_paid_gmt ? payment.date_paid_gmt : null,
+            payment.payment_method === '' || payment.payment_method == null ? null : payment.payment_method,
+            payment.payment_method_title === '' || payment.payment_method_title == null ? null : payment.payment_method_title,
+            payment.transaction_id === '' || payment.transaction_id == null ? null : payment.transaction_id,
+            payment.payment_url === '' || payment.payment_url == null ? null : payment.payment_url,
+            payment.needs_payment === '' || payment.needs_payment == null ? null : payment.needs_payment,
+            payment.needs_processing === '' || payment.needs_processing == null ? null : payment.needs_processing,
+            payment.date_paid === '' || payment.date_paid == null ? null : payment.date_paid,
+            payment.date_paid_gmt === '' || payment.date_paid_gmt == null ? null : payment.date_paid_gmt,
             orderId,
           ],
         );
