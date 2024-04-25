@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, Put, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { GetProductsReqDto, SpecifiedProductCategoryReqDto, UpdateProductCategoryBodyReqDto, UpdateProductCategoryParamReqDto } from 'src/adapter/dtos/req.dto';
 import { AdapterStagingService } from 'src/adapter/services/staging/adapter.staging.service';
 import { Public } from 'src/common/decorators/public.decorator';
 
@@ -25,14 +26,21 @@ export class AdapterStagingController {
   @Public()
   @Get('types/specified/:product_type_id')
   @ApiOperation({ summary: '상품 목차 지정된 카테고리 조회 API (스테이징)' })
-  async getSpecifiedProductCategoryByType(@Param() { product_type_id }: { product_type_id: string }) {
+  async getSpecifiedProductCategoryByType(@Param() { product_type_id }: SpecifiedProductCategoryReqDto) {
     return await this.adapterService.getSpecifiedProductCategoryByType(product_type_id);
   }
 
   @Public()
   @Put('types/:product_category_id')
   @ApiOperation({ summary: '상품 목차 재지정(갱신) API (스테이징)' })
-  async updateProductCategory(@Param() { product_category_id }: { product_category_id: string }, @Body() { product_type_id }: { product_type_id: string }) {
+  async updateProductCategory(@Param() { product_category_id }: UpdateProductCategoryParamReqDto, @Body() { product_type_id }: UpdateProductCategoryBodyReqDto) {
     return await this.adapterService.updateProductCategory(product_category_id, product_type_id);
+  }
+
+  @Public()
+  @Get('products/:product_type_id')
+  @ApiOperation({ summary: '상품 리스트 조회 API (스테이징)' })
+  async getAllProducts(@Param() { product_type_id }: GetProductsReqDto) {
+    return await this.adapterService.getAllProducts(product_type_id);
   }
 }

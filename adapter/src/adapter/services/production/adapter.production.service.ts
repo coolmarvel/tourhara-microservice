@@ -15,4 +15,10 @@ export class AdapterProductionService implements IAdapterService {
   updateProductCategory(product_category_id: string, product_type_id: string): Promise<any> {
     throw new Error('Method not implemented.');
   }
+  getAllProducts(product_type_id: string): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
+  getOrdersByTypeId(product_type_id: string): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
 }

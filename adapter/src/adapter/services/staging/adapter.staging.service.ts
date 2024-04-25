@@ -130,4 +130,48 @@ export class AdapterStagingService implements IAdapterService {
       }
     });
   }
+
+  async getAllProducts(product_type_id: string): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
+      await queryRunner.connect();
+
+      try {
+        let query = `
+        SELECT 
+        p.*, 
+        pc.name AS category_name, 
+        pc.slug AS category_slug, 
+        pc.description AS category_description, 
+        pt.type AS product_type
+      FROM product p
+      INNER JOIN product_category pc ON p.product_category_id LIKE CONCAT('%', pc.product_category_id, '%')
+      LEFT JOIN product_type pt ON pc.product_type_id = pt.product_type_id
+      WHERE pt.product_type_id = ? OR pt.product_type_id IS NOT NULL;`;
+
+        const products = await queryRunner.manager.query(query, product_type_id ? [product_type_id] : []);
+
+        return resolve(products);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
+
+  async getOrdersByTypeId(product_type_id: string): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
+      await queryRunner.connect();
+
+      try {
+        await queryRunner.manager.query(``);
+
+        return resolve(true);
+      } catch (error) {
+        return reject(error);
+      } finally {
+        await queryRunner.release();
+      }
+    });
+  }
 }

@@ -25,4 +25,9 @@ export class AdapterStagingController {
   async updateProductCategory({ product_category_id, product_type_id }: { product_category_id: string; product_type_id: string }) {
     return await this.adapterService.updateProductCategory(product_category_id, product_type_id);
   }
+
+  @MessagePattern({ cmd: 'getAllProducts_staging' })
+  async getAllProducts({ product_type_id }: { product_type_id: string }) {
+    return await this.adapterService.getAllProducts(product_type_id);
+  }
 }

@@ -6,4 +6,6 @@ export interface IAdapterService {
   getSpecifiedProductCategoryByType(product_type_id: string): Promise<any>;
 
   updateProductCategory(product_category_id: string, product_type_id: string): Promise<any>;
+
+  getAllProducts(product_type_id: string): Promise<any>;
 }
