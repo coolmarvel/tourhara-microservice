@@ -2,8 +2,8 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 
 @Entity()
 export class CheckList {
-  @PrimaryGeneratedColumn('uuid', { name: 'check_list_id' })
-  checkListId!: string;
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'check_list_id' })
+  checkListId!: bigint;
 
   @Column({ name: 'iso_date' })
   isoDate!: string;

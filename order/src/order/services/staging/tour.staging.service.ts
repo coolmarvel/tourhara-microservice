@@ -1,27 +1,33 @@
-import { v4 as uuid } from 'uuid';
 import { Injectable } from '@nestjs/common';
 import { ITourService } from 'src/order/interfaces/tour.interface';
 import { QueryRunner } from 'typeorm';
+import { logger } from 'src/common/logger/logger.service';
 
 @Injectable()
 export class TourStagingService implements ITourService {
-  async insert(queryRunner: QueryRunner, tour: any, tourInfo: any, orderId: string): Promise<any> {
+  async insert(queryRunner: QueryRunner, tour: any, tourInfo: any, orderId: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingTour = await queryRunner.manager.query(`SELECT * FROM \`tour\` WHERE order_id=?;`, [orderId]);
-        const existingTourInfo = await queryRunner.manager.query(`SELECT * FROM \`tour_info\` WHERE order_id=?;`, [orderId]);
+        const existingTour = await queryRunner.manager.query(
+          `SELECT * FROM \`tour\` 
+          WHERE order_id=?;`,
+          [orderId],
+        );
+        const existingTourInfo = await queryRunner.manager.query(
+          `SELECT * FROM \`tour_info\` 
+          WHERE order_id=?;`,
+          [orderId],
+        );
         if (existingTour.length > 0 && existingTourInfo.length > 0) return resolve(true);
 
-        const tourId = uuid();
         await queryRunner.manager.query(
           `INSERT INTO \`tour\` (
-            tour_id,top_date,top_sunset,tor_time_2,date_summit,summit_daytime_time,summit_night_date,summit_night_time,
+            top_date,top_sunset,tor_time_2,date_summit,summit_daytime_time,summit_night_date,summit_night_time,
             summ_time_2,summ_dec_date,summ_dec_time_2,date_911,time_911,date_911_2,time_911_2,empire_date,empire_time,
             oneworld_date,oneworld_time,wollman_date,wollman_high_date,wollman_time,wollman_time_2,yankees_name,
             ellis_island_date,guggen_notice,order_id,created_at,updated_at
-          ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW());`,
+          ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW());`,
           [
-            tourId,
             tour.top_date === '' ? null : tour.top_date,
             tour.top_sunset === '' ? null : tour.top_sunset,
             tour.tor_time_2 === '' ? null : tour.tor_time_2,
@@ -51,14 +57,12 @@ export class TourStagingService implements ITourService {
           ],
         );
 
-        const tourInfoId = uuid();
         await queryRunner.manager.query(
           `INSERT INTO \`tour_info\` (
-            tour_info_id,whitney_date,whitney_time,guggen_date,guggen_time,un_name,tour_kakaoid,
+            whitney_date,whitney_time,guggen_date,guggen_time,un_name,tour_kakaoid,
             airport_pickup_time,address,address_to,flight_info,contact_info,order_id,created_at,updated_at
-          ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW());`,
+          ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW());`,
           [
-            tourInfoId,
             tourInfo.whitney_date === '' ? null : tourInfo.whitney_date,
             tourInfo.whitney_time === '' ? null : tourInfo.whitney_time,
             tourInfo.guggen_date === '' ? null : tourInfo.guggen_date,
@@ -76,18 +80,26 @@ export class TourStagingService implements ITourService {
 
         return resolve(true);
       } catch (error) {
-        console.error('Tour Service Insert Error');
-        console.error(error);
+        logger.error('Tour Service Insert Error');
+        logger.error(error);
         return reject(error);
       }
     });
   }
 
-  async update(queryRunner: QueryRunner, tour: any, tourInfo: any, orderId: string): Promise<any> {
+  async update(queryRunner: QueryRunner, tour: any, tourInfo: any, orderId: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingTour = await queryRunner.manager.query(`SELECT * FROM \`tour\` WHERE order_id=?;`, [orderId]);
-        const existingTourInfo = await queryRunner.manager.query(`SELECT * FROM \`tour_info\` WHERE order_id=?;`, [orderId]);
+        const existingTour = await queryRunner.manager.query(
+          `SELECT * FROM \`tour\` 
+          WHERE order_id=?;`,
+          [orderId],
+        );
+        const existingTourInfo = await queryRunner.manager.query(
+          `SELECT * FROM \`tour_info\` 
+          WHERE order_id=?;`,
+          [orderId],
+        );
         if (existingTour.length === 0 && existingTourInfo.length === 0) return resolve(await this.insert(queryRunner, tour, tourInfo, orderId));
 
         await queryRunner.manager.query(
@@ -151,8 +163,8 @@ export class TourStagingService implements ITourService {
 
         return resolve(true);
       } catch (error) {
-        console.error('Tour Service Update Error');
-        console.error(error);
+        logger.error('Tour Service Update Error');
+        logger.error(error);
         return reject(error);
       }
     });

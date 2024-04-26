@@ -2,8 +2,8 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 
 @Entity()
 export class GuestHouse {
-  @PrimaryGeneratedColumn('uuid', { name: 'guest_house_id' })
-  guestHouseId!: string;
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'guest_house_id' })
+  guestHouseId!: bigint;
 
   @Column({ name: 'reserved_name', nullable: true })
   reservedName!: string;
@@ -23,8 +23,8 @@ export class GuestHouse {
   @Column({ name: 'security_deposit', nullable: true })
   securityDeposit!: string;
 
-  @Column('uuid', { name: 'order_id', nullable: true })
-  orderId!: string;
+  @Column({ type: 'bigint', name: 'order_id', nullable: true })
+  orderId!: bigint;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;

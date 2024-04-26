@@ -2,8 +2,8 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 
 @Entity()
 export class Shipping {
-  @PrimaryGeneratedColumn('uuid', { name: 'shipping_id' })
-  shippingId!: string;
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'shipping_id' })
+  shippingId!: bigint;
 
   @Column({ name: 'first_name', nullable: true })
   firstName!: string;
@@ -38,8 +38,8 @@ export class Shipping {
   @Column({ name: 'shipping_mobile', nullable: true })
   shippingMobile!: string;
 
-  @Column('uuid', { name: 'order_id', nullable: true })
-  orderId!: string;
+  @Column({ type: 'bigint', name: 'order_id', nullable: true })
+  orderId!: bigint;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;

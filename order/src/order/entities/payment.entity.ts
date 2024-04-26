@@ -2,8 +2,8 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 
 @Entity()
 export class Payment {
-  @PrimaryGeneratedColumn('uuid', { name: 'payment_id' })
-  paymentId!: string;
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'payment_id' })
+  paymentId!: bigint;
 
   @Column({ name: 'payment_method', nullable: true })
   paymentMethod!: string;
@@ -29,8 +29,8 @@ export class Payment {
   @Column({ name: 'date_paid_gmt', nullable: true })
   datePaidGmt!: Date;
 
-  @Column('uuid', { name: 'order_id' })
-  orderId!: string;
+  @Column({ type: 'bigint', name: 'order_id' })
+  orderId!: bigint;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;

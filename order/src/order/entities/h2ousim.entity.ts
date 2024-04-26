@@ -2,8 +2,8 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 
 @Entity()
 export class H2ousim {
-  @PrimaryGeneratedColumn('uuid', { name: 'h2ousim_id' })
-  h2ousimId!: string;
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'h2ousim_id' })
+  h2ousimId!: bigint;
 
   @Column({ name: 'usim_extension', nullable: true })
   usimExtension!: string;
@@ -14,8 +14,8 @@ export class H2ousim {
   @Column({ name: 'previous_order_number', nullable: true })
   previousOrderNumber!: string;
 
-  @Column('uuid', { name: 'order_id', nullable: true })
-  orderId!: string;
+  @Column({ type: 'bigint', name: 'order_id', nullable: true })
+  orderId!: bigint;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;

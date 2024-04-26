@@ -2,17 +2,17 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 
 @Entity()
 export class LineItem {
-  @PrimaryGeneratedColumn('uuid', { name: 'line_item_id' })
-  lineItemId!: string;
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'line_item_id' })
+  lineItemId!: bigint;
 
-  @Column({ nullable: true })
-  id!: string;
+  @Column({ type: 'bigint', nullable: true })
+  id!: bigint;
 
   @Column({ nullable: true })
   name!: string;
 
-  @Column('uuid', { name: 'product_id', nullable: true })
-  productId!: string;
+  @Column({ type: 'bigint', name: 'product_id', nullable: true })
+  productId!: bigint;
 
   @Column({ nullable: true })
   quantity!: string;
@@ -29,11 +29,11 @@ export class LineItem {
   @Column({ name: 'subtotal_tax', nullable: true })
   subtotalTax!: string;
 
-  @Column('decimal', { precision: 10, scale: 2, nullable: true })
+  @Column({ nullable: true })
   price!: string;
 
-  @Column('uuid', { name: 'product_image_id', nullable: true })
-  productImageId!: string;
+  @Column({ type: 'bigint', name: 'product_image_id', nullable: true })
+  productImageId!: bigint;
 
   @Column({ name: 'parent_name', nullable: true })
   parentName!: string;
@@ -48,15 +48,15 @@ export class LineItem {
     type: 'text',
     name: 'bundled_items',
     transformer: {
-      to: (value: string[] | null): string | null => (value ? JSON.stringify(value) : null),
-      from: (value: string): string[] | null => (value ? JSON.parse(value) : null),
+      to: (value: string[] | null): string | null => (value ? value.join(',') : null),
+      from: (value: string): string[] | null => (value ? value.split(',') : null),
     },
     nullable: true,
   })
   bundledItems!: string[] | null;
 
-  @Column('uuid', { name: 'order_id', nullable: true })
-  orderId!: string;
+  @Column({ type: 'bigint', name: 'order_id', nullable: true })
+  orderId!: bigint;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;

@@ -2,8 +2,8 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 
 @Entity()
 export class JfkShuttleRt {
-  @PrimaryGeneratedColumn('uuid', { name: 'jfk_shuttle_rt_id' })
-  jfkShuttleRtId!: string;
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'jfk_shuttle_rt_id' })
+  jfkShuttleRtId!: bigint;
 
   @Column({ name: 'jfk_shuttle_time2', nullable: true })
   jfkShuttleTime2!: string;
@@ -38,8 +38,8 @@ export class JfkShuttleRt {
   @Column({ name: 'ewr_flght_num2', nullable: true })
   ewrFlightNum2!: string;
 
-  @Column('uuid', { name: 'order_id', nullable: true })
-  orderId!: string;
+  @Column({ type: 'bigint', name: 'order_id', nullable: true })
+  orderId!: bigint;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;

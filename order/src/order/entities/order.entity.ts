@@ -3,11 +3,11 @@ import { OrderStatus } from '../constants/order-status.enum';
 
 @Entity()
 export class Order {
-  @PrimaryGeneratedColumn('uuid', { name: 'order_id' })
-  orderId!: string;
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'order_id' })
+  orderId!: bigint;
 
-  @Column()
-  id!: string;
+  @Column({ type: 'bigint' })
+  id!: bigint;
 
   @Column('enum', { enum: OrderStatus, nullable: true })
   status!: OrderStatus;

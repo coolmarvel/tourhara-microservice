@@ -2,8 +2,8 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 
 @Entity()
 export class UsimInfo {
-  @PrimaryGeneratedColumn('uuid', { name: 'usim_info_id' })
-  usimInfoId!: string;
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'usim_info_id' })
+  usimInfoId!: bigint;
 
   @Column({ name: 'delivery_option2', nullable: true })
   deliveryOption2!: string;
@@ -38,8 +38,8 @@ export class UsimInfo {
   @Column({ name: 'notice_check_simcard', nullable: true })
   noticeCheckSimcard!: string;
 
-  @Column('uuid', { name: 'order_id', nullable: true })
-  orderId!: string;
+  @Column({ type: 'bigint', name: 'order_id', nullable: true })
+  orderId!: bigint;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
