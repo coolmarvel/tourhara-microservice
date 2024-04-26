@@ -1,25 +1,27 @@
-import { v4 as uuid } from 'uuid';
 import { Injectable } from '@nestjs/common';
 import { IProductImageService } from 'src/product/interfaces/product-image.interface';
 import { QueryRunner } from 'typeorm';
+import { logger } from 'src/common/logger/logger.service';
 
 @Injectable()
 export class ProductImageProductionService implements IProductImageService {
   async insert(queryRunner: QueryRunner, productImage: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingProductImage = await queryRunner.manager.query(`SELECT * FROM \`product_image\` WHERE id=?;`, [productImage.id]);
+        const existingProductImage = await queryRunner.manager.query(
+          `SELECT * FROM \`product_image\` 
+          WHERE id=?;`,
+          [BigInt(productImage.id)],
+        );
         if (existingProductImage.length > 0) return resolve(await this.update(queryRunner, productImage));
 
-        const productImageId = uuid();
         await queryRunner.manager.query(
           `INSERT INTO \`product_image\` (
-            product_image_id,id,name,src,alt,date_created,date_created_gmt,
+            id,name,src,alt,date_created,date_created_gmt,
             date_modified,date_modified_gmt,created_at,updated_at
-          ) VALUES (?,?,?,?,?,?,?,?,?,NOW(),NOW());`,
+          ) VALUES (?,?,?,?,?,?,?,?,NOW(),NOW());`,
           [
-            productImageId,
-            productImage.id,
+            BigInt(productImage.id),
             productImage.name,
             productImage.src,
             productImage.alt === '' ? null : `'${productImage.alt}'`,
@@ -29,11 +31,12 @@ export class ProductImageProductionService implements IProductImageService {
             productImage.date_modified_gmt,
           ],
         );
+        const result = await queryRunner.manager.query(`SELECT LAST_INSERT_ID() as image_id;`);
 
-        return resolve(productImageId);
+        return resolve(BigInt(result[0].image_id));
       } catch (error) {
-        console.error('ProductImage Service Insert Error');
-        console.error(error);
+        logger.error('ProductImage Service Insert Error');
+        logger.error(error);
         return reject(error);
       }
     });
@@ -42,7 +45,7 @@ export class ProductImageProductionService implements IProductImageService {
   async update(queryRunner: QueryRunner, productImage: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingProductImage = await queryRunner.manager.query(`SELECT * FROM \`product_image\` WHERE id=?;`, [productImage.id]);
+        const existingProductImage = await queryRunner.manager.query(`SELECT * FROM \`product_image\` WHERE id=?;`, [BigInt(productImage.id)]);
         if (existingProductImage.length === 0) return resolve(await this.insert(queryRunner, productImage));
 
         await queryRunner.manager.query(
@@ -58,28 +61,32 @@ export class ProductImageProductionService implements IProductImageService {
             productImage.date_created_gmt,
             productImage.date_modified,
             productImage.date_modified_gmt,
-            productImage.id,
+            BigInt(productImage.id),
           ],
         );
 
-        return resolve(existingProductImage[0].product_image_id);
+        return resolve(BigInt(existingProductImage[0].image_id));
       } catch (error) {
-        console.error('ProductImage Service Update Error');
-        console.error(error);
+        logger.error('ProductImage Service Update Error');
+        logger.error(error);
         return reject(error);
       }
     });
   }
 
-  async select(queryRunner: QueryRunner, id: number): Promise<any> {
+  async select(queryRunner: QueryRunner, id: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const productImage = await queryRunner.manager.query(`SELECT * FROM \`product_image\` WHERE id=?;`, [id]);
+        const productImage = await queryRunner.manager.query(
+          `SELECT * FROM \`product_image\` 
+          WHERE id=?;`,
+          [id],
+        );
 
         return resolve(productImage[0]);
       } catch (error) {
-        console.error('ProductImage Service Select Error');
-        console.error(error);
+        logger.error('ProductImage Service Select Error');
+        logger.error(error);
         return reject(error);
       }
     });

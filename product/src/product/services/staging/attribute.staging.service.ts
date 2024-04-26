@@ -1,10 +1,10 @@
-import { v4 as uuid } from 'uuid';
 import { Injectable } from '@nestjs/common';
 import { IAttributeService } from 'src/product/interfaces/attribute.interface';
 import { DataSource, QueryRunner } from 'typeorm';
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
+import { logger } from 'src/common/logger/logger.service';
 
 @Injectable()
 export class AttributeStagingService implements IAttributeService {
@@ -101,27 +101,25 @@ export class AttributeStagingService implements IAttributeService {
   async insert(queryRunner: QueryRunner, attribute: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingAttribute = await queryRunner.manager.query(`SELECT * FROM \`product_attribute\` WHERE id=? AND name=? AND position=? AND visible=? AND options=?;`, [
-          attribute.id,
-          attribute.name,
-          attribute.position,
-          attribute.visible,
-          `'${attribute.options}'`,
-        ]);
-        if (existingAttribute.length > 0) return resolve(await this.update(queryRunner, attribute));
-
-        const productAttributeId = uuid();
-        await queryRunner.manager.query(
-          `INSERT INTO \`product_attribute\` (
-            product_attribute_id,id,name,position,visible,options,created_at,updated_at
-          ) VALUES (?,?,?,?,?,?,NOW(),NOW());`,
-          [productAttributeId, attribute.id, attribute.name, attribute.position, attribute.visible, `'${attribute.options}'`],
+        const existingAttribute = await queryRunner.manager.query(
+          `SELECT * FROM \`attribute\` 
+          WHERE id=? AND name=? AND position=? AND visible=? AND variation=? AND options=?;`,
+          [BigInt(attribute.id), attribute.name, attribute.position, attribute.visible, attribute.variation, attribute.options.join(',')],
         );
+        if (existingAttribute.length > 0) return resolve(true);
 
-        return resolve(productAttributeId);
+        await queryRunner.manager.query(
+          `INSERT INTO \`attribute\` (
+            id,name,position,visible,variation,options,created_at,updated_at
+          ) VALUES (?,?,?,?,?,?,NOW(),NOW());`,
+          [BigInt(attribute.id), attribute.name, attribute.position, attribute.visible, attribute.variation, attribute.options.join(',')],
+        );
+        const result = await queryRunner.manager.query(`SELECT LAST_INSERT_ID() as attribute_id;`);
+
+        return resolve(BigInt(result[0].attribute_id));
       } catch (error) {
-        console.error('Attribute Service Insert Error');
-        console.error(error);
+        logger.error('Attribute Service Insert Error');
+        logger.error(error);
         return reject(error);
       }
     });
@@ -130,40 +128,42 @@ export class AttributeStagingService implements IAttributeService {
   async update(queryRunner: QueryRunner, attribute: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingAttribute = await queryRunner.manager.query(`SELECT * FROM \`product_attribute\` WHERE id=? AND name=? AND position=? AND visible=? AND options=?;`, [
-          attribute.id,
-          attribute.name,
-          attribute.position,
-          attribute.visible,
-          `'${attribute.options}'`,
-        ]);
+        const existingAttribute = await queryRunner.manager.query(
+          `SELECT * FROM \`attribute\` 
+          WHERE id=? AND name=? AND position=? AND visible=? AND variation=? AND options=?;`,
+          [BigInt(attribute.id), attribute.name, attribute.position, attribute.visible, attribute.variation, attribute.options.join(',')],
+        );
         if (existingAttribute.length === 0) return resolve(await this.insert(queryRunner, attribute));
 
         await queryRunner.manager.query(
-          `UPDATE \`product_attribute\` SET 
-            name=?,position=?,visible=?,options=?,updated_at=NOW()
+          `UPDATE \`attribute\` SET 
+            name=?,position=?,visible=?,variation=?,options=?,updated_at=NOW()
           WHERE id=?;`,
-          [attribute.name, attribute.position, attribute.visible, `'${attribute.options}'`, attribute.id],
+          [attribute.name, attribute.position, attribute.visible, attribute.variation, attribute.options.join(','), BigInt(attribute.id)],
         );
 
-        return resolve(existingAttribute[0].product_attribute_id);
+        return resolve(BigInt(existingAttribute[0].attribute_id));
       } catch (error) {
-        console.error('Attribute Service Update Error');
-        console.error(error);
+        logger.error('Attribute Service Update Error');
+        logger.error(error);
         return reject(error);
       }
     });
   }
 
-  async select(queryRunner: QueryRunner, id: number): Promise<any> {
+  async select(queryRunner: QueryRunner, attribute: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const attribute = await queryRunner.manager.query(`SELECT * FROM \`product_attribute\` WHERE id=?;`, [id]);
+        const existingAttribute = await queryRunner.manager.query(
+          `SELECT * FROM \`attribute\` 
+          WHERE id=? AND name=? AND position=? AND visible=? AND variation=? AND options=?;`,
+          [BigInt(attribute.id), attribute.name, attribute.position, attribute.visible, attribute.variation, attribute.options.join(',')],
+        );
 
-        return resolve(attribute[0]);
+        return resolve(existingAttribute[0]);
       } catch (error) {
-        console.error('Attribute Service Select Error');
-        console.error(error);
+        logger.error('Attribute Service Select Error');
+        logger.error(error);
         return reject(error);
       }
     });

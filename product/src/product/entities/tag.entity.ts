@@ -1,12 +1,12 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
-export class ProductTag {
-  @PrimaryGeneratedColumn('uuid', { name: 'product_tag_id' })
-  productTagId!: string;
+export class Tag {
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'tag_id' })
+  tagId!: bigint;
 
-  @Column({ nullable: true })
-  id!: string;
+  @Column({ type: 'bigint' })
+  id!: bigint;
 
   @Column({ nullable: true })
   name!: string;

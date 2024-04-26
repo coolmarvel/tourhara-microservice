@@ -2,11 +2,11 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 
 @Entity()
 export class ProductImage {
-  @PrimaryGeneratedColumn('uuid', { name: 'product_image_id' })
-  productImageId!: string;
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'image_id' })
+  imageId!: bigint;
 
-  @Column({ nullable: true })
-  id!: string;
+  @Column({ type: 'bigint' })
+  id!: bigint;
 
   @Column({ nullable: true })
   name!: string;

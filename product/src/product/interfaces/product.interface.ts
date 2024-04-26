@@ -21,7 +21,7 @@ export interface IProductService {
 
   update(queryRunner: QueryRunner, product: any): Promise<any>;
 
-  select(queryRunner: QueryRunner, id: number): Promise<any>;
+  select(queryRunner: QueryRunner, id: bigint): Promise<any>;
 
   /**
    * Webhook

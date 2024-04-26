@@ -19,7 +19,7 @@ export interface ICategoryService {
    */
   insert(queryRunner: QueryRunner, category: any): Promise<any>;
 
-  update(queryRunner: QueryRunner, category: any): Promise<any>;
+  select(queryRunner: QueryRunner, id: bigint): Promise<any>;
 
-  select(queryRunner: QueryRunner, id: number): Promise<any>;
+  update(queryRunner: QueryRunner, category: any, typeId: bigint | null): Promise<any>;
 }

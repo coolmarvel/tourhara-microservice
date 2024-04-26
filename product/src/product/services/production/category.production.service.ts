@@ -1,9 +1,9 @@
-import { v4 as uuid } from 'uuid';
 import { Injectable } from '@nestjs/common';
 import { ICategoryService } from 'src/product/interfaces/category.interface';
 import { QueryRunner } from 'typeorm';
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 import { ConfigService } from '@nestjs/config';
+import { logger } from 'src/common/logger/logger.service';
 
 @Injectable()
 export class CategoryProductionService implements ICategoryService {
@@ -97,57 +97,69 @@ export class CategoryProductionService implements ICategoryService {
   async insert(queryRunner: QueryRunner, category: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingCategory = await queryRunner.manager.query(`SELECT * FROM \`product_category\` WHERE id=?;`, [category.id]);
-        if (existingCategory.length > 0) return resolve(await this.update(queryRunner, category));
-
-        const productCategoryId = uuid();
-        await queryRunner.manager.query(
-          `INSERT INTO \`product_category\` (
-            product_category_id,id,parent,name,slug,description,created_at,updated_at
-          ) VALUES (?,?,?,?,?,?,NOW(),NOW());`,
-          [productCategoryId, category.id, category.parent, category.name, category.slug, null],
+        const existingCategory = await queryRunner.manager.query(
+          `SELECT * FROM \`category\` 
+          WHERE id=?;`,
+          [BigInt(category.id)],
         );
+        if (existingCategory.length > 0) return resolve(await this.update(queryRunner, category, null));
 
-        return resolve(productCategoryId);
+        await queryRunner.manager.query(
+          `INSERT INTO \`category\` (
+            id,parent,name,slug,description,created_at,updated_at
+          ) VALUES (?,?,?,?,?,NOW(),NOW());`,
+          [BigInt(category.id), category.parent, category.name, category.slug, null],
+        );
+        const result = await queryRunner.manager.query(`SELECT LAST_INSERT_ID() as category_id;`);
+
+        return resolve(BigInt(result[0].category_id));
       } catch (error) {
-        console.error('Category Service Insert Error');
-        console.error(error);
+        logger.error('Category Service Insert Error');
+        logger.error(error);
         return reject(error);
       }
     });
   }
 
-  async update(queryRunner: QueryRunner, category: any): Promise<any> {
+  async update(queryRunner: QueryRunner, category: any, typeId: bigint | null): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingCategory = await queryRunner.manager.query(`SELECT * FROM \`product_category\` WHERE id=?;`, [category.id]);
+        const existingCategory = await queryRunner.manager.query(
+          `SELECT * FROM \`category\` 
+          WHERE id=?;`,
+          [BigInt(category.id)],
+        );
         if (existingCategory.length === 0) return resolve(await this.insert(queryRunner, category));
 
         await queryRunner.manager.query(
-          `UPDATE \`product_category\` SET 
-            parent=?,name=?,slug=?,description=?,updated_at=NOW()
+          `UPDATE \`category\` SET 
+            parent=?,name=?,slug=?,type_id=?,updated_at=NOW()
           WHERE id=?;`,
-          [category.parent, category.name, category.slug, null, category.id],
+          [category.parent, category.name, category.slug, typeId === null ? null : typeId, BigInt(category.id)],
         );
 
-        return resolve(existingCategory[0].product_category_id);
+        return resolve(BigInt(existingCategory[0].category_id));
       } catch (error) {
-        console.error('Category Service Update Error');
-        console.error(error);
+        logger.error('Category Service Update Error');
+        logger.error(error);
         return reject(error);
       }
     });
   }
 
-  async select(queryRunner: QueryRunner, id: number): Promise<any> {
+  async select(queryRunner: QueryRunner, id: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const category = await queryRunner.manager.query(`SELECT * FROM \`product_category\` WHERE id=?;`, [id]);
+        const category = await queryRunner.manager.query(
+          `SELECT * FROM \`category\` 
+          WHERE id=?;`,
+          [id],
+        );
 
         return resolve(category[0]);
       } catch (error) {
-        console.error('Category Service Select Error');
-        console.error(error);
+        logger.error('Category Service Select Error');
+        logger.error(error);
         return reject(error);
       }
     });

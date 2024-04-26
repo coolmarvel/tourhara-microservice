@@ -1,9 +1,9 @@
-import { ProductAttribute } from './attribute.entity';
-import { ProductCategoryImage } from './category-image.entity';
-import { ProductCategory } from './category.entity';
+import { Attribute } from './attribute.entity';
+import { CategoryImage } from './category-image.entity';
+import { Category } from './category.entity';
 import { ProductImage } from './product-image.entity';
 import { Product } from './product.entity';
-import { ProductTag } from './tag.entity';
-import { ProductType } from './type.entity';
+import { Tag } from './tag.entity';
+import { Type } from './type.entity';
 
-export default [Product, ProductTag, ProductImage, ProductType, ProductCategory, ProductCategoryImage, ProductAttribute];
+export default [Product, Tag, ProductImage, Type, Category, CategoryImage, Attribute];

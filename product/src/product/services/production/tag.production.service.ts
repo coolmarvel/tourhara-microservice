@@ -1,9 +1,9 @@
-import { v4 as uuid } from 'uuid';
 import { Injectable } from '@nestjs/common';
 import { ITagService } from 'src/product/interfaces/tag.interface';
 import { QueryRunner } from 'typeorm';
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 import { ConfigService } from '@nestjs/config';
+import { logger } from 'src/common/logger/logger.service';
 
 @Injectable()
 export class TagProductionService implements ITagService {
@@ -97,21 +97,25 @@ export class TagProductionService implements ITagService {
   async insert(queryRunner: QueryRunner, tag: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingTag = await queryRunner.manager.query(`SELECT * FROM \`product_tag\` WHERE id=?;`, [tag.id]);
+        const existingTag = await queryRunner.manager.query(
+          `SELECT * FROM \`tag\` 
+          WHERE id=?;`,
+          [BigInt(tag.id)],
+        );
         if (existingTag.length > 0) return resolve(await this.update(queryRunner, tag));
 
-        const productTagId = uuid();
         await queryRunner.manager.query(
-          `INSERT INTO \`product_tag\` (
-            product_tag_id,id,name,slug,count,created_at,updated_at
-        ) VALUES (?,?,?,?,?,NOW(),NOW());`,
-          [productTagId, tag.id, tag.name === '' ? null : tag.name, tag.slug === '' ? null : tag.slug, tag.count],
+          `INSERT INTO \`tag\` (
+            id,name,slug,count,created_at,updated_at
+          ) VALUES (?,?,?,?,NOW(),NOW());`,
+          [BigInt(tag.id), tag.name === '' ? null : tag.name, tag.slug === '' ? null : tag.slug, tag.count],
         );
+        const result = await queryRunner.manager.query(`SELECT LAST_INSERT_ID() as tag_id;`);
 
-        return resolve(productTagId);
+        return resolve(BigInt(result[0].tag_id));
       } catch (error) {
-        console.error('Tag Service Insert Error');
-        console.error(error);
+        logger.error('Tag Service Insert Error');
+        logger.error(error);
         return reject(error);
       }
     });
@@ -120,34 +124,42 @@ export class TagProductionService implements ITagService {
   async update(queryRunner: QueryRunner, tag: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingTag = await queryRunner.manager.query(`SELECT * FROM \`product_tag\` WHERE id=?;`, [tag.id]);
+        const existingTag = await queryRunner.manager.query(
+          `SELECT * FROM \`tag\` 
+          WHERE id=?;`,
+          [BigInt(tag.id)],
+        );
         if (existingTag.length === 0) return resolve(await this.insert(queryRunner, tag));
 
         await queryRunner.manager.query(
-          `UPDATE \`product_tag\` SET 
+          `UPDATE \`tag\` SET 
             name=?,slug=?,count=?,updated_at=NOW()
           WHERE id=?;`,
-          [tag.name === '' ? null : tag.name, tag.slug === '' ? null : tag.slug, tag.count, tag.id],
+          [tag.name === '' ? null : tag.name, tag.slug === '' ? null : tag.slug, tag.count, BigInt(tag.id)],
         );
 
-        return resolve(existingTag[0].product_tag_id);
+        return resolve(BigInt(existingTag[0].tag_id));
       } catch (error) {
-        console.error('Tag Service Update Error');
-        console.error(error);
+        logger.error('Tag Service Update Error');
+        logger.error(error);
         return reject(error);
       }
     });
   }
 
-  async select(queryRunner: QueryRunner, id: number): Promise<any> {
+  async select(queryRunner: QueryRunner, id: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const tag = await queryRunner.manager.query(`SELECT * FROM \`product_tag\` WHERE id=?;`, [id]);
+        const tag = await queryRunner.manager.query(
+          `SELECT * FROM \`tag\` 
+        WHERE id=?;`,
+          [id],
+        );
 
         return resolve(tag[0]);
       } catch (error) {
-        console.error('Tag Service Select Error');
-        console.error(error);
+        logger.error('Tag Service Select Error');
+        logger.error(error);
         return reject(error);
       }
     });
