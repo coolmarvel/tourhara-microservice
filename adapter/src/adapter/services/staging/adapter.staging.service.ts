@@ -72,7 +72,7 @@ export class AdapterStagingService implements IAdapterService {
       try {
         const categories = await queryRunner.manager.query(
           `SELECT 
-            category_id,id,parent,name,slug,type_id 
+            category_id, id, parent, name, slug, type_id 
           FROM \`category\` 
           WHERE type_id=?
           ORDER BY id ASC;`,
@@ -80,6 +80,7 @@ export class AdapterStagingService implements IAdapterService {
         );
 
         const categoryMap = {};
+        // Initialize map with all categories
         categories.forEach((category: any) => {
           categoryMap[category.id] = {
             category_id: category.category_id,
@@ -90,13 +91,26 @@ export class AdapterStagingService implements IAdapterService {
           };
         });
 
+        // Build the tree structure
         categories.forEach((category: any) => {
-          if (category.parent && category.parent !== '0') categoryMap[category.parent].children.push(categoryMap[category.id]);
+          if (category.parent && category.parent !== '0' && categoryMap[category.parent]) {
+            categoryMap[category.parent].children.push(categoryMap[category.id]);
+          }
         });
 
-        const newCategories = Object.values(categoryMap).filter((category: any) => category.children.length > 0 || !categories.some((c) => c.id === category.parent));
+        // Filter to return only top-level categories, those who do not appear as children
+        const childIds = new Set();
+        categories.forEach((category: any) => {
+          if (category.parent && category.parent !== '0') {
+            childIds.add(category.id);
+          }
+        });
 
-        return resolve(newCategories);
+        const topLevelCategories = Object.values(categoryMap).filter((category: any) => {
+          return !childIds.has(category.id);
+        });
+
+        return resolve(topLevelCategories);
       } catch (error) {
         return reject(error);
       } finally {
@@ -146,8 +160,8 @@ export class AdapterStagingService implements IAdapterService {
         pt.type AS type
       FROM product p
       INNER JOIN category pc ON p.category_id LIKE CONCAT('%', pc.category_id, '%')
-      LEFT JOIN type pt ON pc.type_id = pt.type_id
-      WHERE pt.type_id = ? OR pt.type_id IS NOT NULL;`;
+      LEFT JOIN type pt ON pc.type_id = pt.id
+      WHERE pt.id = ? OR pt.id IS NOT NULL;`;
 
         const products = await queryRunner.manager.query(query, type_id ? [type_id] : []);
 
