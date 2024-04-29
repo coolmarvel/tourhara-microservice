@@ -9,6 +9,7 @@ import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 import { OrderModule } from './order/order.module';
 import { ProductModule } from './product/product.module';
+import { AdapterModule } from './adapter/adapter.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { ProductModule } from './product/product.module';
     AuthModule,
     OrderModule,
     ProductModule,
+    AdapterModule,
   ],
   controllers: [AppController],
   providers: [AppService],

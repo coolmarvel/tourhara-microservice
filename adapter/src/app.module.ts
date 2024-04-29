@@ -41,7 +41,6 @@ import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
           synchronize: true,
         }) as TypeOrmModuleAsyncOptions,
     }),
-    ,
     AdapterModule,
   ],
   controllers: [AppController],

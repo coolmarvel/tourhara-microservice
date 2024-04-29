@@ -16,6 +16,7 @@ import { PaymentProductionService } from './payment.production.service';
 import { TourProductionService } from './tour.production.service';
 import { UsimProductionService } from './usim.production.service';
 import { JfkProductionService } from './jfk.production.service';
+import { logger } from 'src/common/logger/logger.service';
 
 @Injectable()
 export class OrderProductionService implements IOrderService {
@@ -130,18 +131,20 @@ export class OrderProductionService implements IOrderService {
   async insert(queryRunner: QueryRunner, order: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingOrder = await queryRunner.manager.query(`SELECT * FROM \`order\` WHERE id=?;`, [order.id]);
+        const existingOrder = await queryRunner.manager.query(
+          `SELECT * FROM \`order\` 
+          WHERE id=?;`,
+          [BigInt(order.id)],
+        );
         if (existingOrder.length > 0) return resolve(true);
 
-        const orderId = uuid();
         await queryRunner.manager.query(
           `INSERT INTO \`order\` (
-            order_id,id,status,currency,currency_symbol,date_created,date_created_gmt,
-            date_modified,date_modified_gmt,date_completed,date_completed_gmt,created_at,updated_at
-          ) VALUES (?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW());`,
+            id,status,currency,currency_symbol,date_created,date_created_gmt,date_modified,
+            date_modified_gmt,date_completed,date_completed_gmt,created_at,updated_at
+          ) VALUES (?,?,?,?,?,?,?,?,?,?,NOW(),NOW());`,
           [
-            orderId,
-            order.id,
+            BigInt(order.id),
             OrderStatus[order.status.toUpperCase() as keyof typeof OrderStatus],
             order.currency,
             order.currency_symbol,
@@ -153,11 +156,12 @@ export class OrderProductionService implements IOrderService {
             order.date_completed_gmt === null ? null : order.date_completed_gmt,
           ],
         );
+        const result = await queryRunner.manager.query(`SELECT LAST_INSERT_ID() as order_id;`);
 
-        return resolve(orderId);
+        return resolve(BigInt(result[0].order_id));
       } catch (error) {
-        console.error('Order Service Insert Error');
-        console.error(error);
+        logger.error('Order Service Insert Error');
+        logger.error(error);
         return reject(error);
       }
     });
@@ -166,7 +170,11 @@ export class OrderProductionService implements IOrderService {
   async update(queryRunner: QueryRunner, order: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingOrder = await queryRunner.manager.query(`SELECT * FROM \`order\` WHERE id=?;`, [order.id]);
+        const existingOrder = await queryRunner.manager.query(
+          `SELECT * FROM \`order\` 
+          WHERE id=?;`,
+          [BigInt(order.id)],
+        );
         if (existingOrder.length === 0) return resolve(true);
 
         await queryRunner.manager.query(
@@ -180,14 +188,14 @@ export class OrderProductionService implements IOrderService {
             order.date_modified_gmt === null ? null : order.date_modified_gmt,
             order.date_completed === null ? null : order.date_completed,
             order.date_completed_gmt === null ? null : order.date_completed_gmt,
-            order.id,
+            BigInt(order.id),
           ],
         );
 
-        return resolve(existingOrder[0].order_id);
+        return resolve(BigInt(existingOrder[0].order_id));
       } catch (error) {
-        console.error('Order Service Update Error');
-        console.error(error);
+        logger.error('Order Service Update Error');
+        logger.error(error);
         return reject(error);
       }
     });
@@ -205,7 +213,7 @@ export class OrderProductionService implements IOrderService {
         const order = payload;
         const orderId = await this.insert(queryRunner, order);
 
-        if (typeof orderId === 'string') {
+        if (typeof orderId === 'bigint') {
           // billing save
           const billing = order.billing;
           await this.billingService.insert(queryRunner, billing, orderId);
@@ -291,7 +299,7 @@ export class OrderProductionService implements IOrderService {
         const order = payload;
         const orderId = await this.update(queryRunner, order);
 
-        if (typeof orderId === 'string') {
+        if (typeof orderId === 'bigint') {
           // billing update
           const billing = order.billing;
           await this.billingService.update(queryRunner, billing, orderId);

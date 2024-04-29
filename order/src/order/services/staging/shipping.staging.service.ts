@@ -1,71 +1,85 @@
-import { v4 as uuid } from 'uuid';
 import { Injectable } from '@nestjs/common';
 import { IShippingService } from 'src/order/interfaces/shipping.interface';
 import { QueryRunner } from 'typeorm';
+import { logger } from 'src/common/logger/logger.service';
 
 @Injectable()
 export class ShippingStagingService implements IShippingService {
-  async insert(queryRunner: QueryRunner, payment: any, orderId: string): Promise<any> {
+  async insert(queryRunner: QueryRunner, shipping: any, orderId: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingPayment = await queryRunner.manager.query(`SELECT * FROM \`payment\` WHERE order_id=?;`, [orderId]);
-        if (existingPayment.length > 0) return resolve(true);
+        const existingShipping = await queryRunner.manager.query(
+          `SELECT * FROM \`shipping\` 
+          WHERE order_id=?;`,
+          [orderId],
+        );
+        if (existingShipping.length > 0) return resolve(true);
 
-        const paymentId = uuid();
         await queryRunner.manager.query(
-          `INSERT INTO \`payment\` (
-            payment_id,payment_method,payment_method_title,transaction_id,payment_url,
-            needs_payment,needs_processing,date_paid,date_paid_gmt,order_id,created_at,updated_at
-          ) VALUES (?,?,?,?,?,?,?,?,?,?,NOW(),NOW());`,
+          `INSERT INTO \`shipping\` (
+            first_name,last_name,company,address_1,address_2,city,state,
+            postcode,country,phone,shipping_mobile,order_id,created_at,updated_at
+          ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW());`,
           [
-            paymentId,
-            payment.payment_method ? payment.payment_method : null,
-            payment.payment_method_title ? payment.payment_method_title : null,
-            payment.transaction_id ? payment.transaction_id : null,
-            payment.payment_url ? payment.payment_url : null,
-            payment.needs_payment === '' ? null : payment.needs_payment ? 1 : 0, // 문자열 비교 후 불리언을 숫자로 변환
-            payment.needs_processing === '' ? null : payment.needs_processing ? 1 : 0, // 동일하게 처리
-            payment.date_paid ? payment.date_paid : null,
-            payment.date_paid_gmt ? payment.date_paid_gmt : null,
+            shipping.first_name === '' ? null : shipping.first_name,
+            shipping.last_name === '' ? null : shipping.last_name,
+            shipping.company === '' ? null : shipping.company,
+            shipping.address_1 === '' ? null : shipping.address_1,
+            shipping.address_2 === '' ? null : shipping.address_2,
+            shipping.city === '' ? null : shipping.city,
+            shipping.state === '' ? null : shipping.state,
+            shipping.postcode === '' ? null : shipping.postcode,
+            shipping.country === '' ? null : shipping.country,
+            shipping.phone === '' ? null : shipping.phone,
+            shipping.shipping_mobile === '' ? null : shipping.shipping_mobile,
             orderId,
           ],
         );
-        return resolve(paymentId);
+
+        return resolve(true);
       } catch (error) {
-        console.error('Payment Service Insert Error');
-        console.error(error);
+        logger.error('Shipping Service Insert Error');
+        logger.error(error);
         return reject(error);
       }
     });
   }
 
-  async update(queryRunner: QueryRunner, payment: any, orderId: string): Promise<any> {
+  async update(queryRunner: QueryRunner, shipping: any, orderId: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingPayment = await queryRunner.manager.query(`SELECT * FROM \`payment\` WHERE order_id=?;`, [orderId]);
-        if (existingPayment.length === 0) return resolve(await this.insert(queryRunner, payment, orderId));
+        const existingShipping = await queryRunner.manager.query(
+          `SELECT * FROM \`shipping\` 
+          WHERE order_id=?;`,
+          [orderId],
+        );
+        if (existingShipping.length === 0) return resolve(await this.insert(queryRunner, shipping, orderId));
 
         await queryRunner.manager.query(
-          `UPDATE \`payment\` SET 
-            payment_method=?,payment_method_title=?,transaction_id=?,payment_url=?,needs_payment=?,
-            needs_processing=?,date_paid=?,date_paid_gmt=?,updated_at=NOW()
+          `UPDATE \`shipping\` SET 
+            first_name=?,last_name=?,company=?,address_1=?,address_2=?,city=?,
+            state=?,postcode=?,country=?,phone=?,shipping_mobile=?,updated_at=NOW()
           WHERE order_id=?;`,
           [
-            payment.payment_method ? payment.payment_method : null,
-            payment.payment_method_title ? payment.payment_method_title : null,
-            payment.transaction_id ? payment.transaction_id : null,
-            payment.payment_url ? payment.payment_url : null,
-            payment.needs_payment === '' ? null : payment.needs_payment ? 1 : 0, // 문자열 비교 후 불리언을 숫자로 변환
-            payment.needs_processing === '' ? null : payment.needs_processing ? 1 : 0, // 동일하게 처리
-            payment.date_paid ? payment.date_paid : null,
-            payment.date_paid_gmt ? payment.date_paid_gmt : null,
+            shipping.first_name === '' ? null : shipping.first_name,
+            shipping.last_name === '' ? null : shipping.last_name,
+            shipping.company === '' ? null : shipping.company,
+            shipping.address_1 === '' ? null : shipping.address_1,
+            shipping.address_2 === '' ? null : shipping.address_2,
+            shipping.city === '' ? null : shipping.city,
+            shipping.state === '' ? null : shipping.state,
+            shipping.postcode === '' ? null : shipping.postcode,
+            shipping.country === '' ? null : shipping.country,
+            shipping.phone === '' ? null : shipping.phone,
+            shipping.shipping_mobile === '' ? null : shipping.shipping_mobile,
             orderId,
           ],
         );
+
         return resolve(true);
       } catch (error) {
-        console.error('Payment Service Update Error');
-        console.error(error);
+        logger.error('Shipping Service Update Error');
+        logger.error(error);
         return reject(error);
       }
     });

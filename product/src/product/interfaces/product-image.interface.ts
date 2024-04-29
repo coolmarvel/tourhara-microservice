@@ -5,5 +5,5 @@ export interface IProductImageService {
 
   update(queryRunner: QueryRunner, productImage: any): Promise<any>;
 
-  select(queryRunner: QueryRunner, id: number): Promise<any>;
+  select(queryRunner: QueryRunner, id: bigint): Promise<any>;
 }
