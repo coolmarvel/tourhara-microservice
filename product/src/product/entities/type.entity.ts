@@ -3,8 +3,8 @@ import { ProductTypeEnum } from '../constants/product-type.enum';
 
 @Entity()
 export class Type {
-  @PrimaryGeneratedColumn({ type: 'bigint', name: 'type_id' })
-  typeId!: bigint;
+  @PrimaryGeneratedColumn({ type: 'bigint' })
+  id!: bigint;
 
   @Column('enum', { enum: ProductTypeEnum, nullable: true })
   type!: ProductTypeEnum;

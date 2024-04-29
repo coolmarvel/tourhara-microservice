@@ -32,7 +32,7 @@ export class AdapterStagingController {
 
   @Public()
   @Put('types/:category_id')
-  @ApiOperation({ summary: '상품 목차 재지정(갱신) API (스테이징)' })
+  @ApiOperation({ summary: '상품 목차 갱신 API (스테이징)' })
   async updateProductCategory(@Param() { category_id }: UpdateProductCategoryParamReqDto, @Body() { type_id }: UpdateProductCategoryBodyReqDto) {
     return await this.adapterService.updateProductCategory(category_id, type_id);
   }
