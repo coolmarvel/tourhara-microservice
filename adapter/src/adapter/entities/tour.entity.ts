@@ -2,8 +2,8 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 
 @Entity()
 export class Tour {
-  @PrimaryGeneratedColumn('uuid', { name: 'tour_id' })
-  tour_id!: string;
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'tour_id' })
+  tour_id!: bigint;
 
   @Column({ name: 'top_date', nullable: true })
   topDate!: string;
@@ -80,8 +80,8 @@ export class Tour {
   @Column({ name: 'guggen_notice', nullable: true })
   guggenNotice!: string;
 
-  @Column('uuid', { name: 'order_id', nullable: true })
-  orderId!: string;
+  @Column({ type: 'bigint', name: 'order_id', nullable: true })
+  orderId!: bigint;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;

@@ -13,7 +13,7 @@ export class AdapterStagingService implements IAdapterService {
       await queryRunner.connect();
 
       try {
-        const productTypes = await queryRunner.manager.query(`SELECT product_type_id,type FROM \`product_type\`;`);
+        const productTypes = await queryRunner.manager.query(`SELECT type_id,type FROM \`type\`;`);
 
         return resolve(productTypes);
       } catch (error) {
@@ -32,16 +32,16 @@ export class AdapterStagingService implements IAdapterService {
       try {
         const categories = await queryRunner.manager.query(`
         SELECT 
-          product_category_id,id,parent,name,slug,product_type_id 
-        FROM \`product_category\` 
-        WHERE product_type_id IS NULL
+          category_id,id,parent,name,slug,type_id 
+        FROM \`category\` 
+        WHERE type_id IS NULL
         ORDER BY id ASC;`);
 
         const categoryMap = {};
         categories.forEach((category: any) => {
           categoryMap[category.id] = {
-            product_category_id: category.product_category_id,
-            product_type_id: category.product_type_id,
+            category_id: category.category_id,
+            type_id: category.type_id,
             id: category.id,
             name: category.name,
             slug: category.slug,
@@ -64,7 +64,7 @@ export class AdapterStagingService implements IAdapterService {
     });
   }
 
-  async getSpecifiedProductCategoryByType(product_type_id: string): Promise<any> {
+  async getSpecifiedProductCategoryByType(type_id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
@@ -72,17 +72,17 @@ export class AdapterStagingService implements IAdapterService {
       try {
         const categories = await queryRunner.manager.query(
           `SELECT 
-            product_category_id,id,parent,name,slug,product_type_id 
-          FROM \`product_category\` 
-          WHERE product_type_id=?
+            category_id,id,parent,name,slug,type_id 
+          FROM \`category\` 
+          WHERE type_id=?
           ORDER BY id ASC;`,
-          [product_type_id],
+          [type_id],
         );
 
         const categoryMap = {};
         categories.forEach((category: any) => {
           categoryMap[category.id] = {
-            product_category_id: category.product_category_id,
+            category_id: category.category_id,
             id: category.id,
             name: category.name,
             slug: category.slug,
@@ -105,7 +105,7 @@ export class AdapterStagingService implements IAdapterService {
     });
   }
 
-  async updateProductCategory(product_category_id: string, product_type_id: string): Promise<any> {
+  async updateProductCategory(category_id: number, type_id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
@@ -114,10 +114,10 @@ export class AdapterStagingService implements IAdapterService {
         await queryRunner.startTransaction();
 
         await queryRunner.manager.query(
-          `UPDATE \`product_category\` SET 
-            product_type_id=?,updated_at=NOW()
-          WHERE product_category_id=?;`,
-          [product_type_id, product_category_id],
+          `UPDATE \`category\` SET 
+            type_id=?,updated_at=NOW()
+          WHERE category_id=?;`,
+          [type_id, category_id],
         );
 
         await queryRunner.commitTransaction();
@@ -131,7 +131,7 @@ export class AdapterStagingService implements IAdapterService {
     });
   }
 
-  async getAllProducts(product_type_id: string): Promise<any> {
+  async getAllProducts(type_id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
@@ -143,13 +143,13 @@ export class AdapterStagingService implements IAdapterService {
         pc.name AS category_name, 
         pc.slug AS category_slug, 
         pc.description AS category_description, 
-        pt.type AS product_type
+        pt.type AS type
       FROM product p
-      INNER JOIN product_category pc ON p.product_category_id LIKE CONCAT('%', pc.product_category_id, '%')
-      LEFT JOIN product_type pt ON pc.product_type_id = pt.product_type_id
-      WHERE pt.product_type_id = ? OR pt.product_type_id IS NOT NULL;`;
+      INNER JOIN category pc ON p.category_id LIKE CONCAT('%', pc.category_id, '%')
+      LEFT JOIN type pt ON pc.type_id = pt.type_id
+      WHERE pt.type_id = ? OR pt.type_id IS NOT NULL;`;
 
-        const products = await queryRunner.manager.query(query, product_type_id ? [product_type_id] : []);
+        const products = await queryRunner.manager.query(query, type_id ? [type_id] : []);
 
         return resolve(products);
       } catch (error) {
@@ -158,7 +158,7 @@ export class AdapterStagingService implements IAdapterService {
     });
   }
 
-  async getOrdersByTypeId(product_type_id: string): Promise<any> {
+  async getOrdersByTypeId(type_id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();

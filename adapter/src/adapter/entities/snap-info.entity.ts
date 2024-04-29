@@ -2,14 +2,14 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 
 @Entity()
 export class SnapInfo {
-  @PrimaryGeneratedColumn('uuid', { name: 'snap_info_id' })
-  snapInfoId!: string;
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'snap_info_id' })
+  snapInfoId!: bigint;
 
   @Column({ name: 'mobile_snap', nullable: true })
   mobileSnap!: string;
 
-  @Column('uuid', { name: 'order_id', nullable: true })
-  orderId!: string;
+  @Column({ type: 'bigint', name: 'order_id', nullable: true })
+  orderId!: bigint;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;

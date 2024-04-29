@@ -2,9 +2,9 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 import { ProductTypeEnum } from '../constants/product-type.enum';
 
 @Entity()
-export class ProductType {
-  @PrimaryGeneratedColumn('uuid', { name: 'product_type_id' })
-  productTypeId!: string;
+export class Type {
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'type_id' })
+  typeId!: bigint;
 
   @Column('enum', { enum: ProductTypeEnum, nullable: true })
   type!: ProductTypeEnum;

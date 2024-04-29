@@ -35,11 +35,11 @@ export class AdapterStagingService implements IAdapterService {
     });
   }
 
-  async getSpecifiedProductCategoryByType(product_type_id: string): Promise<any> {
+  async getSpecifiedProductCategoryByType(type_id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const pattern = { cmd: 'getSpecifiedProductCategoryByType_staging' };
-        const payload = { product_type_id };
+        const payload = { type_id };
         const result = await firstValueFrom(this.client.send(pattern, payload));
 
         return resolve(result);
@@ -49,11 +49,11 @@ export class AdapterStagingService implements IAdapterService {
     });
   }
 
-  async updateProductCategory(product_category_id: string, product_type_id: string): Promise<any> {
+  async updateProductCategory(category_id: number, type_id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const pattern = { cmd: 'updateProductCategory_staging' };
-        const payload = { product_category_id, product_type_id };
+        const payload = { category_id, type_id };
         const result = await firstValueFrom(this.client.send(pattern, payload));
 
         return resolve(result);
@@ -63,11 +63,11 @@ export class AdapterStagingService implements IAdapterService {
     });
   }
 
-  async getAllProducts(product_type_id: string): Promise<any> {
+  async getAllProducts(type_id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const pattern = { cmd: 'getAllProducts_staging' };
-        const payload = { product_type_id };
+        const payload = { type_id };
         const result = await firstValueFrom(this.client.send(pattern, payload));
 
         return resolve(result);

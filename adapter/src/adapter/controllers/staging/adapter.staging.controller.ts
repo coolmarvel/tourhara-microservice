@@ -17,17 +17,17 @@ export class AdapterStagingController {
   }
 
   @MessagePattern({ cmd: 'getSpecifiedProductCategoryByType_staging' })
-  async getSpecifiedProductCategoryByType({ product_type_id }: { product_type_id: string }) {
-    return await this.adapterService.getSpecifiedProductCategoryByType(product_type_id);
+  async getSpecifiedProductCategoryByType({ type_id }: { type_id: number }) {
+    return await this.adapterService.getSpecifiedProductCategoryByType(type_id);
   }
 
   @MessagePattern({ cmd: 'updateProductCategory_staging' })
-  async updateProductCategory({ product_category_id, product_type_id }: { product_category_id: string; product_type_id: string }) {
-    return await this.adapterService.updateProductCategory(product_category_id, product_type_id);
+  async updateProductCategory({ category_id, type_id }: { category_id: number; type_id: number }) {
+    return await this.adapterService.updateProductCategory(category_id, type_id);
   }
 
   @MessagePattern({ cmd: 'getAllProducts_staging' })
-  async getAllProducts({ product_type_id }: { product_type_id: string }) {
-    return await this.adapterService.getAllProducts(product_type_id);
+  async getAllProducts({ type_id }: { type_id: number }) {
+    return await this.adapterService.getAllProducts(type_id);
   }
 }

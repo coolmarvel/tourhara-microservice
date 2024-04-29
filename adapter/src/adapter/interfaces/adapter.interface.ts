@@ -4,13 +4,13 @@ export interface IAdapterService {
 
   getAllNotSpecifiedProductCategories(): Promise<any>;
 
-  getSpecifiedProductCategoryByType(product_type_id: string): Promise<any>;
+  getSpecifiedProductCategoryByType(type_id: number): Promise<any>;
 
-  updateProductCategory(product_category_id: string, product_type_id: string): Promise<any>;
+  updateProductCategory(category_id: number, type_id: number): Promise<any>;
 
   // Products
-  getAllProducts(product_type_id: string): Promise<any>;
+  getAllProducts(type_id: number): Promise<any>;
 
   // Orders
-  getOrdersByTypeId(product_type_id: string): Promise<any>;
+  getOrdersByTypeId(type_id: number): Promise<any>;
 }

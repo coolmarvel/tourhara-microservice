@@ -1,12 +1,12 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
-export class ProductAttribute {
-  @PrimaryGeneratedColumn('uuid', { name: 'product_attribute_id' })
-  productAttributeId!: string;
+export class Attribute {
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'attribute_id' })
+  attributeId!: bigint;
 
-  @Column({ nullable: true })
-  id!: string;
+  @Column({ type: 'bigint' })
+  id!: bigint;
 
   @Column({ nullable: true })
   name!: string;
@@ -23,8 +23,8 @@ export class ProductAttribute {
   @Column({
     type: 'text',
     transformer: {
-      to: (value: string[] | null): string | null => (value ? JSON.stringify(value) : null),
-      from: (value: string): string[] | null => (value ? JSON.parse(value) : null),
+      to: (value: string[] | null): string | null => (value ? value.join(',') : null),
+      from: (value: string): string[] | null => (value ? value.split(',') : null),
     },
     nullable: true,
   })

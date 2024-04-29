@@ -16,21 +16,21 @@ import { Tour } from './tour.entity';
 import { UsimInfo } from './usim-info.entity';
 
 import { Product } from './product.entity';
-import { ProductTag } from './tag.entity';
+import { Tag } from './tag.entity';
 import { ProductImage } from './product-image.entity';
-import { ProductType } from './type.entity';
-import { ProductCategory } from './category.entity';
-import { ProductCategoryImage } from './category-image.entity';
-import { ProductAttribute } from './attribute.entity';
+import { Type } from './type.entity';
+import { Category } from './category.entity';
+import { CategoryImage } from './category-image.entity';
+import { Attribute } from './attribute.entity';
 
 export default [
   Product,
-  ProductTag,
+  Tag,
   ProductImage,
-  ProductType,
-  ProductCategory,
-  ProductCategoryImage,
-  ProductAttribute,
+  Type,
+  Category,
+  CategoryImage,
+  Attribute,
   Billing,
   Shipping,
   GuestHouse,

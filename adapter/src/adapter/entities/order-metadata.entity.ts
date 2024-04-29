@@ -2,11 +2,11 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 
 @Entity()
 export class OrderMetadata {
-  @PrimaryGeneratedColumn('uuid', { name: 'order_metadata_id' })
-  orderMetadataId!: string;
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'order_metadata_id' })
+  orderMetadataId!: bigint;
 
-  @Column({ nullable: true })
-  id!: string;
+  @Column({ type: 'bigint', nullable: true })
+  id!: bigint;
 
   @Column({ nullable: true })
   key!: string;
@@ -21,8 +21,8 @@ export class OrderMetadata {
   })
   value!: string[] | null;
 
-  @Column('uuid', { name: 'order_id' })
-  orderId!: string;
+  @Column({ type: 'bigint', name: 'order_id' })
+  orderId!: bigint;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;

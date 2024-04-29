@@ -2,11 +2,11 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 
 @Entity()
 export class LineItemMetadata {
-  @PrimaryGeneratedColumn('uuid', { name: 'line_item_metadata_id' })
-  lineItemMetadataId!: string;
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'line_item_metadata_id' })
+  lineItemMetadataId!: bigint;
 
-  @Column({ nullable: true })
-  id!: string;
+  @Column({ type: 'bigint', nullable: true })
+  id!: bigint;
 
   @Column({ nullable: true })
   key!: string;
@@ -21,8 +21,8 @@ export class LineItemMetadata {
   })
   value!: string[] | null;
 
-  @Column('uuid', { name: 'line_item_id', nullable: true })
-  lineItemId!: string;
+  @Column({ type: 'bigint', name: 'line_item_id', nullable: true })
+  lineItemId!: bigint;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;

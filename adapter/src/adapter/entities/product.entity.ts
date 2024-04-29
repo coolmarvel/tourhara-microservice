@@ -2,11 +2,11 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 
 @Entity()
 export class Product {
-  @PrimaryGeneratedColumn('uuid', { name: 'product_id' })
-  productId!: string;
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'product_id' })
+  productId!: bigint;
 
-  @Column({ nullable: true })
-  id!: string;
+  @Column({ type: 'bigint' })
+  id!: bigint;
 
   @Column({ nullable: true })
   name!: string;
@@ -39,54 +39,54 @@ export class Product {
   purchasable!: boolean;
 
   @Column({
-    name: 'product_category_id',
+    name: 'category_id',
     type: 'text',
     transformer: {
-      to: (value: string[] | null): string | null => (value ? JSON.stringify(value) : null),
-      from: (value: string): string[] | null => (value ? JSON.parse(value) : null),
+      to: (value: string[] | null): string | null => (value ? value.join(',') : null),
+      from: (value: string): string[] | null => (value ? value.split(',') : null),
     },
     nullable: true,
   })
-  productCategoryId!: string[] | null;
+  categoryId!: string[] | null;
 
   @Column({
-    name: 'product_tag_id',
+    name: 'tag_id',
     type: 'text',
     transformer: {
-      to: (value: string[] | null): string | null => (value ? JSON.stringify(value) : null),
-      from: (value: string): string[] | null => (value ? JSON.parse(value) : null),
+      to: (value: string[] | null): string | null => (value ? value.join(',') : null),
+      from: (value: string): string[] | null => (value ? value.split(',') : null),
     },
     nullable: true,
   })
-  productTagId!: string[];
+  tagId!: string[];
 
   @Column({
-    name: 'product_image_id',
+    name: 'image_id',
     type: 'text',
     transformer: {
-      to: (value: string[] | null): string | null => (value ? JSON.stringify(value) : null),
-      from: (value: string): string[] | null => (value ? JSON.parse(value) : null),
+      to: (value: string[] | null): string | null => (value ? value.join(',') : null),
+      from: (value: string): string[] | null => (value ? value.split(',') : null),
     },
     nullable: true,
   })
-  productImageId!: string[] | null;
+  imageId!: string[] | null;
 
   @Column({
-    name: 'product_attribute_id',
+    name: 'attribute_id',
     type: 'text',
     transformer: {
-      to: (value: string[] | null): string | null => (value ? JSON.stringify(value) : null),
-      from: (value: string): string[] | null => (value ? JSON.parse(value) : null),
+      to: (value: string[] | null): string | null => (value ? value.join(',') : null),
+      from: (value: string): string[] | null => (value ? value.split(',') : null),
     },
     nullable: true,
   })
-  productAttributeId!: string[] | null;
+  attributeId!: string[] | null;
 
   @Column({
     type: 'text',
     transformer: {
-      to: (value: string[] | null): string | null => (value ? JSON.stringify(value) : null),
-      from: (value: string): string[] | null => (value ? JSON.parse(value) : null),
+      to: (value: string[] | null): string | null => (value ? value.join(',') : null),
+      from: (value: string): string[] | null => (value ? value.split(',') : null),
     },
     nullable: true,
   })
