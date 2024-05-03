@@ -15,12 +15,70 @@ export class LineItemMetadataStagingService implements ILineItemMetadataService 
         );
         if (existingMetadata.length > 0) return resolve(true);
 
-        await queryRunner.manager.query(
-          `INSERT INTO \`line_item_metadata\` (
-            id,\`key\`,\`value\`,line_item_id,created_at,updated_at
-          ) VALUES (?,?,?,?,NOW(),NOW());`,
-          [BigInt(metadata.id), metadata.key, JSON.stringify(metadata.value), lineItemId],
-        );
+        if (typeof metadata.value === 'object') {
+          // Array일 때
+          if (Array.isArray(metadata.value)) {
+            await queryRunner.manager.query(
+              `INSERT INTO \`line_item_metadata\` (
+                id,\`key\`,\`value\`,line_item_id,created_at,updated_at
+              ) VALUES (?,?,?,?,NOW(),NOW());`,
+              [BigInt(metadata.id), metadata.key, metadata.value.join(','), lineItemId],
+            );
+          }
+
+          // JSON일 때
+          if (!Array.isArray(metadata.value)) {
+            for (const key of Object.keys(metadata.value)) {
+              const value = metadata.value[key];
+
+              const product = await queryRunner.manager.query(
+                `SELECT * FROM \`product\` 
+                WHERE id=?;`,
+                [BigInt(value.product_id)],
+              );
+
+              const titleMatches = value.title.match(/<a [^>]*>(.*?)<\/a>/);
+              let title = titleMatches && titleMatches.length > 1 ? titleMatches[1] : value.title;
+              title = title.replace(/<img[^>]*>/g, '').trim();
+
+              let attributes = null;
+              if (value.attributes) {
+                attributes = Object.values(value.attributes);
+                attributes = [...new Set(attributes)];
+                attributes = attributes.join(',');
+              }
+              await queryRunner.manager.query(
+                `INSERT INTO \`line_item_metadata\` (
+                  id,\`key\`,product_id,quantity,title,optional_selected,attributes,
+                  variation_id,discount,line_item_id,created_at,updated_at
+                ) VALUES (?,?,?,?,?,?,?,?,?,?,NOW(),NOW());`,
+                [
+                  BigInt(metadata.id),
+                  metadata.key,
+                  BigInt(product[0].product_id),
+                  metadata.quantity,
+                  title,
+                  value.optional_selected,
+                  attributes === '' ? null : attributes,
+                  value.variation_id ? BigInt(value.variation_id) : null,
+                  value.discount ? value.discount : null,
+                  lineItemId,
+                ],
+              );
+            }
+          }
+        } else {
+          const valueMatches = metadata.value.match(/<a [^>]*>(.*?)<\/a>/);
+          let value = valueMatches && valueMatches.length > 1 ? valueMatches[1] : metadata.value;
+          value = value.replace(/<img[^>]*>/g, '').trim();
+
+          await queryRunner.manager.query(
+            `INSERT INTO \`line_item_metadata\` (
+              id,\`key\`,\`value\`,line_item_id,created_at,updated_at
+            ) VALUES (?,?,?,?,NOW(),NOW());`,
+            [BigInt(metadata.id), metadata.key, value, lineItemId],
+          );
+        }
 
         return resolve(true);
       } catch (error) {
