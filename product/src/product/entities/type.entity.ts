@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { ProductTypeEnum } from '../constants/product-type.enum';
 
 @Entity()
@@ -7,6 +7,7 @@ export class Type {
   id!: bigint;
 
   @Column('enum', { enum: ProductTypeEnum, nullable: true })
+  @Index()
   type!: ProductTypeEnum;
 
   @CreateDateColumn({ name: 'created_at' })

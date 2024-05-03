@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class SnapInfo {
@@ -9,6 +9,7 @@ export class SnapInfo {
   mobileSnap!: string;
 
   @Column({ type: 'bigint', name: 'order_id', nullable: true })
+  @Index()
   orderId!: bigint;
 
   @CreateDateColumn({ name: 'created_at' })

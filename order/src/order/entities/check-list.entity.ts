@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class CheckList {
@@ -6,6 +6,7 @@ export class CheckList {
   checkListId!: bigint;
 
   @Column({ name: 'iso_date' })
+  @Index()
   isoDate!: string;
 
   @Column()

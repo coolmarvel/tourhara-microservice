@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class OrderMetadata {
@@ -6,20 +6,14 @@ export class OrderMetadata {
   orderMetadataId!: bigint;
 
   @Column({ type: 'bigint', nullable: true })
+  @Index()
   id!: bigint;
 
   @Column({ nullable: true })
   key!: string;
 
-  @Column({
-    type: 'text',
-    transformer: {
-      to: (value: string[] | null): string | null => (value ? JSON.stringify(value) : null),
-      from: (value: string): string[] | null => (value ? JSON.parse(value) : null),
-    },
-    nullable: true,
-  })
-  value!: string[] | null;
+  @Column({ length: 2048, nullable: true })
+  value!: string;
 
   @Column({ type: 'bigint', name: 'order_id' })
   orderId!: bigint;

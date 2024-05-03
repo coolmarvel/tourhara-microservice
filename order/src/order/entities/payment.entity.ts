@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class Payment {
@@ -30,6 +30,7 @@ export class Payment {
   datePaidGmt!: Date;
 
   @Column({ type: 'bigint', name: 'order_id' })
+  @Index()
   orderId!: bigint;
 
   @CreateDateColumn({ name: 'created_at' })
