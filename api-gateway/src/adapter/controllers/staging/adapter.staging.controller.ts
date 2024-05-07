@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Put, VERSION_NEUTRAL } from '@nestjs/common';
+import { Body, Controller, Get, Param, Put, Query, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetProductsReqDto, SpecifiedProductCategoryReqDto, UpdateProductCategoryBodyReqDto, UpdateProductCategoryParamReqDto } from 'src/adapter/dtos/req.dto';
 import { AdapterStagingService } from 'src/adapter/services/staging/adapter.staging.service';
 import { Public } from 'src/common/decorators/public.decorator';
+import { PageReqDto } from 'src/common/dtos/req.dto';
 
 @ApiTags('(Staging) Adapter')
 @Controller({ path: 'api/staging/adapter', version: VERSION_NEUTRAL })
@@ -42,5 +43,12 @@ export class AdapterStagingController {
   @ApiOperation({ summary: '상품 리스트 조회 API (스테이징)' })
   async getAllProducts(@Param() { type_id }: GetProductsReqDto) {
     return await this.adapterService.getAllProducts(type_id);
+  }
+
+  @Public()
+  @Get('orders/:type_id')
+  @ApiOperation({ summary: '주문 리스트 조회 API (스테이징)' })
+  async getOrdersByTypeId(@Param() { type_id }: GetProductsReqDto, @Query() { page, size }: PageReqDto) {
+    return await this.adapterService.getOrdersByTypeId(type_id, page, size);
   }
 }

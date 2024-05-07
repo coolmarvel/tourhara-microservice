@@ -12,5 +12,5 @@ export interface IAdapterService {
   getAllProducts(type_id: number): Promise<any>;
 
   // Orders
-  getOrdersByTypeId(type_id: number): Promise<any>;
+  getOrdersByTypeId(type_id: number, page: number, size: number): Promise<any>;
 }

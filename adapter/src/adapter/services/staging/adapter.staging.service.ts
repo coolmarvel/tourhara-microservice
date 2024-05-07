@@ -13,7 +13,7 @@ export class AdapterStagingService implements IAdapterService {
       await queryRunner.connect();
 
       try {
-        const productTypes = await queryRunner.manager.query(`SELECT type_id,type FROM \`type\`;`);
+        const productTypes = await queryRunner.manager.query(`SELECT id,type FROM \`type\`;`);
 
         return resolve(productTypes);
       } catch (error) {
@@ -172,15 +172,27 @@ export class AdapterStagingService implements IAdapterService {
     });
   }
 
-  async getOrdersByTypeId(type_id: number): Promise<any> {
+  async getOrdersByTypeId(type_id: number, page: number, size: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
 
-      try {
-        await queryRunner.manager.query(``);
+      const offset = (page - 1) * size;
 
-        return resolve(true);
+      try {
+        const orders = await queryRunner.manager.query(
+          `
+          SELECT o.* FROM \`order\` o
+          INNER JOIN line_item li ON o.order_id = li.order_id
+          INNER JOIN product p ON li.product_id = p.product_id
+          INNER JOIN category c ON p.category_id = c.category_id
+          WHERE c.type_id = ?
+          LIMIT ? OFFSET ?;
+        `,
+          [type_id, size, offset],
+        );
+
+        return resolve(orders);
       } catch (error) {
         return reject(error);
       } finally {

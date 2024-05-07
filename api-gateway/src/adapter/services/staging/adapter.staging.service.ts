@@ -76,4 +76,18 @@ export class AdapterStagingService implements IAdapterService {
       }
     });
   }
+
+  async getOrdersByTypeId(type_id: number, page: number, size: number): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const pattern = { cmd: 'getOrdersByTypeId_staging' };
+        const payload = { type_id, page, size };
+        const result = await firstValueFrom(this.client.send(pattern, payload));
+
+        return resolve(result);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
 }

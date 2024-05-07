@@ -30,4 +30,9 @@ export class AdapterStagingController {
   async getAllProducts({ type_id }: { type_id: number }) {
     return await this.adapterService.getAllProducts(type_id);
   }
+
+  @MessagePattern({ cmd: 'getOrdersByTypeId_staging' })
+  async getOrdersByTypeId({ type_id, page, size }: { type_id: number; page: number; size: number }) {
+    return await this.adapterService.getOrdersByTypeId(type_id, page, size);
+  }
 }
