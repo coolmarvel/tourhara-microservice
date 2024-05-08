@@ -22,8 +22,8 @@ export class AdapterStagingController {
   }
 
   @MessagePattern({ cmd: 'updateProductCategory_staging' })
-  async updateProductCategory({ category_id, type_id }: { category_id: number; type_id: number }) {
-    return await this.adapterService.updateProductCategory(category_id, type_id);
+  async updateProductCategory({ type_id, category_id }: { type_id: number; category_id: number }) {
+    return await this.adapterService.updateProductCategory(type_id, type_id);
   }
 
   @MessagePattern({ cmd: 'getAllProducts_staging' })
@@ -32,7 +32,7 @@ export class AdapterStagingController {
   }
 
   @MessagePattern({ cmd: 'getOrdersByTypeId_staging' })
-  async getOrdersByTypeId({ type_id, page, size }: { type_id: number; page: number; size: number }) {
-    return await this.adapterService.getOrdersByTypeId(type_id, page, size);
+  async getOrdersByTypeId({ type_id, category_id, page, size }: { type_id: number; category_id: number; page: number; size: number }) {
+    return await this.adapterService.getOrdersByTypeId(type_id, category_id, page, size);
   }
 }
