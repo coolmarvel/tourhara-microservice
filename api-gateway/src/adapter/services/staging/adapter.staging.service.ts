@@ -49,11 +49,11 @@ export class AdapterStagingService implements IAdapterService {
     });
   }
 
-  async updateProductCategory(category_id: number, type_id: number): Promise<any> {
+  async updateProductCategory(type_id: number, category_id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const pattern = { cmd: 'updateProductCategory_staging' };
-        const payload = { category_id, type_id };
+        const payload = { type_id, category_id };
         const result = await firstValueFrom(this.client.send(pattern, payload));
 
         return resolve(result);
@@ -68,6 +68,20 @@ export class AdapterStagingService implements IAdapterService {
       try {
         const pattern = { cmd: 'getAllProducts_staging' };
         const payload = { type_id };
+        const result = await firstValueFrom(this.client.send(pattern, payload));
+
+        return resolve(result);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
+
+  async getOrdersByTypeId(type_id: number, category_id: number, page: number, size: number): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const pattern = { cmd: 'getOrdersByTypeId_staging' };
+        const payload = { type_id, category_id, page, size };
         const result = await firstValueFrom(this.client.send(pattern, payload));
 
         return resolve(result);

@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class H2ousim {
@@ -15,6 +15,7 @@ export class H2ousim {
   previousOrderNumber!: string;
 
   @Column({ type: 'bigint', name: 'order_id', nullable: true })
+  @Index()
   orderId!: bigint;
 
   @CreateDateColumn({ name: 'created_at' })

@@ -85,7 +85,11 @@ export class LineItemProductionService implements ILineItemService {
         );
         if (existingLineItem.length === 0) return resolve(await this.insert(queryRunner, lineItem, orderId));
 
-        const product = await queryRunner.manager.query(`SELECT * FROM \`product\` WHERE id=?;`, [BigInt(lineItem.product_id)]);
+        const product = await queryRunner.manager.query(
+          `SELECT * FROM \`product\` 
+          WHERE id=?;`,
+          [BigInt(lineItem.product_id)],
+        );
         const productImage = await queryRunner.manager.query(
           `SELECT * FROM \`product_image\` 
           WHERE id=?;`,

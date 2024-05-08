@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class Category {
@@ -6,6 +6,7 @@ export class Category {
   categoryId!: bigint;
 
   @Column({ type: 'bigint' })
+  @Index()
   id!: bigint;
 
   @Column({ nullable: true })

@@ -1,6 +1,7 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
+@Index(['id', 'name', 'position', 'visible', 'variation', 'options'])
 export class Attribute {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'attribute_id' })
   attributeId!: bigint;
@@ -20,15 +21,8 @@ export class Attribute {
   @Column({ nullable: true })
   variation!: boolean;
 
-  @Column({
-    type: 'text',
-    transformer: {
-      to: (value: string[] | null): string | null => (value ? value.join(',') : null),
-      from: (value: string): string[] | null => (value ? value.split(',') : null),
-    },
-    nullable: true,
-  })
-  options!: string | null;
+  @Column({ nullable: true })
+  options!: string;
 
   @Column({ nullable: true })
   slug!: string;

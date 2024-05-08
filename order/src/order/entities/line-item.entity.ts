@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class LineItem {
@@ -6,6 +6,7 @@ export class LineItem {
   lineItemId!: bigint;
 
   @Column({ type: 'bigint', nullable: true })
+  @Index()
   id!: bigint;
 
   @Column({ nullable: true })
@@ -41,19 +42,11 @@ export class LineItem {
   @Column({ name: 'bundled_by', nullable: true })
   bundledBy!: string;
 
-  @Column({ name: 'bundled_item_title', nullable: true })
+  @Column({ name: 'bundled_item_title', length: 2048, nullable: true })
   bundledItemTitle!: string;
 
-  @Column({
-    type: 'text',
-    name: 'bundled_items',
-    transformer: {
-      to: (value: string[] | null): string | null => (value ? value.join(',') : null),
-      from: (value: string): string[] | null => (value ? value.split(',') : null),
-    },
-    nullable: true,
-  })
-  bundledItems!: string[] | null;
+  @Column({ name: 'bundled_items', length: 2048, nullable: true })
+  bundledItems!: string;
 
   @Column({ type: 'bigint', name: 'order_id', nullable: true })
   orderId!: bigint;

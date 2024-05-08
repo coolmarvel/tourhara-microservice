@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class LineItemMetadata {
@@ -6,20 +6,35 @@ export class LineItemMetadata {
   lineItemMetadataId!: bigint;
 
   @Column({ type: 'bigint', nullable: true })
+  @Index()
   id!: bigint;
 
   @Column({ nullable: true })
   key!: string;
 
-  @Column({
-    type: 'text',
-    transformer: {
-      to: (value: string[] | null): string | null => (value ? JSON.stringify(value) : null),
-      from: (value: string): string[] | null => (value ? JSON.parse(value) : null),
-    },
-    nullable: true,
-  })
-  value!: string[] | null;
+  @Column({ length: 10000, nullable: true })
+  value!: string;
+
+  @Column({ type: 'bigint', name: 'product_id', nullable: true })
+  productId!: bigint;
+
+  @Column({ nullable: true })
+  quantity!: number;
+
+  @Column({ nullable: true })
+  title!: string;
+
+  @Column({ name: 'optional_selected', nullable: true })
+  optionalSelected!: string;
+
+  @Column({ nullable: true })
+  attributes!: string;
+
+  @Column({ type: 'bigint', name: 'variation_id', nullable: true })
+  variationId!: bigint;
+
+  @Column({ nullable: true })
+  discount!: string;
 
   @Column({ type: 'bigint', name: 'line_item_id', nullable: true })
   lineItemId!: bigint;
