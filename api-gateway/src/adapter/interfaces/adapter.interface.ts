@@ -1,14 +1,16 @@
 export interface IAdapterService {
-  getAllProductTypes(): Promise<any>;
+  // Categories & Types
+  getAllTypes(): Promise<any>;
 
-  getAllNotSpecifiedProductCategories(): Promise<any>;
+  getAllNotDeclaredCategories(): Promise<any>;
 
-  getSpecifiedProductCategoryByType(type_id: number): Promise<any>;
+  getAllDeclaredCategories(type_id: number): Promise<any>;
 
-  updateProductCategory(category_id: number, type_id: number): Promise<any>;
-
-  getAllProducts(type_id: number): Promise<any>;
+  updateCategoryByType(type_id: number, category_id: number): Promise<any>;
 
   // Orders
-  getOrdersByTypeId(type_id: number, category_id: number, page: number, size: number): Promise<any>;
+  getAdaptedOrders(type_id: number, category_id: number, page: number, size: number): Promise<any>;
+
+  // Products
+  getAllProducts(type_id: number): Promise<any>;
 }

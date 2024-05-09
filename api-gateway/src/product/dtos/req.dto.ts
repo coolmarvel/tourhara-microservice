@@ -63,13 +63,13 @@ export class RetrieveProductCategoryReqDto {
   category_id: number;
 }
 
-export class UpdateProductCategoryParamReqDto {
+export class UpdateCategoryParamReqDto {
   @ApiProperty({ required: true })
   @Transform((param) => Number(param.value))
   category_id: number;
 }
 
-export class UpdateProductCategoryBodyReqDto {
+export class UpdateCategoryBodyReqDto {
   @ApiProperty({ required: true, example: 'All kinds of clothes' })
   description: string;
 }

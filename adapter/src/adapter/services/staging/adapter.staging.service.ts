@@ -7,7 +7,7 @@ import { DataSource, QueryRunner } from 'typeorm';
 export class AdapterStagingService implements IAdapterService {
   constructor(@InjectDataSource('staging') private dataSource: DataSource) {}
 
-  async getAllProductTypes(): Promise<any> {
+  async getAllTypes(): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
@@ -24,7 +24,7 @@ export class AdapterStagingService implements IAdapterService {
     });
   }
 
-  async getAllNotSpecifiedProductCategories(): Promise<any> {
+  async getAllNotDeclaredCategories(): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
@@ -64,7 +64,7 @@ export class AdapterStagingService implements IAdapterService {
     });
   }
 
-  async getSpecifiedProductCategoryByType(type_id: number): Promise<any> {
+  async getAllDeclaredCategories(type_id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
@@ -119,7 +119,7 @@ export class AdapterStagingService implements IAdapterService {
     });
   }
 
-  async updateProductCategory(type_id: number, category_id: number): Promise<any> {
+  async updateCategoryByType(type_id: number, category_id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
@@ -145,34 +145,7 @@ export class AdapterStagingService implements IAdapterService {
     });
   }
 
-  async getAllProducts(type_id: number): Promise<any> {
-    return new Promise(async (resolve, reject) => {
-      const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
-      await queryRunner.connect();
-
-      try {
-        const products = await queryRunner.manager.query(
-          `SELECT 
-            p.*, 
-            pc.name AS category_name, 
-            pc.slug AS category_slug, 
-            pc.description AS category_description, 
-            pt.type AS type
-          FROM product p
-          INNER JOIN category pc ON p.category_id LIKE CONCAT('%', pc.category_id, '%')
-          LEFT JOIN type pt ON pc.type_id = pt.id
-          WHERE pt.id = ? OR pt.id IS NOT NULL;`,
-          type_id ? [type_id] : [],
-        );
-
-        return resolve(products);
-      } catch (error) {
-        return reject(error);
-      }
-    });
-  }
-
-  async getOrdersByTypeId(type_id: number, category_id: number, page: number, size: number): Promise<any> {
+  async getAdaptedOrders(type_id: number, category_id: number, page: number, size: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
@@ -204,16 +177,8 @@ export class AdapterStagingService implements IAdapterService {
         // Fetch products linked to these categories
         const products = await queryRunner.manager.query(
           `SELECT
-            p.product_id,
-            p.id,
-            p.name,
-            p.type,
-            p.status,
-            p.price,
-            p.regular_price,
-            p.on_sale,
-            p.sale_price,
-            p.purchasable
+            p.product_id, p.id, p.name, p.type, p.status, p.price,
+            p.regular_price, p.on_sale, p.sale_price, p.purchasable
           FROM product p
           WHERE EXISTS (
             SELECT 1 FROM category c
@@ -279,68 +244,39 @@ export class AdapterStagingService implements IAdapterService {
 
           offset += size;
         }
-        console.log(ordersWithLineItems.length);
 
         return resolve(ordersWithLineItems);
-
-        // const result = await queryRunner.manager.query(
-        //   `WITH RECURSIVE CategoryChain AS (
-        //     SELECT category_id, id, parent, name, type_id
-        //     FROM category
-        //     WHERE category_id = ? AND type_id = ?
-        //     UNION ALL
-        //     SELECT c.category_id, c.id, c.parent, c.name, c.type_id
-        //     FROM category c
-        //     INNER JOIN CategoryChain cc ON cc.category_id = c.parent
-        //     WHERE c.type_id = cc.type_id
-        // ),
-        // ProductCTE AS (
-        //     SELECT p.product_id
-        //     FROM product p
-        //     JOIN CategoryChain cc ON FIND_IN_SET(cc.category_id, p.category_id) > 0
-        // ),
-        // FilteredOrders AS (
-        //     SELECT DISTINCT o.order_id, o.date_created_gmt
-        //     FROM \`order\` o
-        //     JOIN line_item li ON o.order_id = li.order_id
-        //     JOIN ProductCTE pcte ON li.product_id = pcte.product_id
-        //     ORDER BY o.date_created_gmt DESC
-        //     LIMIT ? OFFSET ?
-        // )
-        // SELECT
-        //     fo.order_id,
-        //     fo.date_created_gmt,
-        //     li.line_item_id,
-        //     li.product_id,
-        //     li.quantity,
-        //     li.total,
-        //     li.subtotal,
-        //     li.subtotal_tax,
-        //     li.price,
-        //     li.tax_class,
-        //     li.name AS line_item_name,
-        //     li.product_image_id,
-        //     li.parent_name,
-        //     li.bundled_by,
-        //     li.bundled_item_title,
-        //     li.bundled_items,
-        //     cc.category_id,
-        //     c.type_id
-        // FROM FilteredOrders fo
-        // JOIN line_item li ON fo.order_id = li.order_id
-        // JOIN product p ON li.product_id = p.product_id
-        // JOIN CategoryChain cc ON FIND_IN_SET(cc.category_id, p.category_id) > 0
-        // JOIN \`order\` o ON fo.order_id = o.order_id
-        // JOIN category c ON FIND_IN_SET(c.category_id, p.category_id) > 0
-        // ORDER BY fo.date_created_gmt;`,
-        //   [category_id, type_id, size, offset],
-        // );
-
-        // return resolve(result);
       } catch (error) {
         return reject(error);
       } finally {
         await queryRunner.release();
+      }
+    });
+  }
+
+  async getAllProducts(type_id: number): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
+      await queryRunner.connect();
+
+      try {
+        const products = await queryRunner.manager.query(
+          `SELECT 
+            p.*, 
+            pc.name AS category_name, 
+            pc.slug AS category_slug, 
+            pc.description AS category_description, 
+            pt.type AS type
+          FROM product p
+          INNER JOIN category pc ON p.category_id LIKE CONCAT('%', pc.category_id, '%')
+          LEFT JOIN type pt ON pc.type_id = pt.id
+          WHERE pt.id = ? OR pt.id IS NOT NULL;`,
+          type_id ? [type_id] : [],
+        );
+
+        return resolve(products);
+      } catch (error) {
+        return reject(error);
       }
     });
   }
