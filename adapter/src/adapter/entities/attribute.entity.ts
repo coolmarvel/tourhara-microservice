@@ -7,6 +7,7 @@ export class Attribute {
   attributeId!: bigint;
 
   @Column({ type: 'bigint' })
+  @Index()
   id!: bigint;
 
   @Column({ nullable: true })

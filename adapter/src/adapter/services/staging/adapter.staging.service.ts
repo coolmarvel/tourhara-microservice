@@ -176,7 +176,6 @@ export class AdapterStagingService implements IAdapterService {
     return new Promise(async (resolve, reject) => {
       const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
-      const offset = (page - 1) * size;
 
       try {
         // Fetch all child category IDs for the specified category recursively
@@ -196,7 +195,7 @@ export class AdapterStagingService implements IAdapterService {
         `,
           [category_id, type_id],
         );
-        console.log(categories);
+        // console.log(categories);
         if (categories.length === 0) return resolve(false);
 
         // Collect all category IDs including children to a flat array
@@ -224,7 +223,7 @@ export class AdapterStagingService implements IAdapterService {
         `,
           [categoryIds],
         );
-        console.log(products);
+        // console.log(products);
         if (products.length === 0) return resolve(false);
 
         const productIds = products.map((product: any) => product.product_id);
@@ -234,28 +233,46 @@ export class AdapterStagingService implements IAdapterService {
         let offset = (page - 1) * size;
 
         while (ordersWithLineItems.length < size) {
-          const orders = await queryRunner.manager.query(
-            `SELECT o.*
-            FROM \`order\` o
-            ORDER BY o.date_created_gmt DESC
-            LIMIT ? OFFSET ?;
-            `,
-            [size, offset],
-          );
+          const orders = await queryRunner.manager.query(`SELECT * FROM \`order\` ORDER BY date_created_gmt DESC LIMIT ? OFFSET ?;`, [size, offset]);
           if (orders.length === 0) break;
 
           for (const order of orders) {
-            const lineItems = await queryRunner.manager.query(
-              `SELECT li.*
-              FROM line_item li
-              WHERE li.order_id = ?;
-              `,
-              [order.order_id],
-            );
+            const lineItems = await queryRunner.manager.query(`SELECT * FROM line_item WHERE order_id=?;`, [order.order_id]);
 
             const matchingLineItems = lineItems.filter((lineItem: any) => productIds.includes(lineItem.product_id));
             if (matchingLineItems.length > 0) {
-              ordersWithLineItems.push({ order, lineItems: matchingLineItems });
+              const payment = await queryRunner.manager.query(`SELECT * FROM \`payment\` WHERE order_id=?;`, [order.order_id]);
+              const billing = await queryRunner.manager.query(`SELECT * FROM \`billing\` WHERE order_id=?;`, [order.order_id]);
+              const shipping = await queryRunner.manager.query(`SELECT * FROM \`shipping\` WHERE order_id=?;`, [order.order_id]);
+              const guestHouse = await queryRunner.manager.query(`SELECT * FROM \`guest_house\` WHERE order_id=?;`, [order.order_id]);
+              const jfkOneway = await queryRunner.manager.query(`SELECT * FROM \`jfk_oneway\` WHERE order_id=?;`, [order.order_id]);
+              const jfkShuttleRt = await queryRunner.manager.query(`SELECT * FROM \`jfk_shuttle_rt\` WHERE order_id=?;`, [order.order_id]);
+              const h2ousim = await queryRunner.manager.query(`SELECT * FROM \`h2ousim\` WHERE order_id=?;`, [order.order_id]);
+              const usimInfo = await queryRunner.manager.query(`SELECT * FROM \`usim_info\` WHERE order_id=?;`, [order.order_id]);
+              const snapInfo = await queryRunner.manager.query(`SELECT * FROM \`snap_info\` WHERE order_id=?;`, [order.order_id]);
+              const tour = await queryRunner.manager.query(`SELECT * FROM \`tour\` WHERE order_id=?;`, [order.order_id]);
+              const tourInfo = await queryRunner.manager.query(`SELECT * FROM \`tour_info\` WHERE order_id=?;`, [order.order_id]);
+
+              const orderMetadata = await queryRunner.manager.query(`SELECT * FROM \`order_metadata\` WHERE order_id=?;`, [order.order_id]);
+              const lineItemMetadata = await queryRunner.manager.query(`SELECT * FROM \`line_item_metadata\` WHERE line_item_id=?;`, [matchingLineItems[0].line_item_id]);
+
+              const data = {
+                order: { ...order, metadata: orderMetadata },
+                lineItem: { ...matchingLineItems[0], metadata: lineItemMetadata },
+                payment: payment[0],
+                billing: billing[0],
+                shipping: shipping[0],
+                guestHouse: guestHouse[0],
+                jfkOneway: jfkOneway[0],
+                jfkShuttleRt: jfkShuttleRt[0],
+                h2ousim: h2ousim[0],
+                usimInfo: usimInfo[0],
+                tour: tour[0],
+                tourInfo: tourInfo[0],
+                snapInfo: snapInfo[0],
+              };
+
+              ordersWithLineItems.push(data);
               if (ordersWithLineItems.length >= size) break;
             }
           }

@@ -1,6 +1,7 @@
 import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
+@Index(['categoryId', 'typeId'])
 export class Category {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'category_id' })
   categoryId!: bigint;
@@ -10,6 +11,7 @@ export class Category {
   id!: bigint;
 
   @Column({ nullable: true })
+  @Index()
   parent!: string;
 
   @Column({ nullable: true })

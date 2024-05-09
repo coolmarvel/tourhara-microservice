@@ -20,9 +20,11 @@ export class Order {
   currencySymbol!: string;
 
   @Column({ name: 'date_created', nullable: true })
+  @Index()
   dateCreated!: Date;
 
   @Column({ name: 'date_created_gmt', nullable: true })
+  @Index()
   dateCreatedGmt!: Date;
 
   @Column({ name: 'date_modified', nullable: true })

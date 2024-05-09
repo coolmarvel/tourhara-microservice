@@ -37,6 +37,7 @@ export class LineItemMetadata {
   discount!: string;
 
   @Column({ type: 'bigint', name: 'line_item_id', nullable: true })
+  @Index()
   lineItemId!: bigint;
 
   @CreateDateColumn({ name: 'created_at' })

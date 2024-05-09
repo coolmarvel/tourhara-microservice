@@ -16,6 +16,7 @@ export class OrderMetadata {
   value!: string;
 
   @Column({ type: 'bigint', name: 'order_id' })
+  @Index()
   orderId!: bigint;
 
   @CreateDateColumn({ name: 'created_at' })

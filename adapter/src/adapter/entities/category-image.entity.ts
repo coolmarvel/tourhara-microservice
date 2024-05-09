@@ -31,6 +31,7 @@ export class CategoryImage {
   dateModifiedGmt!: Date;
 
   @Column({ type: 'bigint', name: 'category_id', nullable: true })
+  @Index()
   categoryId!: bigint;
 
   @CreateDateColumn({ name: 'created_at' })

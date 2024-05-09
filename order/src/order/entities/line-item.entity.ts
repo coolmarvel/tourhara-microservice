@@ -49,6 +49,7 @@ export class LineItem {
   bundledItems!: string;
 
   @Column({ type: 'bigint', name: 'order_id', nullable: true })
+  @Index()
   orderId!: bigint;
 
   @CreateDateColumn({ name: 'created_at' })
