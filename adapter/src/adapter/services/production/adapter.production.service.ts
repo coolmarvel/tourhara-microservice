@@ -195,13 +195,8 @@ export class AdapterProductionService implements IAdapterService {
 
         // Fetch orders and line items iteratively until we have enough orders
         const ordersWithLineItems = [];
-        let offset = (page - 1) * size;
 
-        // while (ordersWithLineItems.length < size) {
-        // const orders = await queryRunner.manager.query(`SELECT * FROM \`order\` ORDER BY date_created_gmt DESC LIMIT ? OFFSET ?;`, [size, offset]);
         const orders = await queryRunner.manager.query(`SELECT * FROM \`order\`;`);
-        // if (orders.length === 0) break;
-
         for (const order of orders) {
           const lineItems = await queryRunner.manager.query(`SELECT * FROM line_item WHERE order_id=?;`, [order.order_id]);
 
@@ -239,12 +234,8 @@ export class AdapterProductionService implements IAdapterService {
             };
 
             ordersWithLineItems.push(data);
-            // if (ordersWithLineItems.length >= size) break;
           }
         }
-
-        // offset += size;
-        // }
 
         return resolve(ordersWithLineItems);
       } catch (error) {
