@@ -41,7 +41,7 @@ export class AdapterStagingController {
   @Public()
   @Get('types/:type_id/:category_id')
   @ApiOperation({ summary: '주문 리스트 조회 API (스테이징)' })
-  async getAdaptedOrders(@Param() { type_id, category_id }: AdaptedOrdersReqDto, @Query() { page, size }: PageReqDto) {
-    return await this.adapterService.getAdaptedOrders(type_id, category_id, page, size);
+  async getAdaptedOrders(@Param() { type_id, category_id }: AdaptedOrdersReqDto, @Query() { start_date, end_date }: { start_date: string; end_date: string }) {
+    return await this.adapterService.getAdaptedOrders(type_id, category_id, start_date, end_date);
   }
 }

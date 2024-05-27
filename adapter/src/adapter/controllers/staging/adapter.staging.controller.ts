@@ -27,7 +27,7 @@ export class AdapterStagingController {
   }
 
   @MessagePattern({ cmd: 'getAdaptedOrders_staging' })
-  async getAdaptedOrders({ type_id, category_id, page, size }: { type_id: number; category_id: number; page: number; size: number }) {
-    return await this.adapterService.getAdaptedOrders(type_id, category_id, page, size);
+  async getAdaptedOrders({ type_id, category_id, start_date, end_date }: { type_id: number; category_id: number; start_date: string; end_date: string }) {
+    return await this.adapterService.getAdaptedOrders(type_id, category_id, start_date, end_date);
   }
 }

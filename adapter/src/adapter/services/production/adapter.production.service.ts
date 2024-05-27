@@ -145,7 +145,7 @@ export class AdapterProductionService implements IAdapterService {
     });
   }
 
-  async getAdaptedOrders(type_id: number, category_id: number, page: number, size: number): Promise<any> {
+  async getAdaptedOrders(type_id: number, category_id: number, start_date: string, end_date: string): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
@@ -196,7 +196,7 @@ export class AdapterProductionService implements IAdapterService {
         // Fetch orders and line items iteratively until we have enough orders
         const ordersWithLineItems = [];
 
-        const orders = await queryRunner.manager.query(`SELECT * FROM \`order\`;`);
+        const orders = await queryRunner.manager.query(`SELECT * FROM \`order\` WHERE date_created_gmt>=? AND date_created_gmt<=?;`, [`${start_date}T00:00:00.000Z`, `${end_date}T23:59:59.999Z`]);
         for (const order of orders) {
           const lineItems = await queryRunner.manager.query(`SELECT * FROM line_item WHERE order_id=?;`, [order.order_id]);
 

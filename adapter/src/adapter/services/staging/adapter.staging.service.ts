@@ -145,7 +145,7 @@ export class AdapterStagingService implements IAdapterService {
     });
   }
 
-  async getAdaptedOrders(type_id: number, category_id: number, page: number, size: number): Promise<any> {
+  async getAdaptedOrders(type_id: number, category_id: number, start_date: string, end_date: string): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
@@ -195,54 +195,46 @@ export class AdapterStagingService implements IAdapterService {
 
         // Fetch orders and line items iteratively until we have enough orders
         const ordersWithLineItems = [];
-        let offset = (page - 1) * size;
 
-        while (ordersWithLineItems.length < size) {
-          const orders = await queryRunner.manager.query(`SELECT * FROM \`order\` ORDER BY date_created_gmt DESC LIMIT ? OFFSET ?;`, [size, offset]);
-          if (orders.length === 0) break;
+        const orders = await queryRunner.manager.query(`SELECT * FROM \`order\` WHERE date_created_gmt>=? AND date_created_gmt<=?;`, [`${start_date}T00:00:00.000Z`, `${end_date}T23:59:59.999Z`]);
+        for (const order of orders) {
+          const lineItems = await queryRunner.manager.query(`SELECT * FROM line_item WHERE order_id=?;`, [order.order_id]);
 
-          for (const order of orders) {
-            const lineItems = await queryRunner.manager.query(`SELECT * FROM line_item WHERE order_id=?;`, [order.order_id]);
+          const matchingLineItems = lineItems.filter((lineItem: any) => productIds.includes(lineItem.product_id));
+          if (matchingLineItems.length > 0) {
+            const payment = await queryRunner.manager.query(`SELECT * FROM \`payment\` WHERE order_id=?;`, [order.order_id]);
+            const billing = await queryRunner.manager.query(`SELECT * FROM \`billing\` WHERE order_id=?;`, [order.order_id]);
+            const shipping = await queryRunner.manager.query(`SELECT * FROM \`shipping\` WHERE order_id=?;`, [order.order_id]);
+            const guestHouse = await queryRunner.manager.query(`SELECT * FROM \`guest_house\` WHERE order_id=?;`, [order.order_id]);
+            const jfkOneway = await queryRunner.manager.query(`SELECT * FROM \`jfk_oneway\` WHERE order_id=?;`, [order.order_id]);
+            const jfkShuttleRt = await queryRunner.manager.query(`SELECT * FROM \`jfk_shuttle_rt\` WHERE order_id=?;`, [order.order_id]);
+            const h2ousim = await queryRunner.manager.query(`SELECT * FROM \`h2ousim\` WHERE order_id=?;`, [order.order_id]);
+            const usimInfo = await queryRunner.manager.query(`SELECT * FROM \`usim_info\` WHERE order_id=?;`, [order.order_id]);
+            const snapInfo = await queryRunner.manager.query(`SELECT * FROM \`snap_info\` WHERE order_id=?;`, [order.order_id]);
+            const tour = await queryRunner.manager.query(`SELECT * FROM \`tour\` WHERE order_id=?;`, [order.order_id]);
+            const tourInfo = await queryRunner.manager.query(`SELECT * FROM \`tour_info\` WHERE order_id=?;`, [order.order_id]);
 
-            const matchingLineItems = lineItems.filter((lineItem: any) => productIds.includes(lineItem.product_id));
-            if (matchingLineItems.length > 0) {
-              const payment = await queryRunner.manager.query(`SELECT * FROM \`payment\` WHERE order_id=?;`, [order.order_id]);
-              const billing = await queryRunner.manager.query(`SELECT * FROM \`billing\` WHERE order_id=?;`, [order.order_id]);
-              const shipping = await queryRunner.manager.query(`SELECT * FROM \`shipping\` WHERE order_id=?;`, [order.order_id]);
-              const guestHouse = await queryRunner.manager.query(`SELECT * FROM \`guest_house\` WHERE order_id=?;`, [order.order_id]);
-              const jfkOneway = await queryRunner.manager.query(`SELECT * FROM \`jfk_oneway\` WHERE order_id=?;`, [order.order_id]);
-              const jfkShuttleRt = await queryRunner.manager.query(`SELECT * FROM \`jfk_shuttle_rt\` WHERE order_id=?;`, [order.order_id]);
-              const h2ousim = await queryRunner.manager.query(`SELECT * FROM \`h2ousim\` WHERE order_id=?;`, [order.order_id]);
-              const usimInfo = await queryRunner.manager.query(`SELECT * FROM \`usim_info\` WHERE order_id=?;`, [order.order_id]);
-              const snapInfo = await queryRunner.manager.query(`SELECT * FROM \`snap_info\` WHERE order_id=?;`, [order.order_id]);
-              const tour = await queryRunner.manager.query(`SELECT * FROM \`tour\` WHERE order_id=?;`, [order.order_id]);
-              const tourInfo = await queryRunner.manager.query(`SELECT * FROM \`tour_info\` WHERE order_id=?;`, [order.order_id]);
+            const orderMetadata = await queryRunner.manager.query(`SELECT * FROM \`order_metadata\` WHERE order_id=?;`, [order.order_id]);
+            const lineItemMetadata = await queryRunner.manager.query(`SELECT * FROM \`line_item_metadata\` WHERE line_item_id=?;`, [matchingLineItems[0].line_item_id]);
 
-              const orderMetadata = await queryRunner.manager.query(`SELECT * FROM \`order_metadata\` WHERE order_id=?;`, [order.order_id]);
-              const lineItemMetadata = await queryRunner.manager.query(`SELECT * FROM \`line_item_metadata\` WHERE line_item_id=?;`, [matchingLineItems[0].line_item_id]);
+            const data = {
+              order: { ...order, metadata: orderMetadata },
+              lineItem: { ...matchingLineItems[0], metadata: lineItemMetadata },
+              payment: payment[0],
+              billing: billing[0],
+              shipping: shipping[0],
+              guestHouse: guestHouse[0],
+              jfkOneway: jfkOneway[0],
+              jfkShuttleRt: jfkShuttleRt[0],
+              h2ousim: h2ousim[0],
+              usimInfo: usimInfo[0],
+              tour: tour[0],
+              tourInfo: tourInfo[0],
+              snapInfo: snapInfo[0],
+            };
 
-              const data = {
-                order: { ...order, metadata: orderMetadata },
-                lineItem: { ...matchingLineItems[0], metadata: lineItemMetadata },
-                payment: payment[0],
-                billing: billing[0],
-                shipping: shipping[0],
-                guestHouse: guestHouse[0],
-                jfkOneway: jfkOneway[0],
-                jfkShuttleRt: jfkShuttleRt[0],
-                h2ousim: h2ousim[0],
-                usimInfo: usimInfo[0],
-                tour: tour[0],
-                tourInfo: tourInfo[0],
-                snapInfo: snapInfo[0],
-              };
-
-              ordersWithLineItems.push(data);
-              if (ordersWithLineItems.length >= size) break;
-            }
+            ordersWithLineItems.push(data);
           }
-
-          offset += size;
         }
 
         return resolve(ordersWithLineItems);

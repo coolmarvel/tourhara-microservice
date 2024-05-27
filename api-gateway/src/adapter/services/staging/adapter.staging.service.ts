@@ -63,11 +63,11 @@ export class AdapterStagingService implements IAdapterService {
     });
   }
 
-  async getAdaptedOrders(type_id: number, category_id: number, page: number, size: number): Promise<any> {
+  async getAdaptedOrders(type_id: number, category_id: number, start_date: string, end_date: string): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const pattern = { cmd: 'getAdaptedOrders_staging' };
-        const payload = { type_id, category_id, page, size };
+        const payload = { type_id, category_id, start_date, end_date };
         const result = await firstValueFrom(this.client.send(pattern, payload));
 
         return resolve(result);

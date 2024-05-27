@@ -9,7 +9,7 @@ export interface IAdapterService {
   updateCategoryByType(type_id: number, category_id: number): Promise<any>;
 
   // Orders
-  getAdaptedOrders(type_id: number, category_id: number, page: number, size: number): Promise<any>;
+  getAdaptedOrders(type_id: number, category_id: number, start_date: string, end_date: string): Promise<any>;
 
   // Products
   getAllProducts(type_id: number): Promise<any>;
