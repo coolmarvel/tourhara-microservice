@@ -196,7 +196,7 @@ export class AdapterProductionService implements IAdapterService {
         // Fetch orders and line items iteratively until we have enough orders
         const ordersWithLineItems = [];
 
-        const orders = await queryRunner.manager.query(`SELECT * FROM \`order\` WHERE date_created_gmt>=? AND date_created_gmt<=?;`, [`${start_date}T00:00:00.000Z`, `${end_date}T23:59:59.999Z`]);
+        const orders = await queryRunner.manager.query(`SELECT * FROM \`order\` WHERE date_created>=? AND date_created<=?;`, [`${start_date}T00:00:00.000Z`, `${end_date}T23:59:59.999Z`]);
         for (const order of orders) {
           const lineItems = await queryRunner.manager.query(`SELECT * FROM line_item WHERE order_id=?;`, [order.order_id]);
 
