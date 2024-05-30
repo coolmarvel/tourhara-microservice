@@ -8,6 +8,9 @@ export interface IAdapterService {
 
   updateCategoryByType(type_id: number, category_id: number): Promise<any>;
 
+  // Test Order
+  getOrdersByProductName(product_name: string, start_date: string, end_date: string): Promise<any>;
+
   // Orders
   getAdaptedOrders(type_id: number, category_id: number, start_date: string, end_date: string): Promise<any>;
 

@@ -28,3 +28,14 @@ export class AdaptedOrdersReqDto {
   @Transform((param) => parseInt(param.value, 10))
   category_id: number;
 }
+
+export class GetOrdersReqDto {
+  @ApiProperty({ required: true, example: '써밋 전망대' })
+  product_name: string;
+
+  @ApiProperty({ required: true, example: '2024-04-30' })
+  start_date: string;
+
+  @ApiProperty({ required: true, example: '2024-05-30' })
+  end_date: string;
+}

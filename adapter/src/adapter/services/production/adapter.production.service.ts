@@ -246,27 +246,68 @@ export class AdapterProductionService implements IAdapterService {
     });
   }
 
-  async getAllProducts(type_id: number): Promise<any> {
+  getAllProducts(type_id: number): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
+
+  getOrdersByProductName(product_name: string, start_date: string, end_date: string): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
 
       try {
-        const products = await queryRunner.manager.query(
-          `SELECT 
-            p.*, 
-            pc.name AS category_name, 
-            pc.slug AS category_slug, 
-            pc.description AS category_description, 
-            pt.type AS type
-          FROM product p
-          INNER JOIN category pc ON p.category_id LIKE CONCAT('%', pc.category_id, '%')
-          LEFT JOIN type pt ON pc.type_id = pt.id
-          WHERE pt.id = ? OR pt.id IS NOT NULL;`,
-          type_id ? [type_id] : [],
-        );
+        const result = [];
+        const orders = await queryRunner.manager.query(`SELECT * FROM \`order\` WHERE date_created_gmt>=? AND date_created_gmt<=?;`, [`${start_date}T00:00:00.000Z`, `${end_date}T23:59:59.999Z`]);
 
-        return resolve(products);
+        for (const order of orders) {
+          const products = await queryRunner.manager.query(
+            `SELECT product_id FROM \`product\` 
+            WHERE tag_id IS NOT NULL AND (name LIKE ? AND status=?);`,
+            [`%${decodeURIComponent(product_name)}%`, 'publish'],
+          );
+          const productIds = products.map((product) => product.product_id);
+          const lineItems = await queryRunner.manager.query(`SELECT * FROM line_item WHERE order_id=? AND product_id IN (?,?);`, [order.order_id, ...productIds]);
+
+          if (lineItems.length > 0) {
+            const payment = await queryRunner.manager.query(`SELECT * FROM \`payment\` WHERE order_id=?;`, [order.order_id]);
+            const billing = await queryRunner.manager.query(`SELECT * FROM \`billing\` WHERE order_id=?;`, [order.order_id]);
+            const shipping = await queryRunner.manager.query(`SELECT * FROM \`shipping\` WHERE order_id=?;`, [order.order_id]);
+            const guestHouse = await queryRunner.manager.query(`SELECT * FROM \`guest_house\` WHERE order_id=?;`, [order.order_id]);
+            const jfkOneway = await queryRunner.manager.query(`SELECT * FROM \`jfk_oneway\` WHERE order_id=?;`, [order.order_id]);
+            const jfkShuttleRt = await queryRunner.manager.query(`SELECT * FROM \`jfk_shuttle_rt\` WHERE order_id=?;`, [order.order_id]);
+            const h2ousim = await queryRunner.manager.query(`SELECT * FROM \`h2ousim\` WHERE order_id=?;`, [order.order_id]);
+            const usimInfo = await queryRunner.manager.query(`SELECT * FROM \`usim_info\` WHERE order_id=?;`, [order.order_id]);
+            const snapInfo = await queryRunner.manager.query(`SELECT * FROM \`snap_info\` WHERE order_id=?;`, [order.order_id]);
+            const tour = await queryRunner.manager.query(`SELECT * FROM \`tour\` WHERE order_id=?;`, [order.order_id]);
+            const tourInfo = await queryRunner.manager.query(`SELECT * FROM \`tour_info\` WHERE order_id=?;`, [order.order_id]);
+
+            const orderMetadata = await queryRunner.manager.query(`SELECT * FROM \`order_metadata\` WHERE order_id=?;`, [order.order_id]);
+
+            for (let i = 0; i < lineItems.length; i++) {
+              const lineItemMetadata = await queryRunner.manager.query(`SELECT * FROM \`line_item_metadata\` WHERE line_item_id=?;`, [lineItems[i].line_item_id]);
+
+              const data = {
+                order: { ...order, metadata: orderMetadata },
+                lineItem: { ...lineItems[i], metadata: lineItemMetadata },
+                payment: payment[0],
+                billing: billing[0],
+                shipping: shipping[0],
+                guestHouse: guestHouse[0],
+                jfkOneway: jfkOneway[0],
+                jfkShuttleRt: jfkShuttleRt[0],
+                h2ousim: h2ousim[0],
+                usimInfo: usimInfo[0],
+                tour: tour[0],
+                tourInfo: tourInfo[0],
+                snapInfo: snapInfo[0],
+              };
+
+              result.push(data);
+            }
+          }
+        }
+
+        return resolve(result);
       } catch (error) {
         return reject(error);
       }

@@ -90,4 +90,18 @@ export class AdapterProductionService implements IAdapterService {
       }
     });
   }
+
+  getOrdersByProductName(product_name: string, start_date: string, end_date: string): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const pattern = { cmd: 'getOrdersByProductName_production' };
+        const payload = { product_name, start_date, end_date };
+        const result = await firstValueFrom(this.client.send(pattern, payload));
+
+        return resolve(result);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
 }

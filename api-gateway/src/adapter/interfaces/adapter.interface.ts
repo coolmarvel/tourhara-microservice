@@ -13,4 +13,6 @@ export interface IAdapterService {
 
   // Products
   getAllProducts(type_id: number): Promise<any>;
+
+  getOrdersByProductName(product_name: string, start_date: string, end_date: string): Promise<any>;
 }

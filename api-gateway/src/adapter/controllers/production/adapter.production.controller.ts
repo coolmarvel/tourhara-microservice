@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Put, Query, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AdaptedOrdersReqDto, DeclaredCategoryReqDto, UpdateCategoryBodyReqDto, UpdateCategoryParamReqDto } from 'src/adapter/dtos/req.dto';
+import { AdaptedOrdersReqDto, DeclaredCategoryReqDto, GetOrdersReqDto, UpdateCategoryBodyReqDto, UpdateCategoryParamReqDto } from 'src/adapter/dtos/req.dto';
 import { AdapterProductionService } from 'src/adapter/services/production/adapter.production.service';
 import { Public } from 'src/common/decorators/public.decorator';
 import { PageReqDto } from 'src/common/dtos/req.dto';
@@ -43,5 +43,12 @@ export class AdapterProductionController {
   @ApiOperation({ summary: '주문 리스트 조회 API (스테이징)' })
   async getAdaptedOrders(@Param() { type_id, category_id }: AdaptedOrdersReqDto, @Query() { start_date, end_date }: { start_date: string; end_date: string }) {
     return await this.adapterService.getAdaptedOrders(type_id, category_id, start_date, end_date);
+  }
+
+  @Public()
+  @Get('orders')
+  @ApiOperation({ summary: '주문 리스트 조회 API - TEST (스테이징)' })
+  async getOrdersByProductName(@Query() { product_name, start_date, end_date }: GetOrdersReqDto) {
+    return await this.adapterService.getOrdersByProductName(product_name, start_date, end_date);
   }
 }

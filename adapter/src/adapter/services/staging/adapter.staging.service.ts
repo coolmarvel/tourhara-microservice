@@ -246,27 +246,55 @@ export class AdapterStagingService implements IAdapterService {
     });
   }
 
-  async getAllProducts(type_id: number): Promise<any> {
+  async getAllProducts(type_id: number): Promise<any> {}
+
+  getOrdersByProductName(product_name: string, start_date: string, end_date: string): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
 
       try {
-        const products = await queryRunner.manager.query(
-          `SELECT 
-            p.*, 
-            pc.name AS category_name, 
-            pc.slug AS category_slug, 
-            pc.description AS category_description, 
-            pt.type AS type
-          FROM product p
-          INNER JOIN category pc ON p.category_id LIKE CONCAT('%', pc.category_id, '%')
-          LEFT JOIN type pt ON pc.type_id = pt.id
-          WHERE pt.id = ? OR pt.id IS NOT NULL;`,
-          type_id ? [type_id] : [],
-        );
+        const result = [];
+        const orders = await queryRunner.manager.query(`SELECT * FROM \`order\` WHERE date_created_gmt>=? AND date_created_gmt<=?;`, [`${start_date}T00:00:00.000Z`, `${end_date}T23:59:59.999Z`]);
+        for (const order of orders) {
+          const lineItems = await queryRunner.manager.query(`SELECT * FROM line_item WHERE order_id=? AND name LIKE '%?%';`, [order.order_id, product_name]);
+          if (lineItems.length > 0) {
+            const payment = await queryRunner.manager.query(`SELECT * FROM \`payment\` WHERE order_id=?;`, [order.order_id]);
+            const billing = await queryRunner.manager.query(`SELECT * FROM \`billing\` WHERE order_id=?;`, [order.order_id]);
+            const shipping = await queryRunner.manager.query(`SELECT * FROM \`shipping\` WHERE order_id=?;`, [order.order_id]);
+            const guestHouse = await queryRunner.manager.query(`SELECT * FROM \`guest_house\` WHERE order_id=?;`, [order.order_id]);
+            const jfkOneway = await queryRunner.manager.query(`SELECT * FROM \`jfk_oneway\` WHERE order_id=?;`, [order.order_id]);
+            const jfkShuttleRt = await queryRunner.manager.query(`SELECT * FROM \`jfk_shuttle_rt\` WHERE order_id=?;`, [order.order_id]);
+            const h2ousim = await queryRunner.manager.query(`SELECT * FROM \`h2ousim\` WHERE order_id=?;`, [order.order_id]);
+            const usimInfo = await queryRunner.manager.query(`SELECT * FROM \`usim_info\` WHERE order_id=?;`, [order.order_id]);
+            const snapInfo = await queryRunner.manager.query(`SELECT * FROM \`snap_info\` WHERE order_id=?;`, [order.order_id]);
+            const tour = await queryRunner.manager.query(`SELECT * FROM \`tour\` WHERE order_id=?;`, [order.order_id]);
+            const tourInfo = await queryRunner.manager.query(`SELECT * FROM \`tour_info\` WHERE order_id=?;`, [order.order_id]);
 
-        return resolve(products);
+            const orderMetadata = await queryRunner.manager.query(`SELECT * FROM \`order_metadata\` WHERE order_id=?;`, [order.order_id]);
+            const lineItemMetadata = await queryRunner.manager.query(`SELECT * FROM \`line_item_metadata\` WHERE line_item_id=?;`, [lineItems[0].line_item_id]);
+
+            const data = {
+              order: { ...order, metadata: orderMetadata },
+              lineItem: { ...lineItems[0], metadata: lineItemMetadata },
+              payment: payment[0],
+              billing: billing[0],
+              shipping: shipping[0],
+              guestHouse: guestHouse[0],
+              jfkOneway: jfkOneway[0],
+              jfkShuttleRt: jfkShuttleRt[0],
+              h2ousim: h2ousim[0],
+              usimInfo: usimInfo[0],
+              tour: tour[0],
+              tourInfo: tourInfo[0],
+              snapInfo: snapInfo[0],
+            };
+
+            result.push(data);
+          }
+        }
+
+        return resolve(result);
       } catch (error) {
         return reject(error);
       }

@@ -1,6 +1,7 @@
 import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
+@Index(['orderId', 'productId'])
 export class LineItem {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'line_item_id' })
   lineItemId!: bigint;
