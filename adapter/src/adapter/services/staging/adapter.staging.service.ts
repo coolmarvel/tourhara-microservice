@@ -256,8 +256,17 @@ export class AdapterStagingService implements IAdapterService {
       try {
         const result = [];
         const orders = await queryRunner.manager.query(`SELECT * FROM \`order\` WHERE date_created_gmt>=? AND date_created_gmt<=?;`, [`${start_date}T00:00:00.000Z`, `${end_date}T23:59:59.999Z`]);
+
         for (const order of orders) {
-          const lineItems = await queryRunner.manager.query(`SELECT * FROM line_item WHERE order_id=? AND name LIKE '%?%';`, [order.order_id, product_name]);
+          const products = await queryRunner.manager.query(
+            `SELECT product_id FROM \`product\` 
+            WHERE tag_id IS NOT NULL AND (name LIKE ? AND status=?);`,
+            [`%${decodeURIComponent(product_name)}%`, 'publish'],
+          );
+          const productIds = products.map((product) => product.product_id);
+          const placeholders = productIds.map(() => '?').join(', ');
+          const lineItems = await queryRunner.manager.query(`SELECT * FROM line_item WHERE order_id=? AND product_id IN (${placeholders});`, [order.order_id, ...productIds]);
+
           if (lineItems.length > 0) {
             const payment = await queryRunner.manager.query(`SELECT * FROM \`payment\` WHERE order_id=?;`, [order.order_id]);
             const billing = await queryRunner.manager.query(`SELECT * FROM \`billing\` WHERE order_id=?;`, [order.order_id]);
@@ -272,25 +281,28 @@ export class AdapterStagingService implements IAdapterService {
             const tourInfo = await queryRunner.manager.query(`SELECT * FROM \`tour_info\` WHERE order_id=?;`, [order.order_id]);
 
             const orderMetadata = await queryRunner.manager.query(`SELECT * FROM \`order_metadata\` WHERE order_id=?;`, [order.order_id]);
-            const lineItemMetadata = await queryRunner.manager.query(`SELECT * FROM \`line_item_metadata\` WHERE line_item_id=?;`, [lineItems[0].line_item_id]);
 
-            const data = {
-              order: { ...order, metadata: orderMetadata },
-              lineItem: { ...lineItems[0], metadata: lineItemMetadata },
-              payment: payment[0],
-              billing: billing[0],
-              shipping: shipping[0],
-              guestHouse: guestHouse[0],
-              jfkOneway: jfkOneway[0],
-              jfkShuttleRt: jfkShuttleRt[0],
-              h2ousim: h2ousim[0],
-              usimInfo: usimInfo[0],
-              tour: tour[0],
-              tourInfo: tourInfo[0],
-              snapInfo: snapInfo[0],
-            };
+            for (let i = 0; i < lineItems.length; i++) {
+              const lineItemMetadata = await queryRunner.manager.query(`SELECT * FROM \`line_item_metadata\` WHERE line_item_id=?;`, [lineItems[i].line_item_id]);
 
-            result.push(data);
+              const data = {
+                order: { ...order, metadata: orderMetadata },
+                lineItem: { ...lineItems[i], metadata: lineItemMetadata },
+                payment: payment[0],
+                billing: billing[0],
+                shipping: shipping[0],
+                guestHouse: guestHouse[0],
+                jfkOneway: jfkOneway[0],
+                jfkShuttleRt: jfkShuttleRt[0],
+                h2ousim: h2ousim[0],
+                usimInfo: usimInfo[0],
+                tour: tour[0],
+                tourInfo: tourInfo[0],
+                snapInfo: snapInfo[0],
+              };
+
+              result.push(data);
+            }
           }
         }
 

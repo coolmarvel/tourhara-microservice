@@ -266,7 +266,8 @@ export class AdapterProductionService implements IAdapterService {
             [`%${decodeURIComponent(product_name)}%`, 'publish'],
           );
           const productIds = products.map((product) => product.product_id);
-          const lineItems = await queryRunner.manager.query(`SELECT * FROM line_item WHERE order_id=? AND product_id IN (?,?);`, [order.order_id, ...productIds]);
+          const placeholders = productIds.map(() => '?').join(', ');
+          const lineItems = await queryRunner.manager.query(`SELECT * FROM line_item WHERE order_id=? AND product_id IN (${placeholders});`, [order.order_id, ...productIds]);
 
           if (lineItems.length > 0) {
             const payment = await queryRunner.manager.query(`SELECT * FROM \`payment\` WHERE order_id=?;`, [order.order_id]);
