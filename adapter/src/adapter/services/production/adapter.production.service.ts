@@ -262,7 +262,8 @@ export class AdapterProductionService implements IAdapterService {
         for (const order of orders) {
           const products = await queryRunner.manager.query(
             `SELECT product_id FROM \`product\` 
-            WHERE tag_id IS NOT NULL AND name LIKE ? AND status=?;`,
+            WHERE name LIKE ? AND status=?;`,
+            // WHERE tag_id IS NOT NULL AND name LIKE ? AND status=?;`,
             [`%${decodeURIComponent(product_name)}%`, 'publish'],
           );
           const productIds = products.map((product) => product.product_id);
