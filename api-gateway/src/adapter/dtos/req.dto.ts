@@ -39,3 +39,15 @@ export class GetOrdersReqDto {
   @ApiProperty({ required: true, example: '2024-05-30' })
   end_date: string;
 }
+
+export class GetOrdersByCategoryReqDto {
+  @ApiProperty({ required: true, example: 103 })
+  @Transform((param) => parseInt(param.value, 10))
+  category_id: number;
+
+  @ApiProperty({ required: true, example: '2024-05-01' })
+  after: string;
+
+  @ApiProperty({ required: true, example: '2024-05-31' })
+  before: string;
+}

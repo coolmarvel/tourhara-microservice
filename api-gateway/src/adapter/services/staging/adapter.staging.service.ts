@@ -104,4 +104,18 @@ export class AdapterStagingService implements IAdapterService {
       }
     });
   }
+
+  getOrdersByCategory(category_id: number, after: string, before: string): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const pattern = { cmd: 'getOrdersByCategory_production' };
+        const payload = { category_id, after, before };
+        const result = await firstValueFrom(this.client.send(pattern, payload));
+
+        return resolve(result);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
 }

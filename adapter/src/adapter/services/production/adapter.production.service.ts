@@ -315,4 +315,66 @@ export class AdapterProductionService implements IAdapterService {
       }
     });
   }
+
+  getOrdersByCategory(category_id: number, after: string, before: string): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
+      await queryRunner.connect();
+
+      try {
+        const result = [];
+
+        const orders = await queryRunner.manager.query(`SELECT * FROM \`order\` WHERE date_created_gmt>=? AND date_created_gmt<=?;`, [`${after}T00:00:00.000Z`, `${before}T23:59:59.999Z`]);
+        for (const order of orders) {
+          const products = await queryRunner.manager.query(`SELECT * FROM \`product\` WHERE FIND_IN_SET(?, category_id) > 0 AND status='publish' AND purchasable=true;`, [category_id]);
+
+          const productIds = products.map((product: any) => product.product_id);
+          const placeholders = productIds.map(() => '?').join(', ');
+          const lineItems = await queryRunner.manager.query(`SELECT * FROM line_item WHERE order_id=? AND product_id IN (${placeholders});`, [order.order_id, ...productIds]);
+
+          if (lineItems.length > 0) {
+            const payment = await queryRunner.manager.query(`SELECT * FROM \`payment\` WHERE order_id=?;`, [order.order_id]);
+            const billing = await queryRunner.manager.query(`SELECT * FROM \`billing\` WHERE order_id=?;`, [order.order_id]);
+            const shipping = await queryRunner.manager.query(`SELECT * FROM \`shipping\` WHERE order_id=?;`, [order.order_id]);
+            const guestHouse = await queryRunner.manager.query(`SELECT * FROM \`guest_house\` WHERE order_id=?;`, [order.order_id]);
+            const jfkOneway = await queryRunner.manager.query(`SELECT * FROM \`jfk_oneway\` WHERE order_id=?;`, [order.order_id]);
+            const jfkShuttleRt = await queryRunner.manager.query(`SELECT * FROM \`jfk_shuttle_rt\` WHERE order_id=?;`, [order.order_id]);
+            const h2ousim = await queryRunner.manager.query(`SELECT * FROM \`h2ousim\` WHERE order_id=?;`, [order.order_id]);
+            const usimInfo = await queryRunner.manager.query(`SELECT * FROM \`usim_info\` WHERE order_id=?;`, [order.order_id]);
+            const snapInfo = await queryRunner.manager.query(`SELECT * FROM \`snap_info\` WHERE order_id=?;`, [order.order_id]);
+            const tour = await queryRunner.manager.query(`SELECT * FROM \`tour\` WHERE order_id=?;`, [order.order_id]);
+            const tourInfo = await queryRunner.manager.query(`SELECT * FROM \`tour_info\` WHERE order_id=?;`, [order.order_id]);
+
+            const orderMetadata = await queryRunner.manager.query(`SELECT * FROM \`order_metadata\` WHERE order_id=?;`, [order.order_id]);
+
+            for (let i = 0; i < lineItems.length; i++) {
+              const lineItemMetadata = await queryRunner.manager.query(`SELECT * FROM \`line_item_metadata\` WHERE line_item_id=?;`, [lineItems[i].line_item_id]);
+
+              const data = {
+                order: { ...order, metadata: orderMetadata },
+                lineItem: { ...lineItems[i], metadata: lineItemMetadata },
+                payment: payment[0],
+                billing: billing[0],
+                shipping: shipping[0],
+                guestHouse: guestHouse[0],
+                jfkOneway: jfkOneway[0],
+                jfkShuttleRt: jfkShuttleRt[0],
+                h2ousim: h2ousim[0],
+                usimInfo: usimInfo[0],
+                tour: tour[0],
+                tourInfo: tourInfo[0],
+                snapInfo: snapInfo[0],
+              };
+
+              result.push(data);
+            }
+          }
+        }
+
+        return resolve(result);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
 }

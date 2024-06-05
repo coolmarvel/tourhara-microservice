@@ -35,4 +35,9 @@ export class AdapterProductionController {
   async getOrdersByProductName({ product_name, start_date, end_date }: { product_name: string; start_date: string; end_date: string }) {
     return await this.adapterService.getOrdersByProductName(product_name, start_date, end_date);
   }
+
+  @MessagePattern({ cmd: 'getOrdersByCategory_production' })
+  getOrdersByCategory({ category_id, after, before }: { category_id: number; after: string; before: string }) {
+    return this.adapterService.getOrdersByCategory(category_id, after, before);
+  }
 }

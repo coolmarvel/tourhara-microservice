@@ -312,4 +312,8 @@ export class AdapterStagingService implements IAdapterService {
       }
     });
   }
+
+  getOrdersByCategory(category_id: number, after: string, before: string): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
 }
