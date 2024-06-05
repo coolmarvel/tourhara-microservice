@@ -105,7 +105,7 @@ export class AdapterStagingService implements IAdapterService {
     });
   }
 
-  getOrdersByCategory(category_id: string, after: string, before: string): Promise<any> {
+  getOrdersByCategory(category_id: number, after: string, before: string): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const pattern = { cmd: 'getOrdersByCategory_production' };
