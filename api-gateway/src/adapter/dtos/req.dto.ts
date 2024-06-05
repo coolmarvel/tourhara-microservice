@@ -42,8 +42,7 @@ export class GetOrdersReqDto {
 
 export class GetOrdersByCategoryReqDto {
   @ApiProperty({ required: true, example: 103 })
-  @Transform((param) => parseInt(param.value, 10))
-  category_id: number;
+  category_id: string;
 
   @ApiProperty({ required: true, example: '2024-05-01' })
   after: string;
