@@ -37,7 +37,7 @@ export class AdapterProductionController {
   }
 
   @MessagePattern({ cmd: 'getOrdersByCategory_production' })
-  getOrdersByCategory({ category_id, after, before }: { category_id: number; after: string; before: string }) {
+  getOrdersByCategory({ category_id, after, before }: { category_id: string; after: string; before: string }) {
     return this.adapterService.getOrdersByCategory(category_id, after, before);
   }
 }
