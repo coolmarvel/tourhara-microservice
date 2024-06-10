@@ -316,7 +316,7 @@ export class AdapterProductionService implements IAdapterService {
     });
   }
 
-  getOrdersByCategory(category_id: string, after: string, before: string): Promise<any> {
+  getOrdersByProductId(product_id: string, after: string, before: string): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
@@ -324,12 +324,11 @@ export class AdapterProductionService implements IAdapterService {
       try {
         const result = [];
 
+        const productIds = product_id.split(',');
+        const placeholders = productIds.map(() => '?').join(', ');
+
         const orders = await queryRunner.manager.query(`SELECT * FROM \`order\` WHERE date_created_gmt>=? AND date_created_gmt<=?;`, [`${after}T00:00:00.000Z`, `${before}T23:59:59.999Z`]);
         for (const order of orders) {
-          const products = await queryRunner.manager.query(`SELECT * FROM \`product\` WHERE category_id=? AND status='publish' AND purchasable=true;`, [category_id]);
-
-          const productIds = products.map((product: any) => product.product_id);
-          const placeholders = productIds.map(() => '?').join(', ');
           const lineItems = await queryRunner.manager.query(`SELECT * FROM line_item WHERE order_id=? AND product_id IN (${placeholders});`, [order.order_id, ...productIds]);
 
           if (lineItems.length > 0) {

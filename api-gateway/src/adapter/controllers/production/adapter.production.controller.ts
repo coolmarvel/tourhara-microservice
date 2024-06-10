@@ -55,7 +55,7 @@ export class AdapterProductionController {
   @Public()
   @Get('orders')
   @ApiOperation({ summary: '주문 리스트 조회 API - TEST (스테이징)' })
-  getOrdersByCategory(@Query() { category_id, after, before }: GetOrdersByCategoryReqDto) {
-    return this.adapterService.getOrdersByCategory(category_id, after, before);
+  getOrdersByProductId(@Query() { product_id, after, before }: GetOrdersByCategoryReqDto) {
+    return this.adapterService.getOrdersByProductId(product_id, after, before);
   }
 }

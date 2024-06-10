@@ -36,8 +36,8 @@ export class AdapterProductionController {
     return await this.adapterService.getOrdersByProductName(product_name, start_date, end_date);
   }
 
-  @MessagePattern({ cmd: 'getOrdersByCategory_production' })
-  getOrdersByCategory({ category_id, after, before }: { category_id: string; after: string; before: string }) {
-    return this.adapterService.getOrdersByCategory(category_id, after, before);
+  @MessagePattern({ cmd: 'getOrdersByProductId_production' })
+  getOrdersByProductId({ product_id, after, before }: { product_id: string; after: string; before: string }) {
+    return this.adapterService.getOrdersByProductId(product_id, after, before);
   }
 }
