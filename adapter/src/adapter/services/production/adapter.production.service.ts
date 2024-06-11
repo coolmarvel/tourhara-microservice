@@ -260,13 +260,8 @@ export class AdapterProductionService implements IAdapterService {
         const orders = await queryRunner.manager.query(`SELECT * FROM \`order\` WHERE date_created_gmt>=? AND date_created_gmt<=?;`, [`${start_date}T00:00:00.000Z`, `${end_date}T23:59:59.999Z`]);
 
         for (const order of orders) {
-          const products = await queryRunner.manager.query(
-            `SELECT product_id FROM \`product\` 
-            WHERE name LIKE ? AND status=?;`,
-            // WHERE tag_id IS NOT NULL AND name LIKE ? AND status=?;`,
-            [`%${decodeURIComponent(product_name)}%`, 'publish'],
-          );
-          const productIds = products.map((product) => product.product_id);
+          const products = await queryRunner.manager.query(`SELECT product_id FROM \`product\` WHERE name LIKE ? AND status=?;`, [`%${decodeURIComponent(product_name)}%`, 'publish']);
+          const productIds = products.map((product: any) => product.product_id);
           const placeholders = productIds.map(() => '?').join(', ');
           const lineItems = await queryRunner.manager.query(`SELECT * FROM line_item WHERE order_id=? AND product_id IN (${placeholders});`, [order.order_id, ...productIds]);
 
