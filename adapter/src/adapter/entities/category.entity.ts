@@ -1,7 +1,6 @@
 import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
-@Index(['categoryId', 'typeId'])
 export class Category {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'category_id' })
   categoryId!: bigint;
@@ -22,9 +21,6 @@ export class Category {
 
   @Column({ nullable: true })
   description!: string;
-
-  @Column({ type: 'bigint', name: 'type_id', nullable: true })
-  typeId!: bigint;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
