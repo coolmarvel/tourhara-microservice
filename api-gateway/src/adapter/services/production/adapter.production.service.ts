@@ -7,7 +7,7 @@ import { IAdapterService } from 'src/adapter/interfaces/adapter.interface';
 export class AdapterProductionService implements IAdapterService {
   constructor(@Inject('ADAPTER_SERVICE') private client: ClientProxy) {}
 
-  async getAllTypes(): Promise<any> {
+  getAllTypes(): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const pattern = { cmd: 'getAllTypes_production' };
@@ -21,7 +21,7 @@ export class AdapterProductionService implements IAdapterService {
     });
   }
 
-  async getAllNotDeclaredCategories(): Promise<any> {
+  getAllNotDeclaredCategories(): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const pattern = { cmd: 'getAllNotDeclaredCategories_production' };
@@ -35,7 +35,7 @@ export class AdapterProductionService implements IAdapterService {
     });
   }
 
-  async getAllDeclaredCategories(type_id: number): Promise<any> {
+  getAllDeclaredCategories(type_id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const pattern = { cmd: 'getAllDeclaredCategories_production' };
@@ -63,53 +63,25 @@ export class AdapterProductionService implements IAdapterService {
     });
   }
 
-  async getAdaptedOrders(type_id: number, category_id: number, start_date: string, end_date: string): Promise<any> {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const pattern = { cmd: 'getAdaptedOrders_production' };
-        const payload = { type_id, category_id, start_date, end_date };
-        const result = await firstValueFrom(this.client.send(pattern, payload));
-
-        return resolve(result);
-      } catch (error) {
-        return reject(error);
-      }
-    });
-  }
-
-  async getAllProducts(type_id: number): Promise<any> {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const pattern = { cmd: 'getAllProducts_production' };
-        const payload = { type_id };
-        const result = await firstValueFrom(this.client.send(pattern, payload));
-
-        return resolve(result);
-      } catch (error) {
-        return reject(error);
-      }
-    });
-  }
-
-  getOrdersByProductName(product_name: string, start_date: string, end_date: string): Promise<any> {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const pattern = { cmd: 'getOrdersByProductName_production' };
-        const payload = { product_name, start_date, end_date };
-        const result = await firstValueFrom(this.client.send(pattern, payload));
-
-        return resolve(result);
-      } catch (error) {
-        return reject(error);
-      }
-    });
-  }
-
   getOrdersByProductId(product_id: string, after: string, before: string): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const pattern = { cmd: 'getOrdersByProductId_production' };
         const payload = { product_id, after, before };
+        const result = await firstValueFrom(this.client.send(pattern, payload));
+
+        return resolve(result);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
+
+  getOrderByProductIdAndOrderId(product_id: string, order_id: string): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const pattern = { cmd: 'getOrderByProductIdAndOrderId_production' };
+        const payload = { product_id, order_id };
         const result = await firstValueFrom(this.client.send(pattern, payload));
 
         return resolve(result);

@@ -8,26 +8,31 @@ export class AdapterStagingController {
 
   @MessagePattern({ cmd: 'getAllTypes_staging' })
   async getAllTypes() {
-    return await this.adapterService.getAllTypes();
+    return this.adapterService.getAllTypes();
   }
 
   @MessagePattern({ cmd: 'getAllNotDeclaredCategories_staging' })
   async getAllNotDeclaredCategories() {
-    return await this.adapterService.getAllNotDeclaredCategories();
+    return this.adapterService.getAllNotDeclaredCategories();
   }
 
   @MessagePattern({ cmd: 'getAllDeclaredCategories_staging' })
   async getAllDeclaredCategories({ type_id }: { type_id: number }) {
-    return await this.adapterService.getAllDeclaredCategories(type_id);
+    return this.adapterService.getAllDeclaredCategories(type_id);
   }
 
   @MessagePattern({ cmd: 'updateCategoryByType_staging' })
   async updateCategoryByType({ type_id, category_id }: { type_id: number; category_id: number }) {
-    return await this.adapterService.updateCategoryByType(type_id, type_id);
+    return this.adapterService.updateCategoryByType(type_id, category_id);
   }
 
-  @MessagePattern({ cmd: 'getAdaptedOrders_staging' })
-  async getAdaptedOrders({ type_id, category_id, start_date, end_date }: { type_id: number; category_id: number; start_date: string; end_date: string }) {
-    return await this.adapterService.getAdaptedOrders(type_id, category_id, start_date, end_date);
+  @MessagePattern({ cmd: 'getOrdersByProductId_staging' })
+  getOrdersByProductId({ product_id, after, before }: { product_id: string; after: string; before: string }) {
+    return this.adapterService.getOrdersByProductId(product_id, after, before);
+  }
+
+  @MessagePattern({ cmd: 'getOrderByProductIdAndOrderId_staging' })
+  getOrderByProductIdAndOrderId({ product_id, order_id }: { product_id: string; order_id: string }) {
+    return this.adapterService.getOrderByProductIdAndOrderId(product_id, order_id);
   }
 }

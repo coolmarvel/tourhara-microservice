@@ -30,24 +30,20 @@ export class AdaptedOrdersReqDto {
 }
 
 export class GetOrdersReqDto {
-  @ApiProperty({ required: true, example: '써밋 전망대' })
-  product_name: string;
-
-  @ApiProperty({ required: true, example: '2024-04-30' })
-  start_date: string;
-
-  @ApiProperty({ required: true, example: '2024-05-30' })
-  end_date: string;
-}
-
-export class GetOrdersByCategoryReqDto {
-  @ApiProperty({ required: true, example: '208' })
-  // @Transform((param) => parseInt(param.value, 10))
+  @ApiProperty({ required: true, example: '21772' })
   product_id: string;
 
   @ApiProperty({ required: true, example: '2024-05-01' })
   after: string;
 
-  @ApiProperty({ required: true, example: '2024-05-31' })
+  @ApiProperty({ required: true, example: '2024-05-10' })
   before: string;
+}
+
+export class GetOrderReqDto {
+  @ApiProperty({ required: true, example: '21772' })
+  product_id: string;
+
+  @ApiProperty({ required: true, example: '370446' })
+  order_id: string;
 }
