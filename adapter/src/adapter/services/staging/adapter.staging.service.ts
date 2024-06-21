@@ -5,9 +5,10 @@ import { DataSource, QueryRunner } from 'typeorm';
 
 @Injectable()
 export class AdapterStagingService implements IAdapterService {
-  constructor(@InjectDataSource('staging') private dataSource: DataSource) {}
+  constructor(@InjectDataSource('staging') private dataSource: DataSource) {
+  }
 
-  async getAllProductTypes(): Promise<any> {
+  getAllTypes(): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
@@ -24,7 +25,7 @@ export class AdapterStagingService implements IAdapterService {
     });
   }
 
-  async getAllNotSpecifiedProductCategories(): Promise<any> {
+  getAllNotDeclaredCategories(): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
@@ -64,7 +65,7 @@ export class AdapterStagingService implements IAdapterService {
     });
   }
 
-  async getSpecifiedProductCategoryByType(type_id: number): Promise<any> {
+  getAllDeclaredCategories(type_id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
@@ -119,7 +120,7 @@ export class AdapterStagingService implements IAdapterService {
     });
   }
 
-  async updateProductCategory(type_id: number, category_id: number): Promise<any> {
+  updateCategoryByType(type_id: number, category_id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
@@ -145,182 +146,119 @@ export class AdapterStagingService implements IAdapterService {
     });
   }
 
-  async getAllProducts(type_id: number): Promise<any> {
+  getOrdersByProductId(product_id: string, after: string, before: string): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
 
       try {
-        const products = await queryRunner.manager.query(
-          `SELECT 
-            p.*, 
-            pc.name AS category_name, 
-            pc.slug AS category_slug, 
-            pc.description AS category_description, 
-            pt.type AS type
-          FROM product p
-          INNER JOIN category pc ON p.category_id LIKE CONCAT('%', pc.category_id, '%')
-          LEFT JOIN type pt ON pc.type_id = pt.id
-          WHERE pt.id = ? OR pt.id IS NOT NULL;`,
-          type_id ? [type_id] : [],
-        );
+        const result = [];
 
-        return resolve(products);
+        const productIds = product_id.split(',');
+        const placeholders = productIds.map(() => '?').join(', ');
+
+        const orders = await queryRunner.manager.query(`SELECT * FROM \`order\` WHERE date_created_gmt>=? AND date_created_gmt<=?;`, [`${after}T00:00:00.000Z`, `${before}T23:59:59.999Z`]);
+        for (const order of orders) {
+          const lineItems = await queryRunner.manager.query(`SELECT * FROM line_item WHERE order_id=? AND product_id IN (${placeholders});`, [order.id, ...productIds]);
+
+          if (lineItems.length > 0) {
+            const payment = await queryRunner.manager.query(`SELECT * FROM \`payment\` WHERE order_id=?;`, [order.id]);
+            const billing = await queryRunner.manager.query(`SELECT * FROM \`billing\` WHERE order_id=?;`, [order.id]);
+            const shipping = await queryRunner.manager.query(`SELECT * FROM \`shipping\` WHERE order_id=?;`, [order.id]);
+            const guestHouse = await queryRunner.manager.query(`SELECT * FROM \`guest_house\` WHERE order_id=?;`, [order.id]);
+            const jfkOneway = await queryRunner.manager.query(`SELECT * FROM \`jfk_oneway\` WHERE order_id=?;`, [order.id]);
+            const jfkShuttleRt = await queryRunner.manager.query(`SELECT * FROM \`jfk_shuttle_rt\` WHERE order_id=?;`, [order.id]);
+            const h2ousim = await queryRunner.manager.query(`SELECT * FROM \`h2ousim\` WHERE order_id=?;`, [order.id]);
+            const usimInfo = await queryRunner.manager.query(`SELECT * FROM \`usim_info\` WHERE order_id=?;`, [order.id]);
+            const snapInfo = await queryRunner.manager.query(`SELECT * FROM \`snap_info\` WHERE order_id=?;`, [order.id]);
+            const tour = await queryRunner.manager.query(`SELECT * FROM \`tour\` WHERE order_id=?;`, [order.id]);
+            const tourInfo = await queryRunner.manager.query(`SELECT * FROM \`tour_info\` WHERE order_id=?;`, [order.id]);
+
+            const orderMetadata = await queryRunner.manager.query(`SELECT * FROM \`order_metadata\` WHERE order_id=?;`, [order.id]);
+
+            for (let i = 0; i < lineItems.length; i++) {
+              const lineItemMetadata = await queryRunner.manager.query(`SELECT * FROM \`line_item_metadata\` WHERE line_item_id=?;`, [lineItems[i].id]);
+
+              const data = {
+                order: { ...order, metadata: orderMetadata },
+                lineItem: { ...lineItems[i], metadata: lineItemMetadata },
+                payment: payment[0],
+                billing: billing[0],
+                shipping: shipping[0],
+                guestHouse: guestHouse[0],
+                jfkOneway: jfkOneway[0],
+                jfkShuttleRt: jfkShuttleRt[0],
+                h2ousim: h2ousim[0],
+                usimInfo: usimInfo[0],
+                tour: tour[0],
+                tourInfo: tourInfo[0],
+                snapInfo: snapInfo[0],
+              };
+
+              result.push(data);
+            }
+          }
+        }
+
+        return resolve(result);
       } catch (error) {
         return reject(error);
+      } finally {
+        await queryRunner.release();
       }
     });
   }
 
-  async getOrdersByTypeId(type_id: number, category_id: number, page: number, size: number): Promise<any> {
+  getOrderByProductIdAndOrderId(product_id: string, order_id: string): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
-      const offset = (page - 1) * size;
 
       try {
-        // Fetch all child category IDs for the specified category recursively
-        const categories = await queryRunner.manager.query(
-          `
-          WITH RECURSIVE category_path AS (
-            SELECT c.category_id, c.id, c.parent, c.name, c.type_id
-            FROM category c
-            WHERE c.category_id = ? AND c.type_id = ?
-            UNION ALL
-            SELECT c.category_id, c.id, c.parent, c.name, c.type_id
-            FROM category c
-            JOIN category_path cp ON cp.id = c.parent
-            WHERE c.type_id = cp.type_id  -- Ensures the recursion respects the type_id
-          )
-          SELECT category_id FROM category_path;
-        `,
-          [category_id, type_id],
-        );
-        console.log(categories);
-        if (categories.length === 0) return resolve(false);
+        const productIds = product_id.split(',');
+        const placeholders = productIds.map(() => '?').join(', ');
 
-        // Collect all category IDs including children to a flat array
-        const categoryIds = categories.map((value: any) => value.category_id);
+        const order = await queryRunner.manager.query(`SELECT * FROM \`order\` WHERE id=?;`, [order_id]);
+        const lineItems = await queryRunner.manager.query(`SELECT * FROM \`line_item\` WHERE order_id=? AND product_id IN (${placeholders})`, [order_id, ...productIds]);
 
-        // Fetch products linked to these categories
-        const products = await queryRunner.manager.query(
-          `SELECT
-            p.product_id,
-            p.id,
-            p.name,
-            p.type,
-            p.status,
-            p.price,
-            p.regular_price,
-            p.on_sale,
-            p.sale_price,
-            p.purchasable
-          FROM product p
-          WHERE EXISTS (
-            SELECT 1 FROM category c
-            WHERE FIND_IN_SET(c.category_id, p.category_id) > 0 AND c.category_id IN (?)
-          )
-          ORDER BY p.id;
-        `,
-          [categoryIds],
-        );
-        console.log(products);
-        if (products.length === 0) return resolve(false);
+        if (lineItems.length > 0) {
+          const payment = await queryRunner.manager.query(`SELECT * FROM \`payment\` WHERE order_id=?;`, [order_id]);
+          const billing = await queryRunner.manager.query(`SELECT * FROM \`billing\` WHERE order_id=?;`, [order_id]);
+          const shipping = await queryRunner.manager.query(`SELECT * FROM \`shipping\` WHERE order_id=?;`, [order_id]);
+          const guestHouse = await queryRunner.manager.query(`SELECT * FROM \`guest_house\` WHERE order_id=?;`, [order_id]);
+          const jfkOneway = await queryRunner.manager.query(`SELECT * FROM \`jfk_oneway\` WHERE order_id=?;`, [order_id]);
+          const jfkShuttleRt = await queryRunner.manager.query(`SELECT * FROM \`jfk_shuttle_rt\` WHERE order_id=?;`, [order_id]);
+          const h2ousim = await queryRunner.manager.query(`SELECT * FROM \`h2ousim\` WHERE order_id=?;`, [order_id]);
+          const usimInfo = await queryRunner.manager.query(`SELECT * FROM \`usim_info\` WHERE order_id=?;`, [order_id]);
+          const snapInfo = await queryRunner.manager.query(`SELECT * FROM \`snap_info\` WHERE order_id=?;`, [order_id]);
+          const tour = await queryRunner.manager.query(`SELECT * FROM \`tour\` WHERE order_id=?;`, [order_id]);
+          const tourInfo = await queryRunner.manager.query(`SELECT * FROM \`tour_info\` WHERE order_id=?;`, [order_id]);
 
-        const productIds = products.map((product: any) => product.product_id);
+          const orderMetadata = await queryRunner.manager.query(`SELECT * FROM \`order_metadata\` WHERE order_id=?;`, [order_id]);
 
-        // Fetch orders and line items iteratively until we have enough orders
-        const ordersWithLineItems = [];
-        let offset = (page - 1) * size;
+          const lineItemMetadata = await queryRunner.manager.query(`SELECT * FROM \`line_item_metadata\` WHERE line_item_id=?;`, [lineItems[0].id]);
 
-        while (ordersWithLineItems.length < size) {
-          const orders = await queryRunner.manager.query(
-            `SELECT o.*
-            FROM \`order\` o
-            ORDER BY o.date_created_gmt DESC
-            LIMIT ? OFFSET ?;
-            `,
-            [size, offset],
-          );
-          if (orders.length === 0) break;
+          const data = {
+            order: { ...order[0], metadata: orderMetadata },
+            lineItem: { ...lineItems[0], metadata: lineItemMetadata },
+            payment: payment[0],
+            billing: billing[0],
+            shipping: shipping[0],
+            guestHouse: guestHouse[0],
+            jfkOneway: jfkOneway[0],
+            jfkShuttleRt: jfkShuttleRt[0],
+            h2ousim: h2ousim[0],
+            usimInfo: usimInfo[0],
+            tour: tour[0],
+            tourInfo: tourInfo[0],
+            snapInfo: snapInfo[0],
+          };
 
-          for (const order of orders) {
-            const lineItems = await queryRunner.manager.query(
-              `SELECT li.*
-              FROM line_item li
-              WHERE li.order_id = ?;
-              `,
-              [order.order_id],
-            );
-
-            const matchingLineItems = lineItems.filter((lineItem: any) => productIds.includes(lineItem.product_id));
-            if (matchingLineItems.length > 0) {
-              ordersWithLineItems.push({ order, lineItems: matchingLineItems });
-              if (ordersWithLineItems.length >= size) break;
-            }
-          }
-
-          offset += size;
+          return resolve(data);
         }
-        console.log(ordersWithLineItems.length);
-
-        return resolve(ordersWithLineItems);
-
-        // const result = await queryRunner.manager.query(
-        //   `WITH RECURSIVE CategoryChain AS (
-        //     SELECT category_id, id, parent, name, type_id
-        //     FROM category
-        //     WHERE category_id = ? AND type_id = ?
-        //     UNION ALL
-        //     SELECT c.category_id, c.id, c.parent, c.name, c.type_id
-        //     FROM category c
-        //     INNER JOIN CategoryChain cc ON cc.category_id = c.parent
-        //     WHERE c.type_id = cc.type_id
-        // ),
-        // ProductCTE AS (
-        //     SELECT p.product_id
-        //     FROM product p
-        //     JOIN CategoryChain cc ON FIND_IN_SET(cc.category_id, p.category_id) > 0
-        // ),
-        // FilteredOrders AS (
-        //     SELECT DISTINCT o.order_id, o.date_created_gmt
-        //     FROM \`order\` o
-        //     JOIN line_item li ON o.order_id = li.order_id
-        //     JOIN ProductCTE pcte ON li.product_id = pcte.product_id
-        //     ORDER BY o.date_created_gmt DESC
-        //     LIMIT ? OFFSET ?
-        // )
-        // SELECT
-        //     fo.order_id,
-        //     fo.date_created_gmt,
-        //     li.line_item_id,
-        //     li.product_id,
-        //     li.quantity,
-        //     li.total,
-        //     li.subtotal,
-        //     li.subtotal_tax,
-        //     li.price,
-        //     li.tax_class,
-        //     li.name AS line_item_name,
-        //     li.product_image_id,
-        //     li.parent_name,
-        //     li.bundled_by,
-        //     li.bundled_item_title,
-        //     li.bundled_items,
-        //     cc.category_id,
-        //     c.type_id
-        // FROM FilteredOrders fo
-        // JOIN line_item li ON fo.order_id = li.order_id
-        // JOIN product p ON li.product_id = p.product_id
-        // JOIN CategoryChain cc ON FIND_IN_SET(cc.category_id, p.category_id) > 0
-        // JOIN \`order\` o ON fo.order_id = o.order_id
-        // JOIN category c ON FIND_IN_SET(c.category_id, p.category_id) > 0
-        // ORDER BY fo.date_created_gmt;`,
-        //   [category_id, type_id, size, offset],
-        // );
-
-        // return resolve(result);
       } catch (error) {
+        await queryRunner.rollbackTransaction();
+
         return reject(error);
       } finally {
         await queryRunner.release();

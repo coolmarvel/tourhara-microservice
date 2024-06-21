@@ -2,7 +2,7 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { AttributeStagingService } from 'src/product/services/staging/attribute.staging.service';
 
-Controller();
+@Controller()
 export class AttributeStagingController {
   constructor(private readonly attributeService: AttributeStagingService) {}
 

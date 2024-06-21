@@ -5,19 +5,11 @@ import { logger } from 'src/common/logger/logger.service';
 
 @Injectable()
 export class JfkProductionService implements IJfkService {
-  async insert(queryRunner: QueryRunner, jfkOneway: any, jfkShuttleRt: any, orderId: bigint): Promise<any> {
+  insert(queryRunner: QueryRunner, jfkOneway: any, jfkShuttleRt: any, orderId: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingJfkOneway = await queryRunner.manager.query(
-          `SELECT * FROM \`jfk_oneway\` 
-          WHERE order_id=?;`,
-          [orderId],
-        );
-        const existingJfkShuttleRt = await queryRunner.manager.query(
-          `SELECT * FROM \`jfk_shuttle_rt\` 
-          WHERE order_id=?;`,
-          [orderId],
-        );
+        const existingJfkOneway = await queryRunner.manager.query(`SELECT * FROM \`jfk_oneway\` WHERE order_id=?;`, [orderId]);
+        const existingJfkShuttleRt = await queryRunner.manager.query(`SELECT * FROM \`jfk_shuttle_rt\` WHERE order_id=?;`, [orderId]);
         if (existingJfkOneway.length > 0 && existingJfkShuttleRt.length > 0) return resolve(true);
 
         await queryRunner.manager.query(
@@ -73,19 +65,11 @@ export class JfkProductionService implements IJfkService {
     });
   }
 
-  async update(queryRunner: QueryRunner, jfkOneway: any, jfkShuttleRt: any, orderId: bigint): Promise<any> {
+  update(queryRunner: QueryRunner, jfkOneway: any, jfkShuttleRt: any, orderId: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingJfkOneway = await queryRunner.manager.query(
-          `SELECT * FROM \`jfk_oneway\` 
-          WHERE order_id=?;`,
-          [orderId],
-        );
-        const existingJfkShuttleRt = await queryRunner.manager.query(
-          `SELECT * FROM \`jfk_shuttle_rt\` 
-          WHERE order_id=?;`,
-          [orderId],
-        );
+        const existingJfkOneway = await queryRunner.manager.query(`SELECT * FROM \`jfk_oneway\` WHERE order_id=?;`, [orderId]);
+        const existingJfkShuttleRt = await queryRunner.manager.query(`SELECT * FROM \`jfk_shuttle_rt\` WHERE order_id=?;`, [orderId]);
         if (existingJfkOneway.length === 0 && existingJfkShuttleRt.length === 0) return resolve(await this.insert(queryRunner, jfkOneway, jfkShuttleRt, orderId));
 
         await queryRunner.manager.query(

@@ -22,13 +22,13 @@ export class AttributeStagingService implements IAttributeService {
     });
   }
 
-  async createAProductAttribute(data: any): Promise<any> {
+  createAProductAttribute(data: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const attribute = await this.wooCommerce
-          .post('products/attributes', data)
-          .then((response: any) => response.data)
-          .catch((error: any) => error.response.data);
+        .post('products/attributes', data)
+        .then((response: any) => response.data)
+        .catch((error: any) => error.response.data);
 
         return resolve(attribute);
       } catch (error) {
@@ -37,13 +37,13 @@ export class AttributeStagingService implements IAttributeService {
     });
   }
 
-  async retrieveAProductAttribute(attribute_id: number): Promise<any> {
+  retrieveAProductAttribute(attribute_id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const attribute = await this.wooCommerce
-          .get(`products/attributes/${attribute_id}`)
-          .then((response: any) => response.data)
-          .catch((error: any) => error.response.data);
+        .get(`products/attributes/${attribute_id}`)
+        .then((response: any) => response.data)
+        .catch((error: any) => error.response.data);
 
         return resolve(attribute);
       } catch (error) {
@@ -52,14 +52,14 @@ export class AttributeStagingService implements IAttributeService {
     });
   }
 
-  async listAllProductAttributes(page: number, size: number): Promise<any> {
+  listAllProductAttributes(page: number, size: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const params = { page, per_page: size };
         const attributes = await this.wooCommerce
-          .get('products/attributes', params)
-          .then((response: any) => response.data)
-          .catch((error: any) => error.response.data);
+        .get('products/attributes', params)
+        .then((response: any) => response.data)
+        .catch((error: any) => error.response.data);
 
         return resolve(attributes);
       } catch (error) {
@@ -68,13 +68,13 @@ export class AttributeStagingService implements IAttributeService {
     });
   }
 
-  async updateAProductAttribute(attribute_id: number, data: any): Promise<any> {
+  updateAProductAttribute(attribute_id: number, data: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const attribute = await this.wooCommerce
-          .put(`products/attributes/${attribute_id}`, data)
-          .then((response: any) => response.data)
-          .catch((error: any) => error.response.data);
+        .put(`products/attributes/${attribute_id}`, data)
+        .then((response: any) => response.data)
+        .catch((error: any) => error.response.data);
 
         return resolve(attribute);
       } catch (error) {
@@ -83,13 +83,13 @@ export class AttributeStagingService implements IAttributeService {
     });
   }
 
-  async deleteAProductAttribute(attribute_id: number): Promise<any> {
+  deleteAProductAttribute(attribute_id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const attribute = await this.wooCommerce
-          .delete(`products/attributes/${attribute_id}`, { force: true })
-          .then((response: any) => response.data)
-          .catch((error: any) => error.response.data);
+        .delete(`products/attributes/${attribute_id}`, { force: true })
+        .then((response: any) => response.data)
+        .catch((error: any) => error.response.data);
 
         return resolve(attribute);
       } catch (error) {
@@ -98,7 +98,7 @@ export class AttributeStagingService implements IAttributeService {
     });
   }
 
-  async insert(queryRunner: QueryRunner, attribute: any): Promise<any> {
+  insert(queryRunner: QueryRunner, attribute: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const existingAttribute = await queryRunner.manager.query(
@@ -125,7 +125,7 @@ export class AttributeStagingService implements IAttributeService {
     });
   }
 
-  async update(queryRunner: QueryRunner, attribute: any): Promise<any> {
+  update(queryRunner: QueryRunner, attribute: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const existingAttribute = await queryRunner.manager.query(
@@ -142,7 +142,7 @@ export class AttributeStagingService implements IAttributeService {
           [attribute.name, attribute.position, attribute.visible, attribute.variation, attribute.options.join(','), BigInt(attribute.id)],
         );
 
-        return resolve(BigInt(existingAttribute[0].attribute_id));
+        return resolve(BigInt(existingAttribute[0].id));
       } catch (error) {
         logger.error('Attribute Service Update Error');
         logger.error(error);
@@ -151,7 +151,7 @@ export class AttributeStagingService implements IAttributeService {
     });
   }
 
-  async select(queryRunner: QueryRunner, attribute: any): Promise<any> {
+  select(queryRunner: QueryRunner, attribute: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const existingAttribute = await queryRunner.manager.query(

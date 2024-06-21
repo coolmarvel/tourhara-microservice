@@ -5,14 +5,10 @@ import { logger } from 'src/common/logger/logger.service';
 
 @Injectable()
 export class CategoryImageStagingService implements ICategoryImageService {
-  async insert(queryRunner: QueryRunner, categoryImage: any, categoryId: bigint): Promise<any> {
+  insert(queryRunner: QueryRunner, categoryImage: any, categoryId: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingCategoryImage = await queryRunner.manager.query(
-          `SELECT * FROM \`category_image\` 
-          WHERE id=?;`,
-          [BigInt(categoryImage.id)],
-        );
+        const existingCategoryImage = await queryRunner.manager.query(`SELECT * FROM \`category_image\` WHERE id=?;`, [BigInt(categoryImage.id)]);
         if (existingCategoryImage.length > 0) return resolve(await this.update(queryRunner, categoryImage, categoryId));
 
         await queryRunner.manager.query(
@@ -32,9 +28,8 @@ export class CategoryImageStagingService implements ICategoryImageService {
             categoryId,
           ],
         );
-        const result = await queryRunner.manager.query(`SELECT LAST_INSERT_ID() as category_image_id;`);
 
-        return resolve(BigInt(result[0].category_image_id));
+        return resolve(BigInt(categoryImage.id));
       } catch (error) {
         logger.error('CategoryImage Service Insert Error');
         logger.error(error);
@@ -43,14 +38,10 @@ export class CategoryImageStagingService implements ICategoryImageService {
     });
   }
 
-  async update(queryRunner: QueryRunner, categoryImage: any, categoryId: bigint): Promise<any> {
+  update(queryRunner: QueryRunner, categoryImage: any, categoryId: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingCategoryImage = await queryRunner.manager.query(
-          `SELECT * FROM \`category_image\` 
-          WHERE id=?;`,
-          [BigInt(categoryImage.id)],
-        );
+        const existingCategoryImage = await queryRunner.manager.query(`SELECT * FROM \`category_image\` WHERE id=?;`, [BigInt(categoryImage.id)]);
         if (existingCategoryImage.length === 0) return resolve(await this.insert(queryRunner, categoryImage, categoryId));
 
         await queryRunner.manager.query(
@@ -69,7 +60,7 @@ export class CategoryImageStagingService implements ICategoryImageService {
           ],
         );
 
-        return resolve(BigInt(existingCategoryImage[0].category_image_id));
+        return resolve(BigInt(existingCategoryImage[0].id));
       } catch (error) {
         logger.error('CategoryImage Service Update Error');
         logger.error(error);

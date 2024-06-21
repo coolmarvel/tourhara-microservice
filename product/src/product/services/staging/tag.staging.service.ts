@@ -18,13 +18,13 @@ export class TagStagingService implements ITagService {
     });
   }
 
-  async createAProductTag(data: any): Promise<any> {
+  createAProductTag(data: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const tag = await this.wooCommerce
-          .post('products/tags', data)
-          .then((response: any) => response.data)
-          .catch((error: any) => error.response.data);
+        .post('products/tags', data)
+        .then((response: any) => response.data)
+        .catch((error: any) => error.response.data);
 
         return resolve(tag);
       } catch (error) {
@@ -33,13 +33,13 @@ export class TagStagingService implements ITagService {
     });
   }
 
-  async retrieveAProductTag(tag_id: number): Promise<any> {
+  retrieveAProductTag(tag_id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const tag = await this.wooCommerce
-          .get(`products/tags/${tag_id}`)
-          .then((response: any) => response.data)
-          .catch((error: any) => error.response.data);
+        .get(`products/tags/${tag_id}`)
+        .then((response: any) => response.data)
+        .catch((error: any) => error.response.data);
 
         return resolve(tag);
       } catch (error) {
@@ -48,14 +48,14 @@ export class TagStagingService implements ITagService {
     });
   }
 
-  async listAllProductTags(page: number, size: number): Promise<any> {
+  listAllProductTags(page: number, size: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const params = { page, per_page: size };
         const tags = await this.wooCommerce
-          .get('products/tags', params)
-          .then((response: any) => response.data)
-          .catch((error: any) => error.response.data);
+        .get('products/tags', params)
+        .then((response: any) => response.data)
+        .catch((error: any) => error.response.data);
 
         return resolve(tags);
       } catch (error) {
@@ -64,13 +64,13 @@ export class TagStagingService implements ITagService {
     });
   }
 
-  async updateAProductTag(tag_id: number, data: any): Promise<any> {
+  updateAProductTag(tag_id: number, data: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const tag = await this.wooCommerce
-          .put(`products/tags/${tag_id}`, data)
-          .then((response: any) => response.data)
-          .catch((error: any) => error.response.data);
+        .put(`products/tags/${tag_id}`, data)
+        .then((response: any) => response.data)
+        .catch((error: any) => error.response.data);
 
         return resolve(tag);
       } catch (error) {
@@ -79,13 +79,13 @@ export class TagStagingService implements ITagService {
     });
   }
 
-  async deleteAProductTag(tag_id: number): Promise<any> {
+  deleteAProductTag(tag_id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const tag = await this.wooCommerce
-          .delete(`products/tags/${tag_id}`, { force: true })
-          .then((response: any) => response.data)
-          .catch((error: any) => error.response.data);
+        .delete(`products/tags/${tag_id}`, { force: true })
+        .then((response: any) => response.data)
+        .catch((error: any) => error.response.data);
 
         return resolve(tag);
       } catch (error) {
@@ -94,14 +94,10 @@ export class TagStagingService implements ITagService {
     });
   }
 
-  async insert(queryRunner: QueryRunner, tag: any): Promise<any> {
+  insert(queryRunner: QueryRunner, tag: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingTag = await queryRunner.manager.query(
-          `SELECT * FROM \`tag\` 
-          WHERE id=?;`,
-          [BigInt(tag.id)],
-        );
+        const existingTag = await queryRunner.manager.query(`SELECT * FROM \`tag\` WHERE id=?;`, [BigInt(tag.id)]);
         if (existingTag.length > 0) return resolve(await this.update(queryRunner, tag));
 
         await queryRunner.manager.query(
@@ -110,9 +106,8 @@ export class TagStagingService implements ITagService {
           ) VALUES (?,?,?,?,NOW(),NOW());`,
           [BigInt(tag.id), tag.name === '' ? null : tag.name, tag.slug === '' ? null : tag.slug, tag.count],
         );
-        const result = await queryRunner.manager.query(`SELECT LAST_INSERT_ID() as tag_id;`);
 
-        return resolve(BigInt(result[0].tag_id));
+        return resolve(BigInt(tag.id));
       } catch (error) {
         logger.error('Tag Service Insert Error');
         logger.error(error);
@@ -121,14 +116,10 @@ export class TagStagingService implements ITagService {
     });
   }
 
-  async update(queryRunner: QueryRunner, tag: any): Promise<any> {
+  update(queryRunner: QueryRunner, tag: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingTag = await queryRunner.manager.query(
-          `SELECT * FROM \`tag\` 
-          WHERE id=?;`,
-          [BigInt(tag.id)],
-        );
+        const existingTag = await queryRunner.manager.query(`SELECT * FROM \`tag\` WHERE id=?;`, [BigInt(tag.id)]);
         if (existingTag.length === 0) return resolve(await this.insert(queryRunner, tag));
 
         await queryRunner.manager.query(
@@ -138,7 +129,7 @@ export class TagStagingService implements ITagService {
           [tag.name === '' ? null : tag.name, tag.slug === '' ? null : tag.slug, tag.count, BigInt(tag.id)],
         );
 
-        return resolve(BigInt(existingTag[0].tag_id));
+        return resolve(BigInt(existingTag[0].id));
       } catch (error) {
         logger.error('Tag Service Update Error');
         logger.error(error);
@@ -147,14 +138,10 @@ export class TagStagingService implements ITagService {
     });
   }
 
-  async select(queryRunner: QueryRunner, id: bigint): Promise<any> {
+  select(queryRunner: QueryRunner, id: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const tag = await queryRunner.manager.query(
-          `SELECT * FROM \`tag\` 
-        WHERE id=?;`,
-          [id],
-        );
+        const tag = await queryRunner.manager.query(`SELECT * FROM \`tag\` WHERE id=?;`, [id]);
 
         return resolve(tag[0]);
       } catch (error) {

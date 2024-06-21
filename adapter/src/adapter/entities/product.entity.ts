@@ -55,6 +55,7 @@ export class Product {
   dateModifiedGmt!: Date;
 
   @Column({ name: 'category_id', nullable: true })
+  @Index()
   categoryId!: string;
 
   @Column({ name: 'tag_id', nullable: true })

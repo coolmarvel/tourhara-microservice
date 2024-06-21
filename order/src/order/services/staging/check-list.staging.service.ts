@@ -5,14 +5,10 @@ import { logger } from 'src/common/logger/logger.service';
 
 @Injectable()
 export class CheckListStagingService implements ICheckListService {
-  async select(queryRunner: QueryRunner): Promise<any> {
+  select(queryRunner: QueryRunner): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingCheckList = await queryRunner.manager.query(
-          `SELECT * FROM \`check_list\` 
-          WHERE iso_date=?;`,
-          ['2024-01-01'],
-        );
+        const existingCheckList = await queryRunner.manager.query(`SELECT * FROM \`check_list\` WHERE iso_date=?;`, ['2024-01-01']);
         if (existingCheckList.length === 0) return resolve('2024-01-01');
 
         const checkList = await queryRunner.manager.query(`SELECT * FROM \`check_list\` WHERE iso_date=(SELECT MAX(iso_date) FROM \`check_list\`);`);
@@ -28,23 +24,15 @@ export class CheckListStagingService implements ICheckListService {
     });
   }
 
-  async insert(queryRunner: QueryRunner, data: any): Promise<any> {
+  insert(queryRunner: QueryRunner, data: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingCheckList = await queryRunner.manager.query(
-          `SELECT * FROM \`check_list\` 
-          WHERE iso_date=?;`,
-          [data.date],
-        );
+        const existingCheckList = await queryRunner.manager.query(`SELECT * FROM \`check_list\` WHERE iso_date=?;`, [data.date]);
         if (existingCheckList.length > 0) return resolve(await this.update(queryRunner, data));
 
         const prevDate = new Date(data.date);
         prevDate.setDate(prevDate.getDate() - 1);
-        const prevResult = await queryRunner.manager.query(
-          `SELECT * FROM \`check_list\` 
-          WHERE iso_date=?;`,
-          [prevDate.toISOString().split('T')[0]],
-        );
+        const prevResult = await queryRunner.manager.query(`SELECT * FROM \`check_list\` WHERE iso_date=?;`, [prevDate.toISOString().split('T')[0]]);
 
         await queryRunner.manager.query(
           `INSERT INTO \`check_list\` (
@@ -62,7 +50,7 @@ export class CheckListStagingService implements ICheckListService {
     });
   }
 
-  async update(queryRunner: QueryRunner, data: any): Promise<any> {
+  update(queryRunner: QueryRunner, data: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         await queryRunner.manager.query(

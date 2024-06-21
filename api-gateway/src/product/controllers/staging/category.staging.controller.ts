@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query, VERSION_NEUTRAL
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/common/decorators/public.decorator';
 import { PageReqDto } from 'src/common/dtos/req.dto';
-import { CreateProductCategoryReqDto, DeleteProductCateogryReqDto, RetrieveProductCategoryReqDto, UpdateProductCategoryBodyReqDto, UpdateProductCategoryParamReqDto } from 'src/product/dtos/req.dto';
+import { CreateProductCategoryReqDto, DeleteProductCateogryReqDto, RetrieveProductCategoryReqDto, UpdateCategoryBodyReqDto, UpdateCategoryParamReqDto } from 'src/product/dtos/req.dto';
 import { CategoryStagingService } from 'src/product/services/staging/category.staging.service';
 
 @ApiTags('(Staging) Product-Category')
@@ -34,7 +34,7 @@ export class CategoryStagingController {
   @Public()
   @Put(':category_id')
   @ApiOperation({ summary: '단일 카테고리 속성 갱신 API (스테이징)' })
-  async updateAProductCategory(@Param() { category_id }: UpdateProductCategoryParamReqDto, @Body() data: UpdateProductCategoryBodyReqDto) {
+  async updateAProductCategory(@Param() { category_id }: UpdateCategoryParamReqDto, @Body() data: UpdateCategoryBodyReqDto) {
     return await this.categoryService.updateAProductCategory(category_id, data);
   }
 

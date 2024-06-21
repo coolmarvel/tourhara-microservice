@@ -5,14 +5,10 @@ import { logger } from 'src/common/logger/logger.service';
 
 @Injectable()
 export class OrderMetadataStagingService implements IOrderMetadataService {
-  async insert(queryRunner: QueryRunner, metadata: any, orderId: bigint): Promise<any> {
+  insert(queryRunner: QueryRunner, metadata: any, orderId: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingMetadata = await queryRunner.manager.query(
-          `SELECT * FROM \`order_metadata\` 
-          WHERE id=?;`,
-          [BigInt(metadata.id)],
-        );
+        const existingMetadata = await queryRunner.manager.query(`SELECT * FROM \`order_metadata\` WHERE id=?;`, [BigInt(metadata.id)]);
         if (existingMetadata.length > 0) return resolve(true);
 
         let value = null;
@@ -35,7 +31,7 @@ export class OrderMetadataStagingService implements IOrderMetadataService {
     });
   }
 
-  async update(queryRunner: QueryRunner, metadata: any, orderId: bigint): Promise<any> {
+  update(queryRunner: QueryRunner, metadata: any, orderId: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const existingMetadata = await queryRunner.manager.query(

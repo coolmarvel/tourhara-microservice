@@ -5,14 +5,10 @@ import { logger } from 'src/common/logger/logger.service';
 
 @Injectable()
 export class ProductImageProductionService implements IProductImageService {
-  async insert(queryRunner: QueryRunner, productImage: any): Promise<any> {
+  insert(queryRunner: QueryRunner, productImage: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingProductImage = await queryRunner.manager.query(
-          `SELECT * FROM \`product_image\` 
-          WHERE id=?;`,
-          [BigInt(productImage.id)],
-        );
+        const existingProductImage = await queryRunner.manager.query(`SELECT * FROM \`product_image\` WHERE id=?;`, [BigInt(productImage.id)]);
         if (existingProductImage.length > 0) return resolve(await this.update(queryRunner, productImage));
 
         await queryRunner.manager.query(
@@ -31,9 +27,8 @@ export class ProductImageProductionService implements IProductImageService {
             productImage.date_modified_gmt,
           ],
         );
-        const result = await queryRunner.manager.query(`SELECT LAST_INSERT_ID() as image_id;`);
 
-        return resolve(BigInt(result[0].image_id));
+        return resolve(BigInt(productImage.id));
       } catch (error) {
         logger.error('ProductImage Service Insert Error');
         logger.error(error);
@@ -42,7 +37,7 @@ export class ProductImageProductionService implements IProductImageService {
     });
   }
 
-  async update(queryRunner: QueryRunner, productImage: any): Promise<any> {
+  update(queryRunner: QueryRunner, productImage: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const existingProductImage = await queryRunner.manager.query(`SELECT * FROM \`product_image\` WHERE id=?;`, [BigInt(productImage.id)]);
@@ -65,7 +60,7 @@ export class ProductImageProductionService implements IProductImageService {
           ],
         );
 
-        return resolve(BigInt(existingProductImage[0].image_id));
+        return resolve(BigInt(existingProductImage[0].id));
       } catch (error) {
         logger.error('ProductImage Service Update Error');
         logger.error(error);
@@ -74,14 +69,10 @@ export class ProductImageProductionService implements IProductImageService {
     });
   }
 
-  async select(queryRunner: QueryRunner, id: bigint): Promise<any> {
+  select(queryRunner: QueryRunner, id: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const productImage = await queryRunner.manager.query(
-          `SELECT * FROM \`product_image\` 
-          WHERE id=?;`,
-          [id],
-        );
+        const productImage = await queryRunner.manager.query(`SELECT * FROM \`product_image\` WHERE id=?;`, [id]);
 
         return resolve(productImage[0]);
       } catch (error) {

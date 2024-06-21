@@ -30,7 +30,7 @@ export class ProductProductionService implements IProductService {
     });
   }
 
-  async createAProduct(data: any): Promise<any> {
+  createAProduct(data: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const product = await this.wooCommerce
@@ -45,7 +45,7 @@ export class ProductProductionService implements IProductService {
     });
   }
 
-  async retrieveAProduct(product_id: number): Promise<any> {
+  retrieveAProduct(product_id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const product = await this.wooCommerce
@@ -60,7 +60,7 @@ export class ProductProductionService implements IProductService {
     });
   }
 
-  async listAllProducts(page: number, size: number): Promise<any> {
+  listAllProducts(page: number, size: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const params = { page, per_page: size };
@@ -76,7 +76,7 @@ export class ProductProductionService implements IProductService {
     });
   }
 
-  async updateAProduct(product_id: number, data: any): Promise<any> {
+  updateAProduct(product_id: number, data: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const product = await this.wooCommerce
@@ -91,7 +91,7 @@ export class ProductProductionService implements IProductService {
     });
   }
 
-  async deleteAProduct(product_id: number): Promise<any> {
+  deleteAProduct(product_id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const product = await this.wooCommerce
@@ -106,14 +106,10 @@ export class ProductProductionService implements IProductService {
     });
   }
 
-  async insert(queryRunner: QueryRunner, product: any): Promise<any> {
+  insert(queryRunner: QueryRunner, product: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingProduct = await queryRunner.manager.query(
-          `SELECT * FROM \`product\` 
-          WHERE id=?;`,
-          [BigInt(product.id)],
-        );
+        const existingProduct = await queryRunner.manager.query(`SELECT * FROM \`product\` WHERE id=?;`, [BigInt(product.id)]);
         if (existingProduct.length > 0) return resolve(await this.update(queryRunner, product));
 
         const tagIds: string[] = [];
@@ -124,19 +120,19 @@ export class ProductProductionService implements IProductService {
         const tags = product.tags;
         for (const tag of tags) {
           const productTag = await this.tagService.select(queryRunner, tag.id);
-          tagIds.push(productTag.tag_id);
+          tagIds.push(productTag.id);
         }
 
         const images = product.images;
         for (const image of images) {
           const productImage = await this.productImageService.select(queryRunner, image.id);
-          imageIds.push(productImage.image_id);
+          imageIds.push(productImage.id);
         }
 
         const categories = product.categories;
         for (const category of categories) {
           const productCategory = await this.categoryService.select(queryRunner, category.id);
-          categoryIds.push(productCategory.category_id);
+          categoryIds.push(productCategory.id);
         }
 
         const attributes = product.attributes;
@@ -184,14 +180,10 @@ export class ProductProductionService implements IProductService {
     });
   }
 
-  async update(queryRunner: QueryRunner, product: any): Promise<any> {
+  update(queryRunner: QueryRunner, product: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingProduct = await queryRunner.manager.query(
-          `SELECT * FROM \`product\` 
-          WHERE id=?;`,
-          [BigInt(product.id)],
-        );
+        const existingProduct = await queryRunner.manager.query(`SELECT * FROM \`product\` WHERE id=?;`, [BigInt(product.id)]);
         if (existingProduct.length === 0) return resolve(await this.insert(queryRunner, product));
 
         const tagIds: string[] = [];
@@ -202,19 +194,19 @@ export class ProductProductionService implements IProductService {
         const tags = product.tags;
         for (const tag of tags) {
           const productTag = await this.tagService.select(queryRunner, tag.id);
-          tagIds.push(productTag.tag_id);
+          tagIds.push(productTag.id);
         }
 
         const images = product.images;
         for (const image of images) {
           const productImage = await this.productImageService.select(queryRunner, image.id);
-          imageIds.push(productImage.image_id);
+          imageIds.push(productImage.id);
         }
 
         const categories = product.categories;
         for (const category of categories) {
           const productCategory = await this.categoryService.select(queryRunner, category.id);
-          categoryIds.push(productCategory.category_id);
+          categoryIds.push(productCategory.id);
         }
 
         const attributes = product.attributes;
@@ -262,14 +254,10 @@ export class ProductProductionService implements IProductService {
     });
   }
 
-  async select(queryRunner: QueryRunner, id: bigint): Promise<any> {
+  select(queryRunner: QueryRunner, id: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const product = await queryRunner.manager.query(
-          `SELECT * FROM \`product\` 
-          WHERE id=?;`,
-          [id],
-        );
+        const product = await queryRunner.manager.query(`SELECT * FROM \`product\` WHERE id=?;`, [id]);
 
         return resolve(product[0]);
       } catch (error) {
@@ -280,7 +268,7 @@ export class ProductProductionService implements IProductService {
     });
   }
 
-  async productCreated(payload: any): Promise<any> {
+  productCreated(payload: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
@@ -322,7 +310,7 @@ export class ProductProductionService implements IProductService {
     });
   }
 
-  async productUpdated(payload: any): Promise<any> {
+  productUpdated(payload: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
@@ -367,7 +355,7 @@ export class ProductProductionService implements IProductService {
     });
   }
 
-  async productDeleted(payload: any): Promise<any> {
+  productDeleted(payload: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
@@ -389,7 +377,7 @@ export class ProductProductionService implements IProductService {
     });
   }
 
-  async productRestored(payload: any): Promise<any> {
+  productRestored(payload: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();

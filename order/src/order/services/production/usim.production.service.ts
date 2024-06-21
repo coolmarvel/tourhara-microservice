@@ -5,24 +5,12 @@ import { logger } from 'src/common/logger/logger.service';
 
 @Injectable()
 export class UsimProductionService implements IUsimService {
-  async insert(queryRunner: QueryRunner, snapInfo: any, usimInfo: any, h2ousim: any, orderId: bigint): Promise<any> {
+  insert(queryRunner: QueryRunner, snapInfo: any, usimInfo: any, h2ousim: any, orderId: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingSnapInfo = await queryRunner.manager.query(
-          `SELECT * FROM \`snap_info\` 
-          WHERE order_id=?;`,
-          [orderId],
-        );
-        const existingUsimInfo = await queryRunner.manager.query(
-          `SELECT * FROM \`usim_info\` 
-          WHERE order_id=?;`,
-          [orderId],
-        );
-        const existingH2ousim = await queryRunner.manager.query(
-          `SELECT * FROM \`h2ousim\` 
-          WHERE order_id=?;`,
-          [orderId],
-        );
+        const existingSnapInfo = await queryRunner.manager.query(`SELECT * FROM \`snap_info\` WHERE order_id=?;`, [orderId]);
+        const existingUsimInfo = await queryRunner.manager.query(`SELECT * FROM \`usim_info\` WHERE order_id=?;`, [orderId]);
+        const existingH2ousim = await queryRunner.manager.query(`SELECT * FROM \`h2ousim\` WHERE order_id=?;`, [orderId]);
         if (existingH2ousim.length > 0 && existingUsimInfo.length > 0 && existingSnapInfo.length > 0) return resolve(true);
 
         await queryRunner.manager.query(
@@ -75,24 +63,12 @@ export class UsimProductionService implements IUsimService {
     });
   }
 
-  async update(queryRunner: QueryRunner, snapInfo: any, usimInfo: any, h2ousim: any, orderId: bigint): Promise<any> {
+  update(queryRunner: QueryRunner, snapInfo: any, usimInfo: any, h2ousim: any, orderId: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingSnapInfo = await queryRunner.manager.query(
-          `SELECT * FROM \`snap_info\` 
-          WHERE order_id=?;`,
-          [orderId],
-        );
-        const existingUsimInfo = await queryRunner.manager.query(
-          `SELECT * FROM \`usim_info\` 
-          WHERE order_id=?;`,
-          [orderId],
-        );
-        const existingH2ousim = await queryRunner.manager.query(
-          `SELECT * FROM \`h2ousim\` 
-          WHERE order_id=?;`,
-          [orderId],
-        );
+        const existingSnapInfo = await queryRunner.manager.query(`SELECT * FROM \`snap_info\` WHERE order_id=?;`, [orderId]);
+        const existingUsimInfo = await queryRunner.manager.query(`SELECT * FROM \`usim_info\` WHERE order_id=?;`, [orderId]);
+        const existingH2ousim = await queryRunner.manager.query(`SELECT * FROM \`h2ousim\` WHERE order_id=?;`, [orderId]);
         if (existingH2ousim.length === 0 && existingUsimInfo.length === 0 && existingSnapInfo.length === 0) return resolve(await this.insert(queryRunner, snapInfo, usimInfo, h2ousim, orderId));
 
         await queryRunner.manager.query(

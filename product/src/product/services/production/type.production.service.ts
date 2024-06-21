@@ -6,7 +6,7 @@ import { QueryRunner } from 'typeorm';
 
 @Injectable()
 export class TypeProductionService implements ITypeService {
-  async insert(queryRunner: QueryRunner, type: ProductTypeEnum): Promise<any> {
+  insert(queryRunner: QueryRunner, type: ProductTypeEnum): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const existingType = await queryRunner.manager.query(

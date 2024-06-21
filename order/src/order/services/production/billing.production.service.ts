@@ -5,14 +5,10 @@ import { logger } from 'src/common/logger/logger.service';
 
 @Injectable()
 export class BillingProductionService implements IBillingService {
-  async insert(queryRunner: QueryRunner, billing: any, orderId: bigint): Promise<any> {
+  insert(queryRunner: QueryRunner, billing: any, orderId: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingBilling = await queryRunner.manager.query(
-          `SELECT * FROM \`billing\` 
-          WHERE order_id=?;`,
-          [orderId],
-        );
+        const existingBilling = await queryRunner.manager.query(`SELECT * FROM \`billing\` WHERE order_id=?;`, [orderId]);
         if (existingBilling.length > 0) return resolve(true);
 
         await queryRunner.manager.query(
@@ -43,14 +39,10 @@ export class BillingProductionService implements IBillingService {
     });
   }
 
-  async update(queryRunner: QueryRunner, billing: any, orderId: bigint): Promise<any> {
+  update(queryRunner: QueryRunner, billing: any, orderId: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingBilling = await queryRunner.manager.query(
-          `SELECT * FROM \`billing\` 
-          WHERE order_id=?;`,
-          [orderId],
-        );
+        const existingBilling = await queryRunner.manager.query(`SELECT * FROM \`billing\` WHERE order_id=?;`, [orderId]);
         if (existingBilling.length === 0) return resolve(await await this.insert(queryRunner, billing, orderId));
 
         await queryRunner.manager.query(

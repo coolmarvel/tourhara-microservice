@@ -10,6 +10,7 @@ export class Category {
   id!: bigint;
 
   @Column({ nullable: true })
+  @Index()
   parent!: string;
 
   @Column({ nullable: true })
@@ -20,9 +21,6 @@ export class Category {
 
   @Column({ nullable: true })
   description!: string;
-
-  @Column({ type: 'bigint', name: 'type_id', nullable: true })
-  typeId!: bigint;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;

@@ -31,13 +31,13 @@ export class ProductStagingService implements IProductService {
     });
   }
 
-  async createAProduct(data: any): Promise<any> {
+  createAProduct(data: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const product = await this.wooCommerce
-          .post('products', data)
-          .then((response: any) => response.data)
-          .catch((error: any) => error.response.data);
+        .post('products', data)
+        .then((response: any) => response.data)
+        .catch((error: any) => error.response.data);
 
         return resolve(product);
       } catch (error) {
@@ -46,13 +46,13 @@ export class ProductStagingService implements IProductService {
     });
   }
 
-  async retrieveAProduct(product_id: number): Promise<any> {
+  retrieveAProduct(product_id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const product = await this.wooCommerce
-          .get(`products/${product_id}`)
-          .then((response: any) => response.data)
-          .catch((error: any) => error.response.data);
+        .get(`products/${product_id}`)
+        .then((response: any) => response.data)
+        .catch((error: any) => error.response.data);
 
         return resolve(product);
       } catch (error) {
@@ -61,14 +61,14 @@ export class ProductStagingService implements IProductService {
     });
   }
 
-  async listAllProducts(page: number, size: number): Promise<any> {
+  listAllProducts(page: number, size: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const params = { page, per_page: size };
         const products = await this.wooCommerce
-          .get('products', params)
-          .then((response: any) => response.data)
-          .catch((error: any) => error.response.data);
+        .get('products', params)
+        .then((response: any) => response.data)
+        .catch((error: any) => error.response.data);
 
         return resolve(products);
       } catch (error) {
@@ -77,13 +77,13 @@ export class ProductStagingService implements IProductService {
     });
   }
 
-  async updateAProduct(product_id: number, data: any): Promise<any> {
+  updateAProduct(product_id: number, data: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const product = await this.wooCommerce
-          .put(`products/${product_id}`, data)
-          .then((response: any) => response.data)
-          .catch((error: any) => error.response.data);
+        .put(`products/${product_id}`, data)
+        .then((response: any) => response.data)
+        .catch((error: any) => error.response.data);
 
         return resolve(product);
       } catch (error) {
@@ -92,13 +92,13 @@ export class ProductStagingService implements IProductService {
     });
   }
 
-  async deleteAProduct(product_id: number): Promise<any> {
+  deleteAProduct(product_id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const product = await this.wooCommerce
-          .delete(`products/${product_id}`, { force: true })
-          .then((response: any) => response.data)
-          .catch((error: any) => error.response.data);
+        .delete(`products/${product_id}`, { force: true })
+        .then((response: any) => response.data)
+        .catch((error: any) => error.response.data);
 
         return resolve(product);
       } catch (error) {
@@ -107,14 +107,10 @@ export class ProductStagingService implements IProductService {
     });
   }
 
-  async insert(queryRunner: QueryRunner, product: any): Promise<any> {
+  insert(queryRunner: QueryRunner, product: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingProduct = await queryRunner.manager.query(
-          `SELECT * FROM \`product\` 
-          WHERE id=?;`,
-          [BigInt(product.id)],
-        );
+        const existingProduct = await queryRunner.manager.query(`SELECT * FROM \`product\` WHERE id=?;`, [BigInt(product.id)]);
         if (existingProduct.length > 0) return resolve(await this.update(queryRunner, product));
 
         const tagIds: string[] = [];
@@ -125,19 +121,19 @@ export class ProductStagingService implements IProductService {
         const tags = product.tags;
         for (const tag of tags) {
           const productTag = await this.tagService.select(queryRunner, tag.id);
-          tagIds.push(productTag.tag_id);
+          tagIds.push(productTag.id);
         }
 
         const images = product.images;
         for (const image of images) {
           const productImage = await this.productImageService.select(queryRunner, image.id);
-          imageIds.push(productImage.image_id);
+          imageIds.push(productImage.id);
         }
 
         const categories = product.categories;
         for (const category of categories) {
           const productCategory = await this.categoryService.select(queryRunner, category.id);
-          categoryIds.push(productCategory.category_id);
+          categoryIds.push(productCategory.id);
         }
 
         const attributes = product.attributes;
@@ -185,14 +181,10 @@ export class ProductStagingService implements IProductService {
     });
   }
 
-  async update(queryRunner: QueryRunner, product: any): Promise<any> {
+  update(queryRunner: QueryRunner, product: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingProduct = await queryRunner.manager.query(
-          `SELECT * FROM \`product\` 
-          WHERE id=?;`,
-          [BigInt(product.id)],
-        );
+        const existingProduct = await queryRunner.manager.query(`SELECT * FROM \`product\` WHERE id=?;`, [BigInt(product.id)]);
         if (existingProduct.length === 0) return resolve(await this.insert(queryRunner, product));
 
         const tagIds: string[] = [];
@@ -203,19 +195,19 @@ export class ProductStagingService implements IProductService {
         const tags = product.tags;
         for (const tag of tags) {
           const productTag = await this.tagService.select(queryRunner, tag.id);
-          tagIds.push(productTag.tag_id);
+          tagIds.push(productTag.id);
         }
 
         const images = product.images;
         for (const image of images) {
           const productImage = await this.productImageService.select(queryRunner, image.id);
-          imageIds.push(productImage.image_id);
+          imageIds.push(productImage.id);
         }
 
         const categories = product.categories;
         for (const category of categories) {
           const productCategory = await this.categoryService.select(queryRunner, category.id);
-          categoryIds.push(productCategory.category_id);
+          categoryIds.push(productCategory.id);
         }
 
         const attributes = product.attributes;
@@ -263,14 +255,10 @@ export class ProductStagingService implements IProductService {
     });
   }
 
-  async select(queryRunner: QueryRunner, id: bigint): Promise<any> {
+  select(queryRunner: QueryRunner, id: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const product = await queryRunner.manager.query(
-          `SELECT * FROM \`product\` 
-          WHERE id=?;`,
-          [id],
-        );
+        const product = await queryRunner.manager.query(`SELECT * FROM \`product\` WHERE id=?;`, [id]);
 
         return resolve(product[0]);
       } catch (error) {
@@ -281,83 +269,35 @@ export class ProductStagingService implements IProductService {
     });
   }
 
-  async productCreated(payload: any): Promise<any> {
+  productCreated(payload: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
 
       try {
-        console.log(payload);
-        // const existingProduct = await queryRunner.manager.query(`
-        // SELECT id FROM \`product\` WHERE id='${payload.id}'`);
-        // if (existingProduct.length > 0) return resolve(true);
-
-        // await queryRunner.startTransaction();
-
-        // const categories = payload.categories;
-        // for (const category of categories) {
-        //   await this.categoryService.insert(queryRunner, category);
-        // }
-
-        // const tags = payload.tags;
-        // for (const tag of tags) {
-        //   await this.tagService.insert(queryRunner, tag);
-        // }
-
-        // const attributes = payload.attributes;
-        // for (const attribute of attributes) {
-        //   await this.attributeService.insert(queryRunner, attribute);
-        // }
-
-        // const images = payload.images;
-        // for (const image of images) {
-        //   await this.productImageService.insert(queryRunner, image);
-        // }
-
-        // await this.insert(queryRunner, payload);
-
-        // await queryRunner.commitTransaction();
-
-        return resolve(true);
-      } catch (error) {
-        await queryRunner.rollbackTransaction();
-        return reject(error);
-      } finally {
-        await queryRunner.release();
-      }
-    });
-  }
-
-  async productUpdated(payload: any): Promise<any> {
-    return new Promise(async (resolve, reject) => {
-      const queryRunner = this.dataSource.createQueryRunner();
-      await queryRunner.connect();
-
-      try {
-        console.log(payload);
         await queryRunner.startTransaction();
 
         const categories = payload.categories;
         for (const category of categories) {
-          await this.categoryService.update(queryRunner, category, null);
+          await this.categoryService.insert(queryRunner, category);
         }
 
         const tags = payload.tags;
         for (const tag of tags) {
-          await this.tagService.update(queryRunner, tag);
+          await this.tagService.insert(queryRunner, tag);
         }
 
         const attributes = payload.attributes;
         for (const attribute of attributes) {
-          await this.attributeService.update(queryRunner, attribute);
+          await this.attributeService.insert(queryRunner, attribute);
         }
 
         const images = payload.images;
         for (const image of images) {
-          await this.productImageService.update(queryRunner, image);
+          await this.productImageService.insert(queryRunner, image);
         }
 
-        await this.update(queryRunner, payload);
+        await this.insert(queryRunner, payload);
 
         await queryRunner.commitTransaction();
 
@@ -371,7 +311,52 @@ export class ProductStagingService implements IProductService {
     });
   }
 
-  async productDeleted(payload: any): Promise<any> {
+  productUpdated(payload: any): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      const queryRunner = this.dataSource.createQueryRunner();
+      await queryRunner.connect();
+
+      try {
+        // await queryRunner.startTransaction();
+
+        // const existingProduct = await queryRunner.manager.findOne(Product, { where: { id: payload.id } });
+        // if (!existingProduct) return false;
+
+        // const categories = payload.categories;
+        // for (const category of categories) {
+        //   await this.categoryService.update(queryRunner, category);
+        // }
+
+        // const tags = payload.tags;
+        // for (const tag of tags) {
+        //   await this.tagService.update(queryRunner, tag);
+        // }
+
+        // const attributes = payload.attributes;
+        // for (const attribute of attributes) {
+        //   await this.attributeService.update(queryRunner, attribute);
+        // }
+
+        // const images = payload.images;
+        // for (const image of images) {
+        //   await this.update(queryRunner, image);
+        // }
+
+        // await this.update(queryRunner, payload);
+
+        // await queryRunner.commitTransaction();
+
+        return resolve(true);
+      } catch (error) {
+        await queryRunner.rollbackTransaction();
+        return reject(error);
+      } finally {
+        await queryRunner.release();
+      }
+    });
+  }
+
+  productDeleted(payload: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
@@ -393,7 +378,7 @@ export class ProductStagingService implements IProductService {
     });
   }
 
-  async productRestored(payload: any): Promise<any> {
+  productRestored(payload: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();

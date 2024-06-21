@@ -5,14 +5,10 @@ import { logger } from 'src/common/logger/logger.service';
 
 @Injectable()
 export class ShippingProductionService implements IShippingService {
-  async insert(queryRunner: QueryRunner, shipping: any, orderId: bigint): Promise<any> {
+  insert(queryRunner: QueryRunner, shipping: any, orderId: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingShipping = await queryRunner.manager.query(
-          `SELECT * FROM \`shipping\` 
-          WHERE order_id=?;`,
-          [orderId],
-        );
+        const existingShipping = await queryRunner.manager.query(`SELECT * FROM \`shipping\` WHERE order_id=?;`, [orderId]);
         if (existingShipping.length > 0) return resolve(true);
 
         await queryRunner.manager.query(
@@ -45,14 +41,10 @@ export class ShippingProductionService implements IShippingService {
     });
   }
 
-  async update(queryRunner: QueryRunner, shipping: any, orderId: bigint): Promise<any> {
+  update(queryRunner: QueryRunner, shipping: any, orderId: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingShipping = await queryRunner.manager.query(
-          `SELECT * FROM \`shipping\` 
-          WHERE order_id=?;`,
-          [orderId],
-        );
+        const existingShipping = await queryRunner.manager.query(`SELECT * FROM \`shipping\` WHERE order_id=?;`, [orderId]);
         if (existingShipping.length === 0) return resolve(await this.insert(queryRunner, shipping, orderId));
 
         await queryRunner.manager.query(

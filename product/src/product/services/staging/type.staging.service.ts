@@ -6,7 +6,7 @@ import { logger } from 'src/common/logger/logger.service';
 
 @Injectable()
 export class TypeStagingService implements ITypeService {
-  async insert(queryRunner: QueryRunner, type: ProductTypeEnum): Promise<any> {
+  insert(queryRunner: QueryRunner, type: ProductTypeEnum): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const existingType = await queryRunner.manager.query(

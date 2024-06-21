@@ -5,14 +5,10 @@ import { logger } from 'src/common/logger/logger.service';
 
 @Injectable()
 export class GuestHouseStagingService implements IGuestHouseService {
-  async insert(queryRunner: QueryRunner, guestHouse: any, orderId: bigint): Promise<any> {
+  insert(queryRunner: QueryRunner, guestHouse: any, orderId: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingGuestHouse = await queryRunner.manager.query(
-          `SELECT * FROM \`guest_house\` 
-          WHERE order_id=?;`,
-          [orderId],
-        );
+        const existingGuestHouse = await queryRunner.manager.query(`SELECT * FROM \`guest_house\` WHERE order_id=?;`, [orderId]);
         if (existingGuestHouse.length > 0) return resolve(true);
 
         await queryRunner.manager.query(
@@ -40,14 +36,10 @@ export class GuestHouseStagingService implements IGuestHouseService {
     });
   }
 
-  async update(queryRunner: QueryRunner, guestHouse: any, orderId: bigint): Promise<any> {
+  update(queryRunner: QueryRunner, guestHouse: any, orderId: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingGuestHouse = await queryRunner.manager.query(
-          `SELECT * FROM \`guest_house\` 
-          WHERE order_id=?;`,
-          [orderId],
-        );
+        const existingGuestHouse = await queryRunner.manager.query(`SELECT * FROM \`guest_house\`  WHERE order_id=?;`, [orderId]);
         if (existingGuestHouse.length === 0) return resolve(await this.insert(queryRunner, guestHouse, orderId));
 
         await queryRunner.manager.query(
