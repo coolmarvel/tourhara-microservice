@@ -5,19 +5,11 @@ import { logger } from 'src/common/logger/logger.service';
 
 @Injectable()
 export class TourProductionService implements ITourService {
-  async insert(queryRunner: QueryRunner, tour: any, tourInfo: any, orderId: bigint): Promise<any> {
+  insert(queryRunner: QueryRunner, tour: any, tourInfo: any, orderId: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingTour = await queryRunner.manager.query(
-          `SELECT * FROM \`tour\` 
-          WHERE order_id=?;`,
-          [orderId],
-        );
-        const existingTourInfo = await queryRunner.manager.query(
-          `SELECT * FROM \`tour_info\` 
-          WHERE order_id=?;`,
-          [orderId],
-        );
+        const existingTour = await queryRunner.manager.query(`SELECT * FROM \`tour\` WHERE order_id=?;`, [orderId]);
+        const existingTourInfo = await queryRunner.manager.query(`SELECT * FROM \`tour_info\` WHERE order_id=?;`, [orderId]);
         if (existingTour.length > 0 && existingTourInfo.length > 0) return resolve(true);
 
         await queryRunner.manager.query(
@@ -87,19 +79,11 @@ export class TourProductionService implements ITourService {
     });
   }
 
-  async update(queryRunner: QueryRunner, tour: any, tourInfo: any, orderId: bigint): Promise<any> {
+  update(queryRunner: QueryRunner, tour: any, tourInfo: any, orderId: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingTour = await queryRunner.manager.query(
-          `SELECT * FROM \`tour\` 
-          WHERE order_id=?;`,
-          [orderId],
-        );
-        const existingTourInfo = await queryRunner.manager.query(
-          `SELECT * FROM \`tour_info\` 
-          WHERE order_id=?;`,
-          [orderId],
-        );
+        const existingTour = await queryRunner.manager.query(`SELECT * FROM \`tour\` WHERE order_id=?;`, [orderId]);
+        const existingTourInfo = await queryRunner.manager.query(`SELECT * FROM \`tour_info\` WHERE order_id=?;`, [orderId]);
         if (existingTour.length === 0 && existingTourInfo.length === 0) return resolve(await this.insert(queryRunner, tour, tourInfo, orderId));
 
         await queryRunner.manager.query(

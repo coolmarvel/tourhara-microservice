@@ -18,13 +18,13 @@ export class CategoryStagingService implements ICategoryService {
     });
   }
 
-  async createAProductCategory(data: any): Promise<any> {
+  createAProductCategory(data: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const category = await this.wooCommerce
-          .post('products/categories', data)
-          .then((response: any) => response.data)
-          .catch((error: any) => error.response.data);
+        .post('products/categories', data)
+        .then((response: any) => response.data)
+        .catch((error: any) => error.response.data);
 
         return resolve(category);
       } catch (error) {
@@ -33,13 +33,13 @@ export class CategoryStagingService implements ICategoryService {
     });
   }
 
-  async retrieveAProductCategory(category_id: number): Promise<any> {
+  retrieveAProductCategory(category_id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const category = await this.wooCommerce
-          .get(`products/categories/${category_id}`)
-          .then((response: any) => response.data)
-          .catch((error: any) => error.response.data);
+        .get(`products/categories/${category_id}`)
+        .then((response: any) => response.data)
+        .catch((error: any) => error.response.data);
 
         return resolve(category);
       } catch (error) {
@@ -48,14 +48,14 @@ export class CategoryStagingService implements ICategoryService {
     });
   }
 
-  async listAllProductCategories(page: number, size: number): Promise<any> {
+  listAllProductCategories(page: number, size: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const params = { page, per_page: size };
         const categories = await this.wooCommerce
-          .get('products/categories', params)
-          .then((response: any) => response.data)
-          .catch((error: any) => error.response.data);
+        .get('products/categories', params)
+        .then((response: any) => response.data)
+        .catch((error: any) => error.response.data);
 
         return resolve(categories);
       } catch (error) {
@@ -64,13 +64,13 @@ export class CategoryStagingService implements ICategoryService {
     });
   }
 
-  async updateAProductCategory(category_id: number, data: any): Promise<any> {
+  updateAProductCategory(category_id: number, data: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const category = await this.wooCommerce
-          .put(`products/categories/${category_id}`, data)
-          .then((response: any) => response.data)
-          .catch((error: any) => error.response.data);
+        .put(`products/categories/${category_id}`, data)
+        .then((response: any) => response.data)
+        .catch((error: any) => error.response.data);
 
         return resolve(category);
       } catch (error) {
@@ -79,13 +79,13 @@ export class CategoryStagingService implements ICategoryService {
     });
   }
 
-  async deleteAProductCategory(category_id: number): Promise<any> {
+  deleteAProductCategory(category_id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const category = await this.wooCommerce
-          .delete(`products/categories/${category_id}`, { force: true })
-          .then((response: any) => response.data)
-          .catch((error: any) => error.response.data);
+        .delete(`products/categories/${category_id}`, { force: true })
+        .then((response: any) => response.data)
+        .catch((error: any) => error.response.data);
 
         return resolve(category);
       } catch (error) {
@@ -94,14 +94,10 @@ export class CategoryStagingService implements ICategoryService {
     });
   }
 
-  async insert(queryRunner: QueryRunner, category: any): Promise<any> {
+  insert(queryRunner: QueryRunner, category: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingCategory = await queryRunner.manager.query(
-          `SELECT * FROM \`category\` 
-          WHERE id=?;`,
-          [BigInt(category.id)],
-        );
+        const existingCategory = await queryRunner.manager.query(`SELECT * FROM \`category\` WHERE id=?;`, [BigInt(category.id)]);
         if (existingCategory.length > 0) return resolve(await this.update(queryRunner, category, null));
 
         await queryRunner.manager.query(
@@ -110,9 +106,8 @@ export class CategoryStagingService implements ICategoryService {
           ) VALUES (?,?,?,?,?,NOW(),NOW());`,
           [BigInt(category.id), category.parent, category.name, category.slug, null],
         );
-        const result = await queryRunner.manager.query(`SELECT LAST_INSERT_ID() as category_id;`);
 
-        return resolve(BigInt(result[0].category_id));
+        return resolve(BigInt(category.id));
       } catch (error) {
         logger.error('Category Service Insert Error');
         logger.error(error);
@@ -121,24 +116,20 @@ export class CategoryStagingService implements ICategoryService {
     });
   }
 
-  async update(queryRunner: QueryRunner, category: any, typeId: bigint | null): Promise<any> {
+  update(queryRunner: QueryRunner, category: any, typeId: bigint | null): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingCategory = await queryRunner.manager.query(
-          `SELECT * FROM \`category\` 
-          WHERE id=?;`,
-          [BigInt(category.id)],
-        );
+        const existingCategory = await queryRunner.manager.query(`SELECT * FROM \`category\` WHERE id=?;`, [BigInt(category.id)]);
         if (existingCategory.length === 0) return resolve(await this.insert(queryRunner, category));
 
         await queryRunner.manager.query(
           `UPDATE \`category\` SET 
-            parent=?,name=?,slug=?,type_id=?,updated_at=NOW()
+            parent=?,name=?,slug=?,updated_at=NOW()
           WHERE id=?;`,
-          [category.parent, category.name, category.slug, typeId === null ? null : typeId, BigInt(category.id)],
+          [category.parent, category.name, category.slug, BigInt(category.id)],
         );
 
-        return resolve(BigInt(existingCategory[0].category_id));
+        return resolve(BigInt(existingCategory[0].id));
       } catch (error) {
         logger.error('Category Service Update Error');
         logger.error(error);
@@ -147,14 +138,10 @@ export class CategoryStagingService implements ICategoryService {
     });
   }
 
-  async select(queryRunner: QueryRunner, id: bigint): Promise<any> {
+  select(queryRunner: QueryRunner, id: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const category = await queryRunner.manager.query(
-          `SELECT * FROM \`category\` 
-          WHERE id=?;`,
-          [id],
-        );
+        const category = await queryRunner.manager.query(`SELECT * FROM \`category\` WHERE id=?;`, [id]);
 
         return resolve(category[0]);
       } catch (error) {

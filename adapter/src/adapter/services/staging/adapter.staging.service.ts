@@ -5,7 +5,8 @@ import { DataSource, QueryRunner } from 'typeorm';
 
 @Injectable()
 export class AdapterStagingService implements IAdapterService {
-  constructor(@InjectDataSource('staging') private dataSource: DataSource) {}
+  constructor(@InjectDataSource('staging') private dataSource: DataSource) {
+  }
 
   getAllTypes(): Promise<any> {
     return new Promise(async (resolve, reject) => {
@@ -202,6 +203,8 @@ export class AdapterStagingService implements IAdapterService {
         return resolve(result);
       } catch (error) {
         return reject(error);
+      } finally {
+        await queryRunner.release();
       }
     });
   }

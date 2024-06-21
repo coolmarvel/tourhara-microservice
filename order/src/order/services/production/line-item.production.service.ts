@@ -5,26 +5,14 @@ import { logger } from 'src/common/logger/logger.service';
 
 @Injectable()
 export class LineItemProductionService implements ILineItemService {
-  async insert(queryRunner: QueryRunner, lineItem: any, orderId: bigint): Promise<any> {
+  insert(queryRunner: QueryRunner, lineItem: any, orderId: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingLineItem = await queryRunner.manager.query(
-          `SELECT * FROM \`line_item\` 
-          WHERE id=?;`,
-          [BigInt(lineItem.id)],
-        );
+        const existingLineItem = await queryRunner.manager.query(`SELECT * FROM \`line_item\` WHERE id=?;`, [BigInt(lineItem.id)]);
         if (existingLineItem.length > 0) return resolve(true);
 
-        const product = await queryRunner.manager.query(
-          `SELECT * FROM \`product\` 
-          WHERE id=?;`,
-          [BigInt(lineItem.product_id)],
-        );
-        const productImage = await queryRunner.manager.query(
-          `SELECT * FROM \`product_image\` 
-          WHERE id=?;`,
-          [BigInt(lineItem.image.id)],
-        );
+        const product = await queryRunner.manager.query(`SELECT * FROM \`product\` WHERE id=?;`, [BigInt(lineItem.product_id)]);
+        const productImage = await queryRunner.manager.query(`SELECT * FROM \`product_image\` WHERE id=?;`, [BigInt(lineItem.image.id)]);
 
         // Step 1: Extract text inside <a> tags.
         const lineItemNameMatches = lineItem.name.match(/<a [^>]*>(.*?)<\/a>/);
@@ -49,14 +37,14 @@ export class LineItemProductionService implements ILineItemService {
           [
             BigInt(lineItem.id),
             lineItemName,
-            BigInt(product[0].product_id),
+            BigInt(product[0].id),
             lineItem.quantity,
             lineItem.tax_class === '' ? null : lineItem.tax_class,
             lineItem.total,
             lineItem.subtotal,
             lineItem.subtotal_tax,
             lineItem.price,
-            productImage.length === 0 ? null : BigInt(productImage[0].image_id),
+            productImage.length === 0 ? null : BigInt(productImage[0].id),
             lineItem.parent_name === null ? null : lineItem.parent_name,
             lineItem.bundled_by === '' ? null : lineItem.bundled_by,
             lineItemBundledItemTitle === '' ? null : lineItemBundledItemTitle,
@@ -64,9 +52,8 @@ export class LineItemProductionService implements ILineItemService {
             orderId,
           ],
         );
-        const result = await queryRunner.manager.query(`SELECT LAST_INSERT_ID() as line_item_id;`);
 
-        return resolve(BigInt(result[0].line_item_id));
+        return resolve(BigInt(lineItem.id));
       } catch (error) {
         logger.error('LineItem Service Insert Error');
         logger.error(error);
@@ -75,26 +62,14 @@ export class LineItemProductionService implements ILineItemService {
     });
   }
 
-  async update(queryRunner: QueryRunner, lineItem: any, orderId: bigint): Promise<any> {
+  update(queryRunner: QueryRunner, lineItem: any, orderId: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingLineItem = await queryRunner.manager.query(
-          `SELECT * FROM \`line_item\` 
-          WHERE id=?;`,
-          [BigInt(lineItem.id)],
-        );
+        const existingLineItem = await queryRunner.manager.query(`SELECT * FROM \`line_item\` WHERE id=?;`, [BigInt(lineItem.id)]);
         if (existingLineItem.length === 0) return resolve(await this.insert(queryRunner, lineItem, orderId));
 
-        const product = await queryRunner.manager.query(
-          `SELECT * FROM \`product\` 
-          WHERE id=?;`,
-          [BigInt(lineItem.product_id)],
-        );
-        const productImage = await queryRunner.manager.query(
-          `SELECT * FROM \`product_image\` 
-          WHERE id=?;`,
-          [BigInt(lineItem.image.id)],
-        );
+        const product = await queryRunner.manager.query(`SELECT * FROM \`product\` WHERE id=?;`, [BigInt(lineItem.product_id)]);
+        const productImage = await queryRunner.manager.query(`SELECT * FROM \`product_image\` WHERE id=?;`, [BigInt(lineItem.image.id)]);
 
         // Step 1: Extract text inside <a> tags.
         const lineItemNameMatches = lineItem.name.match(/<a [^>]*>(.*?)<\/a>/);
@@ -119,14 +94,14 @@ export class LineItemProductionService implements ILineItemService {
           [
             BigInt(lineItem.id),
             lineItemName,
-            BigInt(product[0].product_id),
+            BigInt(product[0].id),
             lineItem.quantity,
             lineItem.tax_class === '' ? null : lineItem.tax_class,
             lineItem.total,
             lineItem.subtotal,
             lineItem.subtotal_tax,
             lineItem.price,
-            productImage.length === 0 ? null : BigInt(productImage[0].image_id),
+            productImage.length === 0 ? null : BigInt(productImage[0].id),
             lineItem.parent_name === null ? null : lineItem.parent_name,
             lineItem.bundled_by === '' ? null : lineItem.bundled_by,
             lineItemBundledItemTitle === '' ? null : lineItemBundledItemTitle,
@@ -135,7 +110,7 @@ export class LineItemProductionService implements ILineItemService {
           ],
         );
 
-        return resolve(BigInt(existingLineItem[0].line_item_id));
+        return resolve(BigInt(existingLineItem[0].id));
       } catch (error) {
         logger.error('LineItem Service Update Error');
         logger.error(error);

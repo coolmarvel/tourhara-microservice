@@ -24,7 +24,6 @@ export class OrderStagingService implements IOrderService {
   constructor(
     private configService: ConfigService,
     @InjectDataSource('staging') private dataSource: DataSource,
-
     private readonly lineItemMetadataService: LineItemMetadataStagingService,
     private readonly orderMetadataService: OrderMetadataStagingService,
     private readonly guestHouseService: GuestHouseStagingService,
@@ -44,10 +43,7 @@ export class OrderStagingService implements IOrderService {
     });
   }
 
-  /**
-   * WooCoomerce
-   */
-  async createAnOrder(payload: any): Promise<any> {
+  createAnOrder(payload: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const order = await this.wooCommerce
@@ -62,7 +58,7 @@ export class OrderStagingService implements IOrderService {
     });
   }
 
-  async retrieveAnOrder(order_id: number): Promise<any> {
+  retrieveAnOrder(order_id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const order = await this.wooCommerce
@@ -77,7 +73,7 @@ export class OrderStagingService implements IOrderService {
     });
   }
 
-  async listAllOrders(page: number, size: number, date: string): Promise<any> {
+  listAllOrders(page: number, size: number, date: string): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const beforeDate = new Date(date);
@@ -100,7 +96,7 @@ export class OrderStagingService implements IOrderService {
     });
   }
 
-  async updateAnOrder(order_id: number, data: any): Promise<any> {
+  updateAnOrder(order_id: number, data: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const order = await this.wooCommerce
@@ -115,7 +111,7 @@ export class OrderStagingService implements IOrderService {
     });
   }
 
-  async deleteAnOrder(order_id: number): Promise<any> {
+  deleteAnOrder(order_id: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const order = await this.wooCommerce
@@ -130,17 +126,10 @@ export class OrderStagingService implements IOrderService {
     });
   }
 
-  /**
-   * Database
-   */
-  async insert(queryRunner: QueryRunner, order: any): Promise<any> {
+  insert(queryRunner: QueryRunner, order: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingOrder = await queryRunner.manager.query(
-          `SELECT * FROM \`order\` 
-          WHERE id=?;`,
-          [BigInt(order.id)],
-        );
+        const existingOrder = await queryRunner.manager.query(`SELECT * FROM \`order\` WHERE id=?;`, [BigInt(order.id)]);
         if (existingOrder.length > 0) return resolve(true);
 
         await queryRunner.manager.query(
@@ -161,9 +150,8 @@ export class OrderStagingService implements IOrderService {
             order.date_completed_gmt === null ? null : order.date_completed_gmt,
           ],
         );
-        const result = await queryRunner.manager.query(`SELECT LAST_INSERT_ID() as order_id;`);
 
-        return resolve(BigInt(result[0].order_id));
+        return resolve(BigInt(order.id));
       } catch (error) {
         logger.error('Order Service Insert Error');
         logger.error(error);
@@ -172,14 +160,10 @@ export class OrderStagingService implements IOrderService {
     });
   }
 
-  async update(queryRunner: QueryRunner, order: any): Promise<any> {
+  update(queryRunner: QueryRunner, order: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingOrder = await queryRunner.manager.query(
-          `SELECT * FROM \`order\` 
-          WHERE id=?;`,
-          [BigInt(order.id)],
-        );
+        const existingOrder = await queryRunner.manager.query(`SELECT * FROM \`order\`  WHERE id=?;`, [BigInt(order.id)]);
         if (existingOrder.length === 0) return resolve(true);
 
         await queryRunner.manager.query(
@@ -197,7 +181,7 @@ export class OrderStagingService implements IOrderService {
           ],
         );
 
-        return resolve(BigInt(existingOrder[0].order_id));
+        return resolve(BigInt(existingOrder[0].id));
       } catch (error) {
         logger.error('Order Service Update Error');
         logger.error(error);
@@ -206,10 +190,7 @@ export class OrderStagingService implements IOrderService {
     });
   }
 
-  /**
-   * Webhook
-   */
-  async orderCreated(payload: any): Promise<any> {
+  orderCreated(payload: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
@@ -293,13 +274,14 @@ export class OrderStagingService implements IOrderService {
     });
   }
 
-  async orderUpdated(payload: any): Promise<any> {
+  orderUpdated(payload: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
 
       try {
-        console.log(payload.id);
+        console.log(payload);
+
         await queryRunner.startTransaction();
 
         // order update
@@ -366,11 +348,7 @@ export class OrderStagingService implements IOrderService {
           }
 
           await queryRunner.commitTransaction();
-        } else {
-          await queryRunner.commitTransaction();
-
-          return resolve(await this.orderCreated(order));
-        }
+        } else return resolve(await this.orderCreated(order));
 
         return resolve(true);
       } catch (error) {
@@ -382,7 +360,7 @@ export class OrderStagingService implements IOrderService {
     });
   }
 
-  async orderDeleted(payload: any): Promise<any> {
+  orderDeleted(payload: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         return resolve(true);
@@ -392,7 +370,7 @@ export class OrderStagingService implements IOrderService {
     });
   }
 
-  async orderRestored(payload: any): Promise<any> {
+  orderRestored(payload: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         return resolve(true);

@@ -202,6 +202,8 @@ export class AdapterProductionService implements IAdapterService {
         return resolve(result);
       } catch (error) {
         return reject(error);
+      } finally {
+        queryRunner.release();
       }
     });
   }

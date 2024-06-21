@@ -5,14 +5,10 @@ import { logger } from 'src/common/logger/logger.service';
 
 @Injectable()
 export class PaymentStagingService implements IPaymentService {
-  async insert(queryRunner: QueryRunner, payment: any, orderId: bigint): Promise<any> {
+  insert(queryRunner: QueryRunner, payment: any, orderId: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingPayment = await queryRunner.manager.query(
-          `SELECT * FROM \`payment\` 
-          WHERE order_id=?;`,
-          [orderId],
-        );
+        const existingPayment = await queryRunner.manager.query(`SELECT * FROM \`payment\` WHERE order_id=?;`, [orderId]);
         if (existingPayment.length > 0) return resolve(true);
 
         await queryRunner.manager.query(
@@ -43,14 +39,10 @@ export class PaymentStagingService implements IPaymentService {
     });
   }
 
-  async update(queryRunner: QueryRunner, payment: any, orderId: bigint): Promise<any> {
+  update(queryRunner: QueryRunner, payment: any, orderId: bigint): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const existingPayment = await queryRunner.manager.query(
-          `SELECT * FROM \`payment\` 
-          WHERE order_id=?;`,
-          [orderId],
-        );
+        const existingPayment = await queryRunner.manager.query(`SELECT * FROM \`payment\` WHERE order_id=?;`, [orderId]);
         if (existingPayment.length === 0) return resolve(await this.insert(queryRunner, payment, orderId));
 
         await queryRunner.manager.query(
