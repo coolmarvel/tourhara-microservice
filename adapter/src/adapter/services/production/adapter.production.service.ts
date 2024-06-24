@@ -203,7 +203,7 @@ export class AdapterProductionService implements IAdapterService {
       } catch (error) {
         return reject(error);
       } finally {
-        queryRunner.release();
+        await queryRunner.release();
       }
     });
   }
