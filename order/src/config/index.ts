@@ -1,7 +1,4 @@
-import appConfig from './app.config';
-import mariadbProdConfig from './mariadb-prod.config';
-import mariadbStagConfig from './mariadb-stag.config';
-import wcProdConfig from './wc-prod.config';
-import wcStagConfig from './wc-stag.config';
+import mariadbConfig from './mariadb.config';
+import wcConfig from './wc.config';
 
-export default [appConfig, mariadbStagConfig, mariadbProdConfig, wcStagConfig, wcProdConfig];
+export default [mariadbConfig, wcConfig];

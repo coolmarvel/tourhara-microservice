@@ -1,5 +1,10 @@
 node_modules
-.env
 dist
+
+.env
+.env.production
+.env.staging
+.env.develop
+
 package-lock.json
 yarn.lock

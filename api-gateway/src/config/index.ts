@@ -1,7 +1,5 @@
-import appConfig from './app.config';
 import authConfig from './auth.config';
-import mariadbProdConfig from './mariadb-prod.config';
-import mariadbStagConfig from './mariadb-stag.config';
+import mariadbConfig from './mariadb.config';
 import swaggerConfig from './swagger.config';
 
-export default [appConfig, authConfig, mariadbStagConfig, mariadbProdConfig, swaggerConfig];
+export default [authConfig, mariadbConfig, swaggerConfig];

@@ -118,4 +118,7 @@ export class ListAllOrdersReqDto {
   @Transform((param) => Number(param.value))
   @IsInt()
   size?: number = 10;
+
+  @ApiPropertyOptional({ description: '날짜. example = 2024-01-01' })
+  date?: string = '2024-01-01';
 }

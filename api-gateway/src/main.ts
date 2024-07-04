@@ -1,16 +1,23 @@
-import { NestFactory, Reflector } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { ConfigService } from '@nestjs/config';
 import { ClassSerializerInterceptor, ValidationPipe, VersioningType } from '@nestjs/common';
-import * as basicAuth from 'express-basic-auth';
 import { DocumentBuilder, SwaggerCustomOptions, SwaggerModule } from '@nestjs/swagger';
+import { NestFactory, Reflector } from '@nestjs/core';
+import { ConfigService } from '@nestjs/config';
+
+import { AppModule } from './app.module';
+
+import * as basicAuth from 'express-basic-auth';
 import { useContainer } from 'class-validator';
+
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+dotenv.config({ path: path.resolve(process.env.NODE_ENV === 'production' ? '.env.production' : process.env.NODE_ENV === 'stage' ? '.env.staging' : '.env') });
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const configService: ConfigService = app.get(ConfigService);
-  const port = 3000;
+  const port = configService.get<number>('PORT') || parseInt(process.env.PORT, 10);
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
@@ -23,12 +30,7 @@ async function bootstrap() {
 
   app.use(['/docs', '/docs-json'], basicAuth({ challenge: true, users: { [configService.get('swagger.username')]: configService.get('swagger.password') } }));
 
-  const config = new DocumentBuilder()
-    .setTitle('MSA Project')
-    .setDescription('BackOffcie with WooCommerce')
-    .setVersion('1.0.0')
-    .addBearerAuth()
-    .build();
+  const config = new DocumentBuilder().setTitle('MSA PROJECT').setDescription('BackOffcie with WooCommerce').setVersion('2.0.0').addBearerAuth().build();
   const customOptions: SwaggerCustomOptions = { swaggerOptions: { persistAuthorization: true } };
   const document = SwaggerModule.createDocument(app, config);
 

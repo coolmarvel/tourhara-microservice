@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsInt, IsObject, IsString } from 'class-validator';
+import { IsInt, IsObject } from 'class-validator';
 
 export class CreateReqDto {
   @IsObject()
