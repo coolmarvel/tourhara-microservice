@@ -1,24 +1,22 @@
 import { Module } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
-import { JwtAuthStrategy } from './guards/jwt-auth.strategy';
 import { APP_GUARD } from '@nestjs/core';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule } from 'src/user/user.module';
+import { PassportModule } from '@nestjs/passport';
+
 import entities from './entities';
-import { AuthStagingService } from './services/staging/auth.staging.service';
-import { AuthProductionService } from './services/production/auth.production.service';
-import { AuthStagingController } from './controllers/staging/auth.staging.controller';
-import { AuthProductionController } from './controllers/production/auth.production.controller';
+import { UserModule } from '../user/user.module';
+import { AuthService } from './services/auth.service';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { JwtAuthStrategy } from './guards/jwt-auth.strategy';
+import { AuthController } from './controllers/auth.controller';
 
 @Module({
   imports: [
     UserModule,
     PassportModule,
-    TypeOrmModule.forFeature(entities, 'staging'),
-    TypeOrmModule.forFeature(entities, 'production'),
+    TypeOrmModule.forFeature(entities),
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
@@ -26,7 +24,7 @@ import { AuthProductionController } from './controllers/production/auth.producti
       },
     }),
   ],
-  providers: [AuthStagingService, AuthProductionService, JwtAuthStrategy, { provide: APP_GUARD, useClass: JwtAuthGuard }],
-  controllers: [AuthStagingController, AuthProductionController],
+  providers: [AuthService, JwtAuthStrategy, { provide: APP_GUARD, useClass: JwtAuthGuard }],
+  controllers: [AuthController],
 })
 export class AuthModule {}

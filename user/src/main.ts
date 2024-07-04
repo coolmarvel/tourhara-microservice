@@ -3,17 +3,19 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { Transport } from '@nestjs/microservices';
 
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+dotenv.config({ path: path.resolve(process.env.NODE_ENV === 'production' ? '.env.production' : process.env.NODE_ENV === 'stage' ? '.env.staging' : '.env') });
+
 async function bootstrap() {
   const app = await NestFactory.createMicroservice(AppModule, {
     transport: Transport.TCP,
-    options: {
-      host: process.env.USER_DOCKER_FLAG === 'true' ? process.env.USER_DOCKER_HOST : 'localhost',
-      port: Number(process.env.USER_DOCKER_PORT),
-    },
+    options: { host: process.env.HOST ?? 'localhost', port: parseInt(process.env.PORT, 10) },
   });
 
   const configService: ConfigService = app.get(ConfigService);
-  const port = 3001;
+  const port = configService.get<number>('PORT');
 
   await app.listen();
 

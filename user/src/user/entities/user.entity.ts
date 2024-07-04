@@ -12,7 +12,7 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ type: 'enum', enum: Role })
+  @Column({ type: 'simple-enum', enum: Role })
   role: Role = Role.User;
 
   @CreateDateColumn({ name: 'created_at' })

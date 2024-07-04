@@ -1,5 +1,3 @@
-import appConfig from './app.config';
-import mariadbProdConfig from './mariadb-prod.config';
-import mariadbStagConfig from './mariadb-stag.config';
+import mariadbConfig from './mariadb.config';
 
-export default [appConfig, mariadbStagConfig, mariadbProdConfig];
+export default [mariadbConfig];
