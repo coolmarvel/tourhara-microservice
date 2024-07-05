@@ -21,5 +21,5 @@ export interface ICategoryService {
 
   select(queryRunner: QueryRunner, id: bigint): Promise<any>;
 
-  update(queryRunner: QueryRunner, category: any, typeId: bigint | null): Promise<any>;
+  update(queryRunner: QueryRunner, category: any): Promise<any>;
 }
