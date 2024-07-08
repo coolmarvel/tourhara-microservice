@@ -6,7 +6,7 @@ import { Transport } from '@nestjs/microservices';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 
-dotenv.config({ path: path.resolve(process.env.NODE_ENV === 'production' ? '.env.production' : process.env.NODE_ENV === 'stage' ? '.env.staging' : '.env') });
+dotenv.config({ path: path.resolve(process.env.NODE_ENV === 'production' ? '.env.production' : process.env.NODE_ENV === 'staging' ? '.env.staging' : '.env') });
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice(AppModule, {
