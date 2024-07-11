@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, QueryRunner } from 'typeorm';
 
-import { IAdapterService } from '../interfaces/adapter.interface';
+import { IAdapterService } from '../interfaces';
 
 @Injectable()
-export class AdapterService implements IAdapterService {
+export default class AdapterService implements IAdapterService {
   constructor(private dataSource: DataSource) {}
 
   async getAllTypes(): Promise<any> {

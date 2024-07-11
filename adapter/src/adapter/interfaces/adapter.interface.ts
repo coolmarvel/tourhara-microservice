@@ -1,4 +1,4 @@
-export interface IAdapterService {
+export default interface IAdapterService {
   // Categories & Types
   getAllTypes(): Promise<any>;
 

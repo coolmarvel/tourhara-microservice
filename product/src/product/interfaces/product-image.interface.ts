@@ -1,9 +1,9 @@
 import { QueryRunner } from 'typeorm';
 
-export interface IProductImageService {
+export default interface IProductImageService {
+  select(queryRunner: QueryRunner, id: any): Promise<any>;
+
   insert(queryRunner: QueryRunner, productImage: any): Promise<any>;
 
   update(queryRunner: QueryRunner, productImage: any): Promise<any>;
-
-  select(queryRunner: QueryRunner, id: bigint): Promise<any>;
 }

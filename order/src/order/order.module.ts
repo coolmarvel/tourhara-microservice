@@ -2,22 +2,48 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import entities from './entities';
-import { OrderController } from './controllers/order.controller';
-import { LineItemMetadataService } from './services/line-item-metadata.service';
-import { BillingService } from './services/billing.service';
-import { GuestHouseService } from './services/guest-house.service';
-import { JfkService } from './services/jfk.service';
-import { LineItemService } from './services/line-item.service';
-import { OrderMetadataService } from './services/order-metadata.service';
-import { PaymentService } from './services/payment.service';
-import { ShippingService } from './services/shipping.service';
-import { TourService } from './services/tour.service';
-import { UsimService } from './services/usim.service';
-import { OrderService } from './services/order.service';
+import { OrderController } from './controllers';
+import {
+  BillingService,
+  GuestHouseService,
+  H2oUsimService,
+  JfkOnewayService,
+  JfkShuttleRtService,
+  LineItemMetadataService,
+  LineItemService,
+  OrderMetadataService,
+  OrderService,
+  PaymentService,
+  RestApiService,
+  ShippingService,
+  SnapInfoService,
+  TourInfoService,
+  TourService,
+  UsimInfoService,
+  WebhookService,
+} from './services';
 
 @Module({
   imports: [TypeOrmModule.forFeature(entities)],
   controllers: [OrderController],
-  providers: [LineItemMetadataService, BillingService, GuestHouseService, JfkService, LineItemService, OrderMetadataService, PaymentService, ShippingService, TourService, UsimService, OrderService],
+  providers: [
+    BillingService,
+    GuestHouseService,
+    H2oUsimService,
+    JfkOnewayService,
+    JfkShuttleRtService,
+    LineItemMetadataService,
+    LineItemService,
+    OrderMetadataService,
+    OrderService,
+    PaymentService,
+    ShippingService,
+    SnapInfoService,
+    TourInfoService,
+    TourService,
+    UsimInfoService,
+    RestApiService,
+    WebhookService,
+  ],
 })
 export class OrderModule {}

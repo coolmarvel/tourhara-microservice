@@ -8,7 +8,7 @@ const customFormat = printf(({ level, message, timestamp }) => {
   return `${timestamp} [${level}]: ${message}`;
 });
 
-export const logger = winston.createLogger({
+const logger = winston.createLogger({
   format: combine(winston.format.timestamp({ format: () => moment().tz('Asia/Seoul').format('YYYY-MM-DD HH:mm:ss') }), customFormat),
   transports: [
     new winston.transports.Console(),
@@ -26,3 +26,5 @@ export const logger = winston.createLogger({
     }),
   ],
 });
+
+export default logger;

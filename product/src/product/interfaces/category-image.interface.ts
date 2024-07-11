@@ -1,7 +1,9 @@
 import { QueryRunner } from 'typeorm';
 
-export interface ICategoryImageService {
-  insert(queryRunner: QueryRunner, categoryImage: any, categoryId: bigint): Promise<any>;
+export default interface ICategoryImageService {
+  select(queryRunner: QueryRunner, categoryImage: any, categoryId: any): Promise<any>;
 
-  update(queryRunner: QueryRunner, categoryImage: any, categoryId: bigint): Promise<any>;
+  insert(queryRunner: QueryRunner, categoryImage: any, categoryId: any): Promise<any>;
+
+  update(queryRunner: QueryRunner, categoryImage: any, categoryId: any): Promise<any>;
 }

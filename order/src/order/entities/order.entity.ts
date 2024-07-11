@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { OrderStatus } from '../constants/order-status.enum';
+import { OrderStatus } from '../constants';
 
 @Entity()
 export class Order {
