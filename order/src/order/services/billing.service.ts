@@ -1,71 +1,81 @@
 import { Injectable } from '@nestjs/common';
 import { QueryRunner } from 'typeorm';
 
-import { IBillingService } from '../interfaces/billing.interface';
+import { IBillingService } from '../interfaces';
 import { logger } from '../../common';
 
 @Injectable()
-export class BillingService implements IBillingService {
+export default class BillingService implements IBillingService {
+  async select(queryRunner: QueryRunner, orderId: bigint): Promise<any> {
+    try {
+      throw new Error('Method not implemented.');
+    } catch (error) {
+      logger.error('');
+      throw error;
+    }
+  }
+
   async insert(queryRunner: QueryRunner, billing: any, orderId: bigint): Promise<any> {
     try {
-      const existingBilling = await queryRunner.manager.query(`SELECT * FROM \`billing\` WHERE order_id=?;`, [orderId]);
-      if (existingBilling.length > 0) return true;
+      for (const key of Object.keys(billing)) {
+        const value = billing[key];
+        if (value !== '') {
+          // Check if the record exists
+          const existing = await queryRunner.manager.query(
+            `SELECT 1 FROM \`billing\` 
+            WHERE order_id=? AND \`key\`=?;`,
+            [orderId, key],
+          );
 
-      await queryRunner.manager.query(
-        `INSERT INTO \`billing\` (
-            first_name,last_name,company,address_1,address_2,
-            city,email,phone,survey,order_id,created_at,updated_at
-          ) VALUES (?,?,?,?,?,?,?,?,?,?,NOW(),NOW());`,
-        [
-          billing.first_name === '' ? null : billing.first_name,
-          billing.last_name === '' ? null : billing.last_name,
-          billing.company === '' ? null : billing.company,
-          billing.address_1 === '' ? null : billing.address_1,
-          billing.address_2 === '' ? null : billing.address_2,
-          billing.city === '' ? null : billing.city,
-          billing.email === '' ? null : billing.email,
-          billing.phone === '' ? null : billing.phone,
-          billing.survey === '' ? null : billing.survey,
-          orderId,
-        ],
-      );
-
-      return true;
+          // If exists update the record
+          if (existing.length > 0) {
+            await queryRunner.manager.query(
+              `UPDATE \`billing\` SET 
+                value=?, updated_at=NOW()
+              WHERE order_id=? AND \`key\`=?;`,
+              [value, orderId, key],
+            );
+            logger.info(`Updated billing record for order_id=${orderId} and \`key\`=${key}.`);
+          }
+          // If not exists, insert the record
+          else {
+            await queryRunner.manager.query(
+              `INSERT INTO \`billing\` (
+                \`key\`, value, order_id, created_at, updated_at
+              ) VALUES (?, ?, ?, NOW(), NOW());`,
+              [key, value, orderId],
+            );
+            logger.info(`Inserted new billing record for order_id=${orderId} and \`key\`=${key}.`);
+          }
+        }
+      }
     } catch (error) {
       logger.error('Billing Service Insert Error');
-      logger.error(error);
       throw error;
     }
   }
 
   async update(queryRunner: QueryRunner, billing: any, orderId: bigint): Promise<any> {
     try {
-      const existingBilling = await queryRunner.manager.query(`SELECT * FROM \`billing\` WHERE order_id=?;`, [orderId]);
-      if (existingBilling.length === 0) return await await this.insert(queryRunner, billing, orderId);
-
-      await queryRunner.manager.query(
-        `UPDATE \`billing\` SET
-            first_name=?,last_name=?,company=?,address_1=?,address_2=?,
-            city=?,email=?,phone=?,survey=?,updated_at=NOW()
-          WHERE order_id=?;`,
-        [
-          billing.first_name === '' ? null : billing.first_name,
-          billing.last_name === '' ? null : billing.last_name,
-          billing.company === '' ? null : billing.company,
-          billing.address_1 === '' ? null : billing.address_1,
-          billing.address_2 === '' ? null : billing.address_2,
-          billing.city === '' ? null : billing.city,
-          billing.email === '' ? null : billing.email,
-          billing.phone === '' ? null : billing.phone,
-          billing.survey === '' ? null : billing.survey,
-          orderId,
-        ],
-      );
-
-      return true;
+      for (const key of Object.keys(billing)) {
+        const value = billing[key];
+        if (value !== '') {
+          await queryRunner.manager.query(
+            `UPDATE \`billing\` SET 
+              value=?, updated_at=NOW() 
+            WHERE order_id=? AND \`key\`=?`,
+            [value, orderId, key],
+          );
+        } else {
+          await queryRunner.manager.query(
+            `DELETE FROM \`billing\` 
+            WHERE order_id=? AND \`key\`=?`,
+            [orderId, key],
+          );
+        }
+      }
     } catch (error) {
       logger.error('Billing Service Update Error');
-      logger.error(error);
       throw error;
     }
   }

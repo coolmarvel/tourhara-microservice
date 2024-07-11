@@ -73,4 +73,15 @@ export class AdapterService implements IAdapterService {
       throw error;
     }
   }
+
+  async getOrders(product_id: string, after: string, before: string): Promise<any> {
+    try {
+      const pattern = { cmd: 'getOrders' };
+      const payload = { product_id, after, before };
+
+      return await firstValueFrom(this.client.send(pattern, payload));
+    } catch (error) {
+      throw error;
+    }
+  }
 }

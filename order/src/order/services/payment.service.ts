@@ -1,70 +1,53 @@
 import { Injectable } from '@nestjs/common';
 import { QueryRunner } from 'typeorm';
 
-import { IPaymentService } from '../interfaces/payment.interface';
+import { IPaymentService } from '../interfaces';
 import { logger } from '../../common';
 
 @Injectable()
-export class PaymentService implements IPaymentService {
+export default class PaymentService implements IPaymentService {
+  async select(queryRunner: QueryRunner, orderId: bigint): Promise<any> {
+    try {
+      throw new Error('Method not implemented.');
+    } catch (error) {
+      logger.error('');
+      throw error;
+    }
+  }
+
   async insert(queryRunner: QueryRunner, payment: any, orderId: bigint): Promise<any> {
     try {
-      const existingPayment = await queryRunner.manager.query(`SELECT * FROM \`payment\` WHERE order_id=?;`, [orderId]);
-      if (existingPayment.length > 0) return true;
-
-      await queryRunner.manager.query(
-        `INSERT INTO \`payment\` (
-            payment_method,payment_method_title,transaction_id,payment_url,needs_payment,
-            needs_processing,date_paid,date_paid_gmt,order_id,created_at,updated_at
-          ) VALUES (?,?,?,?,?,?,?,?,?,NOW(),NOW());`,
-        [
-          payment.payment_method ? payment.payment_method : null,
-          payment.payment_method_title ? payment.payment_method_title : null,
-          payment.transaction_id ? payment.transaction_id : null,
-          payment.payment_url ? payment.payment_url : null,
-          payment.needs_payment === true ? 1 : 0,
-          payment.needs_processing === true ? 1 : 0,
-          payment.date_paid ? payment.date_paid : null,
-          payment.date_paid_gmt ? payment.date_paid_gmt : null,
-          orderId,
-        ],
-      );
-      const result = await queryRunner.manager.query(`SELECT LAST_INSERT_ID() as payment_id;`);
-
-      return BigInt(result[0].payment_id);
+      const existing = await queryRunner.manager.query(`SELECT payment_id FROM \`payment\` WHERE order_id=?;`, [orderId]);
+      if (existing.length > 0) {
+        await this.update(queryRunner, payment, orderId);
+        logger.info(`Payment record updated for order_id=${orderId}`);
+      } else {
+        await queryRunner.manager.query(
+          `INSERT INTO \`payment\` (
+            order_id, payment_method, payment_method_title, transaction_id,
+            payment_url, needs_payment, created_at, updated_at
+          ) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW());`,
+          [orderId, payment.paymentMethod, payment.paymentMethodTitle, payment.transactionId, payment.paymentUrl, payment.needsPayment],
+        );
+        logger.info(`New payment record inserted for order_id=${orderId}`);
+      }
     } catch (error) {
       logger.error('Payment Service Insert Error');
-      logger.error(error);
       throw error;
     }
   }
 
   async update(queryRunner: QueryRunner, payment: any, orderId: bigint): Promise<any> {
     try {
-      const existingPayment = await queryRunner.manager.query(`SELECT * FROM \`payment\` WHERE order_id=?;`, [orderId]);
-      if (existingPayment.length === 0) return await this.insert(queryRunner, payment, orderId);
-
       await queryRunner.manager.query(
         `UPDATE \`payment\` SET 
-            payment_method=?,payment_method_title=?,transaction_id=?,payment_url=?,needs_payment=?,
-            needs_processing=?,date_paid=?,date_paid_gmt=?,updated_at=NOW()
-          WHERE order_id=?;`,
-        [
-          payment.payment_method ? payment.payment_method : null,
-          payment.payment_method_title ? payment.payment_method_title : null,
-          payment.transaction_id ? payment.transaction_id : null,
-          payment.payment_url ? payment.payment_url : null,
-          payment.needs_payment === true ? 1 : 0,
-          payment.needs_processing === true ? 1 : 0,
-          payment.date_paid ? payment.date_paid : null,
-          payment.date_paid_gmt ? payment.date_paid_gmt : null,
-          orderId,
-        ],
+          payment_method=?, payment_method_title=?, transaction_id=?, 
+          payment_url=?, needs_payment=?, updated_at=NOW() 
+        WHERE order_id=?;`,
+        [payment.paymentMethod, payment.paymentMethodTitle, payment.transactionId, payment.paymentUrl, payment.needsPayment, orderId],
       );
-
-      return true;
     } catch (error) {
       logger.error('Payment Service Update Error');
-      logger.error(error);
       throw error;
     }
   }

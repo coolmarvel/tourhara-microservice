@@ -1,59 +1,82 @@
 import { Injectable } from '@nestjs/common';
 import { QueryRunner } from 'typeorm';
 
-import { IOrderMetadataService } from '../interfaces/order-metadata.interface';
+import { IOrderMetadataService } from '../interfaces';
 import { logger } from '../../common';
 
 @Injectable()
-export class OrderMetadataService implements IOrderMetadataService {
+export default class OrderMetadataService implements IOrderMetadataService {
+  async select(queryRunner: QueryRunner, orderId: bigint): Promise<any> {
+    try {
+      throw new Error('Method not implemented.');
+    } catch (error) {
+      logger.error('');
+      throw error;
+    }
+  }
+
   async insert(queryRunner: QueryRunner, metadata: any, orderId: bigint): Promise<any> {
     try {
-      const existingMetadata = await queryRunner.manager.query(`SELECT * FROM \`order_metadata\` WHERE id=?;`, [BigInt(metadata.id)]);
-      if (existingMetadata.length > 0) return true;
+      const { id, key } = metadata;
+      let value = metadata.value;
 
-      let value = null;
-      if (metadata.key.includes('woo')) value = null;
-      else value = metadata.value;
+      if (typeof value === 'object' && value !== null) value = JSON.stringify(value);
+      if (value !== '') {
+        const existing = await queryRunner.manager.query(
+          `SELECT 1 FROM \`order_metadata\` 
+            WHERE order_id=? AND \`key\`=?;`,
+          [orderId, key],
+        );
 
-      await queryRunner.manager.query(
-        `INSERT INTO \`order_metadata\` (
-            id,\`key\`,\`value\`,order_id,created_at,updated_at
-          ) VALUES (?,?,?,?,NOW(),NOW());`,
-        [BigInt(metadata.id), metadata.key, value, orderId],
-      );
-
-      return true;
+        // If exists update the record
+        if (existing.length > 0) {
+          await queryRunner.manager.query(
+            `UPDATE \`order_metadata\` SET 
+                value=?, updated_at=NOW()
+              WHERE order_id =? AND \`key\`=?;`,
+            [value, orderId, key],
+          );
+          logger.info(`Updated metadata record for order_id=${orderId} and \`key\`=${key}.`);
+        }
+        // If not exists, insert the record
+        else {
+          await queryRunner.manager.query(
+            `INSERT INTO \`order_metadata\` (
+                id, order_id, \`key\`, value, created_at, updated_at
+              ) VALUES (?, ?, ?, ?, NOW(), NOW());`,
+            [id, orderId, key, value],
+          );
+          logger.info(`Inserted new metadata record for order_id=${orderId} and \`key\`=${key}.`);
+        }
+      }
     } catch (error) {
       logger.error('OrderMetadata Service Insert Error');
-      logger.error(error);
       throw error;
     }
   }
 
   async update(queryRunner: QueryRunner, metadata: any, orderId: bigint): Promise<any> {
     try {
-      const existingMetadata = await queryRunner.manager.query(
-        `SELECT * FROM \`order_metadata\` 
-          WHERE id=?;`,
-        [BigInt(metadata.id)],
-      );
-      if (existingMetadata.length === 0) return await this.insert(queryRunner, metadata, orderId);
+      const { key } = metadata;
+      let value = metadata.value;
 
-      let value = null;
-      if (metadata.key.includes('woo')) value = null;
-      else value = metadata.value;
-
-      await queryRunner.manager.query(
-        `UPDATE \`order_metadata\` SET
-            id=?,key=?,value=?,updated_at=NOW()
-          WHERE order_id=?;`,
-        [BigInt(metadata.id), metadata.key, value, orderId],
-      );
-
-      return true;
+      if (typeof value === 'object' && value !== null) value = JSON.stringify(value);
+      if (value !== '') {
+        await queryRunner.manager.query(
+          `UPDATE \`order_metadata\` SET 
+              value=?, updated_at=NOW() 
+            WHERE order_id=? AND \`key\`=?;`,
+          [value, orderId, key],
+        );
+      } else {
+        await queryRunner.manager.query(
+          `DELETE FROM \`order_metadata\` 
+            WHERE order_id=? AND \`key\`=?;`,
+          [orderId, key],
+        );
+      }
     } catch (error) {
       logger.error('OrderMetadata Service Update Error');
-      logger.error(error);
       throw error;
     }
   }

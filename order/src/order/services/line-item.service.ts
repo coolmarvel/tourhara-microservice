@@ -1,118 +1,109 @@
 import { Injectable } from '@nestjs/common';
 import { QueryRunner } from 'typeorm';
 
-import { ILineItemService } from '../interfaces/line-item.interface';
+import { ILineItemService } from '../interfaces';
 import { logger } from '../../common';
 
 @Injectable()
-export class LineItemService implements ILineItemService {
+export default class LineItemService implements ILineItemService {
+  async select(queryRunner: QueryRunner, orderId: bigint): Promise<any> {
+    try {
+      throw new Error('Method not implemented.');
+    } catch (error) {
+      logger.error('');
+      throw error;
+    }
+  }
+
   async insert(queryRunner: QueryRunner, lineItem: any, orderId: bigint): Promise<any> {
     try {
-      const existingLineItem = await queryRunner.manager.query(`SELECT * FROM \`line_item\` WHERE id=?;`, [BigInt(lineItem.id)]);
-      if (existingLineItem.length > 0) return true;
+      const { id, name, product_id, variation_id, quantity, subtotal, subtotal_tax, total, total_tax, bundled_by, bundled_item_title, parent_name, taxes, bundled_items } = lineItem;
 
-      const product = await queryRunner.manager.query(`SELECT * FROM \`product\` WHERE id=?;`, [BigInt(lineItem.product_id)]);
-      const productImage = await queryRunner.manager.query(`SELECT * FROM \`product_image\` WHERE id=?;`, [BigInt(lineItem.image.id)]);
+      const dataToInsert = [
+        { key: 'name', value: this.extractText(name) },
+        { key: 'product_id', value: product_id },
+        { key: 'variation_id', value: variation_id },
+        { key: 'quantity', value: quantity },
+        { key: 'subtotal', value: subtotal },
+        { key: 'subtotal_tax', value: subtotal_tax },
+        { key: 'total', value: total },
+        { key: 'total_tax', value: total_tax },
+        { key: 'bundled_by', value: bundled_by },
+        { key: 'bundled_item_title', value: this.extractText(bundled_item_title) },
+        { key: 'parent_name', value: parent_name },
+        { key: 'taxes', value: taxes.length > 0 ? JSON.stringify(taxes) : null },
+        { key: 'bundled_items', value: bundled_items.length > 0 ? bundled_items.join(',') : null },
+      ];
 
-      // Step 1: Extract text inside <a> tags.
-      const lineItemNameMatches = lineItem.name.match(/<a [^>]*>(.*?)<\/a>/);
-      const lineItemBundledItemTitleMatches = lineItem.bundled_item_title.match(/<a [^>]*>(.*?)<\/a>/);
+      for (const { key, value } of dataToInsert) {
+        if (value !== null && value !== '') {
+          const existing = await queryRunner.manager.query(`SELECT 1 FROM \`line_item\` WHERE order_id=? AND id=? AND \`key\`=?`, [orderId, id, key]);
 
-      let lineItemName = lineItem.name;
-      let lineItemBundledItemTitle = lineItem.bundled_item_title;
-
-      // If <a> tag is found, use the inner text. Otherwise, keep the original string.
-      if (lineItemNameMatches && lineItemNameMatches.length > 1) lineItemName = lineItemNameMatches[1];
-      if (lineItemBundledItemTitleMatches && lineItemBundledItemTitleMatches.length > 1) lineItemBundledItemTitle = lineItemBundledItemTitleMatches[1];
-
-      // Step 2: Remove <img> tags from the extracted text.
-      lineItemName = lineItemName.replace(/<img[^>]*>/g, '').trim();
-      lineItemBundledItemTitle = lineItemBundledItemTitle.replace(/<img[^>]*>/g, '').trim();
-
-      await queryRunner.manager.query(
-        `INSERT INTO \`line_item\` (
-            id,name,product_id,quantity,tax_class,total,subtotal,subtotal_tax,price,product_image_id,
-            parent_name,bundled_by,bundled_item_title,bundled_items,order_id,created_at,updated_at
-          ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW());`,
-        [
-          BigInt(lineItem.id),
-          lineItemName,
-          BigInt(product[0].id),
-          lineItem.quantity,
-          lineItem.tax_class === '' ? null : lineItem.tax_class,
-          lineItem.total,
-          lineItem.subtotal,
-          lineItem.subtotal_tax,
-          lineItem.price,
-          productImage.length === 0 ? null : BigInt(productImage[0].id),
-          lineItem.parent_name === null ? null : lineItem.parent_name,
-          lineItem.bundled_by === '' ? null : lineItem.bundled_by,
-          lineItemBundledItemTitle === '' ? null : lineItemBundledItemTitle,
-          lineItem.bundled_items.length === 0 ? null : lineItem.bundled_items.join(','),
-          orderId,
-        ],
-      );
-
-      return BigInt(lineItem.id);
+          if (existing.length === 0) {
+            await queryRunner.manager.query(
+              `INSERT INTO \`line_item\` (
+                order_id, id, \`key\`, value, created_at, updated_at
+              ) VALUES (?, ?, ?, ?, NOW(), NOW())`,
+              [orderId, id, key, value],
+            );
+            logger.info(`Inserted line item ${id} for order_id=${orderId} with key=${key}`);
+          } else {
+            await queryRunner.manager.query(
+              `UPDATE \`line_item\` SET 
+                value=?, updated_at=NOW()
+              WHERE order_id=? AND id=? AND \`key\`=?`,
+              [value, orderId, id, key],
+            );
+            logger.info(`Updated line item ${id} for order_id=${orderId} with key=${key}`);
+          }
+        }
+      }
     } catch (error) {
       logger.error('LineItem Service Insert Error');
-      logger.error(error);
       throw error;
     }
   }
 
   async update(queryRunner: QueryRunner, lineItem: any, orderId: bigint): Promise<any> {
     try {
-      const existingLineItem = await queryRunner.manager.query(`SELECT * FROM \`line_item\` WHERE id=?;`, [BigInt(lineItem.id)]);
-      if (existingLineItem.length === 0) return await this.insert(queryRunner, lineItem, orderId);
+      const { id, name, product_id, variation_id, quantity, subtotal, subtotal_tax, total, total_tax, bundled_by, bundled_item_title, parent_name, taxes, bundled_items } = lineItem;
 
-      const product = await queryRunner.manager.query(`SELECT * FROM \`product\` WHERE id=?;`, [BigInt(lineItem.product_id)]);
-      const productImage = await queryRunner.manager.query(`SELECT * FROM \`product_image\` WHERE id=?;`, [BigInt(lineItem.image.id)]);
+      const dataToUpdate = [
+        { key: 'name', value: this.extractText(name) },
+        { key: 'product_id', value: product_id },
+        { key: 'variation_id', value: variation_id },
+        { key: 'quantity', value: quantity },
+        { key: 'subtotal', value: subtotal },
+        { key: 'subtotal_tax', value: subtotal_tax },
+        { key: 'total', value: total },
+        { key: 'total_tax', value: total_tax },
+        { key: 'bundled_by', value: bundled_by },
+        { key: 'bundled_item_title', value: this.extractText(bundled_item_title) },
+        { key: 'parent_name', value: parent_name },
+        { key: 'taxes', value: taxes.length > 0 ? JSON.stringify(taxes) : null },
+        { key: 'bundled_items', value: bundled_items.length > 0 ? bundled_items.join(',') : null },
+      ];
 
-      // Step 1: Extract text inside <a> tags.
-      const lineItemNameMatches = lineItem.name.match(/<a [^>]*>(.*?)<\/a>/);
-      const lineItemBundledItemTitleMatches = lineItem.bundled_item_title.match(/<a [^>]*>(.*?)<\/a>/);
-
-      let lineItemName = lineItem.name;
-      let lineItemBundledItemTitle = lineItem.bundled_item_title;
-
-      // If <a> tag is found, use the inner text. Otherwise, keep the original string.
-      if (lineItemNameMatches && lineItemNameMatches.length > 1) lineItemName = lineItemNameMatches[1];
-      if (lineItemBundledItemTitleMatches && lineItemBundledItemTitleMatches.length > 1) lineItemBundledItemTitle = lineItemBundledItemTitleMatches[1];
-
-      // Step 2: Remove <img> tags from the extracted text.
-      lineItemName = lineItemName.replace(/<img[^>]*>/g, '').trim();
-      lineItemBundledItemTitle = lineItemBundledItemTitle.replace(/<img[^>]*>/g, '').trim();
-
-      await queryRunner.manager.query(
-        `UPDATE \`line_item\` SET 
-            id=?,name=?,product_id=?,quantity=?,tax_class=?,total=?,subtotal=?,subtotal_tax=?,price=?,
-            product_image_id=?,parent_name=?,bundled_by=?,bundled_item_title=?,bundled_items=?,updated_at=NOW()
-          WHERE order_id=?;`,
-        [
-          BigInt(lineItem.id),
-          lineItemName,
-          BigInt(product[0].id),
-          lineItem.quantity,
-          lineItem.tax_class === '' ? null : lineItem.tax_class,
-          lineItem.total,
-          lineItem.subtotal,
-          lineItem.subtotal_tax,
-          lineItem.price,
-          productImage.length === 0 ? null : BigInt(productImage[0].id),
-          lineItem.parent_name === null ? null : lineItem.parent_name,
-          lineItem.bundled_by === '' ? null : lineItem.bundled_by,
-          lineItemBundledItemTitle === '' ? null : lineItemBundledItemTitle,
-          lineItem.bundled_items.length === 0 ? null : lineItem.bundled_items.join(','),
-          orderId,
-        ],
-      );
-
-      return BigInt(existingLineItem[0].id);
+      for (const { key, value } of dataToUpdate) {
+        if (value !== null && value !== '') {
+          await queryRunner.manager.query(
+            `UPDATE \`line_item\` SET 
+              value=?, updated_at=NOW() 
+            WHERE order_id=? AND id=? AND \`key\`=?`,
+            [value, orderId, id, key],
+          );
+          logger.info(`Updated line item ${id} for order_id=${orderId} with key=${key}`);
+        }
+      }
     } catch (error) {
       logger.error('LineItem Service Update Error');
-      logger.error(error);
       throw error;
     }
+  }
+
+  private extractText(htmlText: string): string {
+    const textInsideTags = htmlText.match(/<a [^>]*>(.*?)<\/a>/);
+
+    return textInsideTags && textInsideTags.length > 1 ? textInsideTags[1].replace(/<img[^>]*>/g, '').trim() : htmlText.replace(/<\/?[^>]+(>|$)/g, '').trim();
   }
 }

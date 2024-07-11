@@ -1,163 +1,75 @@
 import { Injectable } from '@nestjs/common';
 import { QueryRunner } from 'typeorm';
 
-import { ILineItemMetadataService } from '../interfaces/line-item-metadata.interface';
+import { ILineItemMetadataService } from '../interfaces';
 import { logger } from '../../common';
 
 @Injectable()
-export class LineItemMetadataService implements ILineItemMetadataService {
+export default class LineItemMetadataService implements ILineItemMetadataService {
+  async select(queryRunner: QueryRunner, lineItemId: bigint): Promise<any> {
+    try {
+      throw new Error('Method not implemented.');
+    } catch (error) {
+      logger.error('');
+      throw error;
+    }
+  }
+
   async insert(queryRunner: QueryRunner, metadata: any, lineItemId: bigint): Promise<any> {
     try {
-      const existingMetadata = await queryRunner.manager.query(`SELECT * FROM \`line_item_metadata\` WHERE id=?;`, [BigInt(metadata.id)]);
-      if (existingMetadata.length > 0) return true;
+      const { key, value } = metadata;
+      if (key === '_stamp' || key.startsWith('display_')) return;
 
-      if (typeof metadata.value === 'object') {
-        // Array일 때
-        if (Array.isArray(metadata.value)) {
-          await queryRunner.manager.query(
-            `INSERT INTO \`line_item_metadata\` (
-                id,\`key\`,\`value\`,line_item_id,created_at,updated_at
-              ) VALUES (?,?,?,?,NOW(),NOW());`,
-            [BigInt(metadata.id), metadata.key, metadata.value.join(','), lineItemId],
-          );
-        }
-
-        // JSON일 때
-        if (!Array.isArray(metadata.value)) {
-          for (const key of Object.keys(metadata.value)) {
-            const value = metadata.value[key];
-
-            const product = await queryRunner.manager.query(`SELECT * FROM \`product\` WHERE id=?;`, [BigInt(value.product_id)]);
-
-            const titleMatches = value.title.match(/<a [^>]*>(.*?)<\/a>/);
-            let title = titleMatches && titleMatches.length > 1 ? titleMatches[1] : value.title;
-            title = title.replace(/<img[^>]*>/g, '').trim();
-
-            let attributes = null;
-            if (value.attributes) {
-              attributes = Object.values(value.attributes);
-              attributes = [...new Set(attributes)];
-              attributes = attributes.join(',');
-            }
-            await queryRunner.manager.query(
-              `INSERT INTO \`line_item_metadata\` (
-                  id,\`key\`,product_id,quantity,title,optional_selected,attributes,
-                  variation_id,discount,line_item_id,created_at,updated_at
-                ) VALUES (?,?,?,?,?,?,?,?,?,?,NOW(),NOW());`,
-              [
-                BigInt(metadata.id),
-                metadata.key,
-                product.length === 0 ? null : BigInt(product[0].id),
-                metadata.quantity,
-                title,
-                value.optional_selected,
-                attributes === '' ? null : attributes,
-                value.variation_id ? BigInt(value.variation_id) : null,
-                value.discount ? value.discount : null,
-                lineItemId,
-              ],
-            );
-          }
-        }
-      } else {
-        const valueMatches = metadata.value.match(/<a [^>]*>(.*?)<\/a>/);
-        let value = valueMatches && valueMatches.length > 1 ? valueMatches[1] : metadata.value;
-        value = value.replace(/<img[^>]*>/g, '').trim();
-
+      const processedValue = Array.isArray(value) ? value.join(',') : this.extractText(value.toString());
+      const existing = await queryRunner.manager.query(
+        `SELECT 1 FROM \`line_item_metadata\`
+        WHERE line_item_id=? AND \`key\`=?;`,
+        [lineItemId, key],
+      );
+      if (existing.length === 0) {
         await queryRunner.manager.query(
           `INSERT INTO \`line_item_metadata\` (
-              id,\`key\`,\`value\`,line_item_id,created_at,updated_at
-            ) VALUES (?,?,?,?,NOW(),NOW());`,
-          [BigInt(metadata.id), metadata.key, value, lineItemId],
+            line_item_id, id, \`key\`, value, created_at, updated_at
+          ) VALUES (?, ?, ?, ?, NOW(), NOW());`,
+          [lineItemId, metadata.id, key, processedValue],
         );
+        logger.info(`Inserted metadata for lineItemId=${lineItemId}, key=${key}`);
+      } else {
+        await queryRunner.manager.query(
+          `UPDATE \`line_item_metadata\` SET 
+          value=?, updated_at=NOW() 
+          WHERE line_item_id=? AND \`key\`=?;`,
+          [processedValue, lineItemId, key],
+        );
+        logger.info(`Updated metadata for lineItemId=${lineItemId}, key=${key}`);
       }
-
-      return true;
     } catch (error) {
-      logger.error('LineItemMetadata Insert Error');
-      logger.error(error);
+      logger.error('LineItemMetadata Service Insert Error');
       throw error;
     }
   }
 
   async update(queryRunner: QueryRunner, metadata: any, lineItemId: bigint): Promise<any> {
     try {
-      const existingMetadata = await queryRunner.manager.query(`SELECT * FROM \`line_item_metadata\` WHERE id=?;`, [BigInt(metadata.id)]);
-      if (existingMetadata.length === 0) return await this.insert(queryRunner, metadata, lineItemId);
+      const { key, value } = metadata;
+      if (key === '_stamp' || key.startsWith('display_')) return;
 
-      if (typeof metadata.value === 'object') {
-        // Array일 때
-        if (Array.isArray(metadata.value)) {
-          await queryRunner.manager.query(
-            `UPDATE \`line_item_metadata\` SET 
-                id=?,\`key\`=?,value=?,update_at=NOW()
-              WHERE line_item_id=?;`,
-            [BigInt(metadata.id), metadata.key, metadata.value.join(','), lineItemId],
-          );
-        }
-
-        // JSON일 때
-        if (!Array.isArray(metadata.value)) {
-          for (const key of Object.keys(metadata.value)) {
-            const value = metadata.value[key];
-
-            const product = await queryRunner.manager.query(`SELECT * FROM \`product\` WHERE id=?;`, [BigInt(value.product_id)]);
-
-            const titleMatches = value.title.match(/<a [^>]*>(.*?)<\/a>/);
-            let title = titleMatches && titleMatches.length > 1 ? titleMatches[1] : value.title;
-            title = title.replace(/<img[^>]*>/g, '').trim();
-
-            let attributes = null;
-            if (value.attributes) {
-              attributes = Object.values(value.attributes);
-              attributes = [...new Set(attributes)];
-              attributes = attributes.join(',');
-            }
-            await queryRunner.manager.query(
-              `UPDATE \`line_item_metadata\` SET 
-                  id=?,\`key\`=?,product_id=?,quantity=?,title=?,optional_selected=?,
-                  attributes=?,variation_id=?,discount=?,update_at=NOW()
-                WHERE line_item_id=?;`,
-              [
-                BigInt(metadata.id),
-                metadata.key,
-                product.length === 0 ? null : BigInt(product[0].id),
-                metadata.quantity,
-                title,
-                value.optional_selected,
-                attributes === '' ? null : attributes,
-                value.variation_id ? BigInt(value.variation_id) : null,
-                value.discount ? value.discount : null,
-                lineItemId,
-              ],
-            );
-          }
-        }
-      } else {
-        const valueMatches = metadata.value.match(/<a [^>]*>(.*?)<\/a>/);
-        let value = valueMatches && valueMatches.length > 1 ? valueMatches[1] : metadata.value;
-        value = value.replace(/<img[^>]*>/g, '').trim();
-
-        await queryRunner.manager.query(
-          `UPDATE \`line_item_metadata\` SET 
-              id=?,\`key\`=?,value=?,update_at=NOW()
-            WHERE line_item_id=?;`,
-          [BigInt(metadata.id), metadata.key, value, lineItemId],
-        );
-      }
-
-      // await queryRunner.manager.query(
-      //   `UPDATE \`line_item_metadata\` SET
-      //     id=?,\`key\`=?,value=?,update_at=NOW()
-      //   WHERE line_item_id=?;`,
-      //   [BigInt(BigInt(metadata.id)), metadata.key, JSON.stringify(metadata.value), lineItemId],
-      // );
-
-      return true;
+      const processedValue = Array.isArray(value) ? value.join(',') : this.extractText(value.toString());
+      await queryRunner.manager.query(
+        `UPDATE \`line_item_metadata\` SET 
+          value=?, updated_at=NOW() 
+          WHERE line_item_id=? AND \`key\`=?;`,
+        [processedValue, lineItemId, key],
+      );
     } catch (error) {
       logger.error('LineItemMetadata Service Update Error');
-      logger.error(error);
       throw error;
     }
+  }
+
+  private extractText(htmlText: string): string {
+    const textInsideTags = htmlText.match(/<a [^>]*>(.*?)<\/a>/);
+
+    return textInsideTags && textInsideTags.length > 1 ? textInsideTags[1].replace(/<img[^>]*>/g, '').trim() : htmlText.replace(/<\/?[^>]+(>|$)/g, '').trim();
   }
 }

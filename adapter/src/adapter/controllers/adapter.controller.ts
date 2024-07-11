@@ -1,10 +1,10 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 
-import { AdapterService } from '../services/adapter.service';
+import { AdapterService } from '../services';
 
 @Controller()
-export class AdapterController {
+export default class AdapterController {
   constructor(private readonly adapterService: AdapterService) {}
 
   @MessagePattern({ cmd: 'getAllTypes' })

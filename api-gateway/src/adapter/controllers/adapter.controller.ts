@@ -42,7 +42,8 @@ export class AdapterController {
   @Get('orders')
   @ApiOperation({ summary: '주문 리스트 조회 API' })
   async getOrdersByProductId(@Query() { product_id, after, before }: GetOrdersReqDto) {
-    return await this.adapterService.getOrdersByProductId(product_id, after, before);
+    // return await this.adapterService.getOrdersByProductId(product_id, after, before);
+    return await this.adapterService.getOrders(product_id, after, before);
   }
 
   @Public()

@@ -1,75 +1,81 @@
 import { Injectable } from '@nestjs/common';
 import { QueryRunner } from 'typeorm';
 
-import { IShippingService } from '../interfaces/shipping.interface';
+import { IShippingService } from '../interfaces';
 import { logger } from '../../common';
 
 @Injectable()
-export class ShippingService implements IShippingService {
+export default class ShippingService implements IShippingService {
+  async select(queryRunner: QueryRunner, orderId: bigint): Promise<any> {
+    try {
+      throw new Error('Method not implemented.');
+    } catch (error) {
+      logger.error('');
+      throw error;
+    }
+  }
+
   async insert(queryRunner: QueryRunner, shipping: any, orderId: bigint): Promise<any> {
     try {
-      const existingShipping = await queryRunner.manager.query(`SELECT * FROM \`shipping\` WHERE order_id=?;`, [orderId]);
-      if (existingShipping.length > 0) return true;
+      for (const key of Object.keys(shipping)) {
+        const value = shipping[key];
+        if (value !== '') {
+          // Check if the record exists
+          const existing = await queryRunner.manager.query(
+            `SELECT 1 FROM \`shipping\` 
+            WHERE order_id=? AND \`key\`=?;`,
+            [orderId, key],
+          );
 
-      await queryRunner.manager.query(
-        `INSERT INTO \`shipping\` (
-            first_name,last_name,company,address_1,address_2,city,state,
-            postcode,country,phone,shipping_mobile,order_id,created_at,updated_at
-          ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW());`,
-        [
-          shipping.first_name === '' ? null : shipping.first_name,
-          shipping.last_name === '' ? null : shipping.last_name,
-          shipping.company === '' ? null : shipping.company,
-          shipping.address_1 === '' ? null : shipping.address_1,
-          shipping.address_2 === '' ? null : shipping.address_2,
-          shipping.city === '' ? null : shipping.city,
-          shipping.state === '' ? null : shipping.state,
-          shipping.postcode === '' ? null : shipping.postcode,
-          shipping.country === '' ? null : shipping.country,
-          shipping.phone === '' ? null : shipping.phone,
-          shipping.shipping_mobile === '' ? null : shipping.shipping_mobile,
-          orderId,
-        ],
-      );
-
-      return true;
+          // If exists update the record
+          if (existing.length > 0) {
+            await queryRunner.manager.query(
+              `UPDATE \`shipping\` SET 
+                value=?, updated_at=NOW()
+              WHERE order_id=? AND \`key\`=?;`,
+              [value, orderId, key],
+            );
+            logger.info(`Updated shipping record for order_id=${orderId} and \`key\`=${key}.`);
+          }
+          // If not exists, insert the record
+          else {
+            await queryRunner.manager.query(
+              `INSERT INTO \`shipping\` (
+                \`key\`, value, order_id, created_at, updated_at
+              ) VALUES (?, ?, ?, NOW(), NOW());`,
+              [key, value, orderId],
+            );
+            logger.info(`Inserted new shipping record for order_id=${orderId} and \`key\`=${key}.`);
+          }
+        }
+      }
     } catch (error) {
       logger.error('Shipping Service Insert Error');
-      logger.error(error);
       throw error;
     }
   }
 
   async update(queryRunner: QueryRunner, shipping: any, orderId: bigint): Promise<any> {
     try {
-      const existingShipping = await queryRunner.manager.query(`SELECT * FROM \`shipping\` WHERE order_id=?;`, [orderId]);
-      if (existingShipping.length === 0) return await this.insert(queryRunner, shipping, orderId);
-
-      await queryRunner.manager.query(
-        `UPDATE \`shipping\` SET 
-            first_name=?,last_name=?,company=?,address_1=?,address_2=?,city=?,
-            state=?,postcode=?,country=?,phone=?,shipping_mobile=?,updated_at=NOW()
-          WHERE order_id=?;`,
-        [
-          shipping.first_name === '' ? null : shipping.first_name,
-          shipping.last_name === '' ? null : shipping.last_name,
-          shipping.company === '' ? null : shipping.company,
-          shipping.address_1 === '' ? null : shipping.address_1,
-          shipping.address_2 === '' ? null : shipping.address_2,
-          shipping.city === '' ? null : shipping.city,
-          shipping.state === '' ? null : shipping.state,
-          shipping.postcode === '' ? null : shipping.postcode,
-          shipping.country === '' ? null : shipping.country,
-          shipping.phone === '' ? null : shipping.phone,
-          shipping.shipping_mobile === '' ? null : shipping.shipping_mobile,
-          orderId,
-        ],
-      );
-
-      return true;
+      for (const key of Object.keys(shipping)) {
+        const value = shipping[key];
+        if (value !== '') {
+          await queryRunner.manager.query(
+            `UPDATE \`shipping\` SET 
+              value=?, updated_at=NOW() 
+            WHERE order_id=? AND \`key\`=?`,
+            [value, orderId, key],
+          );
+        } else {
+          await queryRunner.manager.query(
+            `DELETE FROM \`shipping\` 
+            WHERE order_id=? AND \`key\`=?`,
+            [orderId, key],
+          );
+        }
+      }
     } catch (error) {
       logger.error('Shipping Service Update Error');
-      logger.error(error);
       throw error;
     }
   }

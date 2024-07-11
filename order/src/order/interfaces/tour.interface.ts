@@ -1,7 +1,9 @@
 import { QueryRunner } from 'typeorm';
 
-export interface ITourService {
-  insert(queryRunner: QueryRunner, tour: any, tourInfo: any, orderId: bigint): Promise<any>;
+export default interface ITourService {
+  select(queryRunner: QueryRunner, orderId: bigint): Promise<any>;
 
-  update(queryRunner: QueryRunner, tour: any, tourInfo: any, orderId: bigint): Promise<any>;
+  insert(queryRunner: QueryRunner, tour: any, orderId: bigint): Promise<any>;
+
+  update(queryRunner: QueryRunner, tour: any, orderId: bigint): Promise<any>;
 }
