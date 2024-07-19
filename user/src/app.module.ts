@@ -1,3 +1,8 @@
+/**
+ * 유저 모듈
+ *
+ * @author 이성현
+ */
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
