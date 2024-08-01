@@ -1,3 +1,9 @@
+/**
+ * 인증 모듈
+ * - Passport와 JWT 설정
+ *
+ * @author 이성현
+ */
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
@@ -12,6 +18,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { JwtAuthStrategy } from './guards/jwt-auth.strategy';
 import { AuthController } from './controllers/auth.controller';
 
+// PassportModule.register({ defaultStrategy: 'jwt' }),
 @Module({
   imports: [
     UserModule,
@@ -20,7 +27,7 @@ import { AuthController } from './controllers/auth.controller';
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
-        return { global: true, secret: configService.get('auth.secret'), signOptions: { expiresIn: '1d' } };
+        return { global: true, secret: configService.get('auth.secret'), signOptions: { expiresIn: '60m' } };
       },
     }),
   ],

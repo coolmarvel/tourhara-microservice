@@ -25,13 +25,14 @@ export default class OrderService implements IOrderService {
     await queryRunner.connect();
 
     try {
-      const afterDate = this.toKSTAfterDate(after);
-      const beforeDate = this.toKSTBeforeDate(before);
+      // const afterDate = this.toKSTAfterDate(after);
+      // const beforeDate = this.toKSTBeforeDate(before);
       const orders = await queryRunner.manager.query(
         `SELECT id, status, currency, currency_symbol, date_created, date_created_gmt,
           date_modified, date_modified_gmt, date_completed, date_completed_gmt
         FROM \`order\` WHERE date_created_gmt>=? AND date_created_gmt<=?;`,
-        [afterDate, beforeDate],
+        // [afterDate, beforeDate],
+        [after, before],
       );
 
       const formattedOrders = [];
