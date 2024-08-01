@@ -1,14 +1,17 @@
+import { Module } from '@nestjs/common';
+import { ClientProxyFactory, Transport } from '@nestjs/microservices';
+
+import { UserService } from './services/user.service';
+import { UserApiController } from './controllers/user-api.controller';
+import { JwtService } from '@nestjs/jwt';
+import { RoleApiController } from './controllers/role-api.controller';
+import { RoleService } from './services/role.service';
+
 /**
  * 유저 서비스 모듈
  *
  * @author 이성현
  */
-import { Module } from '@nestjs/common';
-import { ClientProxyFactory, Transport } from '@nestjs/microservices';
-
-import { UserService } from './services/user.service';
-import { UserApiController } from './controllers/userApiController';
-
 @Module({
   providers: [
     {
@@ -21,8 +24,10 @@ import { UserApiController } from './controllers/userApiController';
       },
     },
     UserService,
+    RoleService,
+    JwtService,
   ],
-  exports: [UserService],
-  controllers: [UserApiController],
+  exports: [UserService, RoleService],
+  controllers: [UserApiController, RoleApiController],
 })
 export class UserModule {}

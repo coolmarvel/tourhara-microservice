@@ -1,19 +1,34 @@
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
+
+import { IUserService } from '../interfaces';
+import { UserResDto } from '../dtos';
+
 /**
  * 유저 서비스
  *
  * @author 이성현
  */
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
-
-import { IUserService } from '../interfaces/user.interface';
-import { UserResDto } from '../dtos/user.dto';
-
 @Injectable()
 export class UserService implements IUserService {
   constructor(@Inject('USER_SERVICE') private readonly client: ClientProxy) {}
 
+  /**
+   * 유저 전체 조회
+   */
+  async getUsersAll(): Promise<UserResDto[]> {
+    try {
+      const pattern: any = { cmd: 'getUsersAll' };
+      const payload = {};
+
+      return await firstValueFrom(this.client.send(pattern, payload));
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // TODO 하위 코드들은 사용하는 로직인지 확인 필요
   async checkUserIsAdmin(uuid: string): Promise<boolean> {
     try {
       const pattern = { cmd: 'checkUserIsAdmin' };
@@ -61,20 +76,6 @@ export class UserService implements IUserService {
       const { id } = await firstValueFrom<{ id: string }>(this.client.send<{ id: string }>(pattern, payload));
 
       return id;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  /**
-   * 유저 전체 조회
-   */
-  async getUsersAll(): Promise<UserResDto[]> {
-    try {
-      const pattern: any = { cmd: 'getUsersAll' };
-      const payload = {};
-
-      return await firstValueFrom(this.client.send(pattern, payload));
     } catch (error) {
       throw error;
     }

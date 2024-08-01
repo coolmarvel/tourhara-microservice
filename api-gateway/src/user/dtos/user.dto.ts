@@ -4,7 +4,7 @@
  * @author 김이안
  */
 import { ApiProperty } from '@nestjs/swagger';
-import { UseYn } from '../constants/useYn.enum';
+import { UseYn } from '../constants';
 
 export class UserResDto {
   @ApiProperty({ required: true })

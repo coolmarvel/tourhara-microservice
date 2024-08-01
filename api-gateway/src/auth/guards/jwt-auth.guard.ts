@@ -6,8 +6,13 @@ import { Observable } from 'rxjs';
 
 import { UserService } from '../../user/services/user.service';
 import { IS_PUBLIC_KEY, ROLES_KEY } from '../../common';
-import { Role } from '../../user/constants/user.enum';
+import { RoleGroup } from '../../user/constants';
 
+/**
+ * JWT 토큰을 검증하고, 사용자의 권한 확인
+ *
+ * @author 이성현
+ */
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
   constructor(
@@ -37,7 +42,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       throw new UnauthorizedException('accessToken is required.');
     }
 
-    const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [context.getHandler(), context.getClass()]);
+    const requiredRoles = this.reflector.getAllAndOverride<RoleGroup[]>(ROLES_KEY, [context.getHandler(), context.getClass()]);
     if (requiredRoles) {
       const userId = decoded['sub'];
 
