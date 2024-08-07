@@ -2,7 +2,6 @@ import { LineItemMetadata } from './line-item-metadata.entity';
 import { OrderMetadata } from './order-metadata.entity';
 import { JfkShuttleRt } from './jfk-shuttle-rt.entity';
 import { GuestHouse } from './guest-house.entity';
-import { CheckList } from './check-list.entity';
 import { JfkOneway } from './jfk-oneway.entity';
 import { LineItem } from './line-item.entity';
 import { SnapInfo } from './snap-info.entity';
@@ -15,4 +14,4 @@ import { Payment } from './payment.entity';
 import { Order } from './order.entity';
 import { Tour } from './tour.entity';
 
-export default [CheckList, Billing, GuestHouse, H2oUsim, JfkOneway, JfkShuttleRt, LineItem, LineItemMetadata, Order, OrderMetadata, Payment, Shipping, SnapInfo, TourInfo, Tour, UsimInfo];
+export default [Billing, GuestHouse, H2oUsim, JfkOneway, JfkShuttleRt, LineItem, LineItemMetadata, Order, OrderMetadata, Payment, Shipping, SnapInfo, TourInfo, Tour, UsimInfo];

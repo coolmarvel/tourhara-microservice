@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-
 import { firstValueFrom } from 'rxjs';
 
 import { IOrderService } from '../interfaces/order.interface';
@@ -56,46 +55,6 @@ export class OrderService implements IOrderService {
     try {
       const pattern = { cmd: 'deleteAnOrder' };
       const payload = { order_id };
-
-      return await firstValueFrom(this.client.send(pattern, payload));
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async orderCreated(payload: any): Promise<any> {
-    try {
-      const pattern = { cmd: 'orderCreated' };
-
-      return await firstValueFrom(this.client.send(pattern, payload));
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async orderUpdated(payload: any): Promise<any> {
-    try {
-      const pattern = { cmd: 'orderUpdated' };
-
-      return await firstValueFrom(this.client.send(pattern, payload));
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async orderDeleted(payload: any): Promise<any> {
-    try {
-      const pattern = { cmd: 'orderDeleted' };
-
-      return await firstValueFrom(this.client.send(pattern, payload));
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async orderRestored(payload: any): Promise<any> {
-    try {
-      const pattern = { cmd: 'orderRestored' };
 
       return await firstValueFrom(this.client.send(pattern, payload));
     } catch (error) {

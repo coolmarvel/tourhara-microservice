@@ -33,7 +33,7 @@ export default class OrderMetadataService implements IOrderMetadataService {
           await queryRunner.manager.query(
             `UPDATE \`order_metadata\` SET 
                 value=?, updated_at=NOW()
-              WHERE order_id =? AND \`key\`=?;`,
+              WHERE order_id=? AND \`key\`=?;`,
             [value, orderId, key],
           );
           logger.info(`Updated metadata record for order_id=${orderId} and \`key\`=${key}.`);
@@ -42,9 +42,9 @@ export default class OrderMetadataService implements IOrderMetadataService {
         else {
           await queryRunner.manager.query(
             `INSERT INTO \`order_metadata\` (
-                id, order_id, \`key\`, value, created_at, updated_at
+                id, \`key\`, value, order_id, created_at, updated_at
               ) VALUES (?, ?, ?, ?, NOW(), NOW());`,
-            [id, orderId, key, value],
+            [id, key, value, orderId],
           );
           logger.info(`Inserted new metadata record for order_id=${orderId} and \`key\`=${key}.`);
         }
