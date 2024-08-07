@@ -25,17 +25,27 @@ export default class AttributeService implements IAttributeService {
     try {
       const exist = await queryRunner.manager.query(
         `SELECT * FROM \`attribute\` 
-        WHERE id=? AND position=? AND visible=? AND variation=? AND options=?;`,
+        WHERE id=? AND name=? AND position=? AND visible=? AND variation=? AND options=?;`,
         [BigInt(attribute.id), attribute.name, attribute.position, attribute.visible, attribute.variation, attribute.options.join(',')],
       );
-      if (exist.length > 0) return await this.update(queryRunner, attribute);
 
-      await queryRunner.manager.query(
-        `INSERT INTO \`attribute\` (
-          id, name, position, visible, variation, options, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW());`,
-        [BigInt(attribute.id), attribute.name, attribute.position, attribute.visible, attribute.variation, attribute.options.join(',')],
-      );
+      if (exist.length > 0) {
+        await queryRunner.manager.query(
+          `UPDATE \`attribute\` SET
+            id=?, name=?, position=?, visible=?, variation=?, options=?, updated_at=NOW()
+          WHERE attribute_id=?;`,
+          [attribute.id, attribute.name, attribute.position, attribute.visible, attribute.variation, attribute.options.join(','), BigInt(exist[0].attribute_id)],
+        );
+        logger.info(`Updated attribute record for attribute_id=${exist[0].attribute_id}.`);
+      } else {
+        await queryRunner.manager.query(
+          `INSERT INTO \`attribute\` (
+            id, name, position, visible, variation, options, created_at, updated_at
+          ) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW());`,
+          [BigInt(attribute.id), attribute.name, attribute.position, attribute.visible, attribute.variation, attribute.options.join(',')],
+        );
+        logger.info(`Inserted new attribute record.`);
+      }
     } catch (error: any) {
       logger.error('Attribute Service Insert Error');
       throw error;
@@ -46,9 +56,9 @@ export default class AttributeService implements IAttributeService {
     try {
       await queryRunner.manager.query(
         `UPDATE \`attribute\` SET
-          name=?, position=?, visible=?, variation=?, options=?, updated_at=NOW()
-        WHERE id=?;`,
-        [attribute.name, attribute.position, attribute.visible, attribute.variation, attribute.options.join(','), BigInt(attribute.id)],
+          id=?, name=?, position=?, visible=?, variation=?, options=?, updated_at=NOW()
+        WHERE attribute_id=?;`,
+        [attribute.id, attribute.name, attribute.position, attribute.visible, attribute.variation, attribute.options.join(','), BigInt(attribute.attribute_id)],
       );
 
       return BigInt(attribute.id);

@@ -28,11 +28,11 @@ export default class LineItemService implements ILineItemService {
         { key: 'subtotal_tax', value: subtotal_tax },
         { key: 'total', value: total },
         { key: 'total_tax', value: total_tax },
-        { key: 'bundled_by', value: bundled_by },
-        { key: 'bundled_item_title', value: this.extractText(bundled_item_title) },
+        { key: 'bundled_by', value: bundled_by ? bundled_by : null },
+        { key: 'bundled_item_title', value: bundled_item_title ? this.extractText(bundled_item_title) : null },
         { key: 'parent_name', value: parent_name },
         { key: 'taxes', value: taxes.length > 0 ? JSON.stringify(taxes) : null },
-        { key: 'bundled_items', value: bundled_items.length > 0 ? bundled_items.join(',') : null },
+        { key: 'bundled_items', value: bundled_items && bundled_items.length > 0 ? bundled_items.join(',') : null },
       ];
 
       for (const { key, value } of dataToInsert) {
@@ -77,11 +77,11 @@ export default class LineItemService implements ILineItemService {
         { key: 'subtotal_tax', value: subtotal_tax },
         { key: 'total', value: total },
         { key: 'total_tax', value: total_tax },
-        { key: 'bundled_by', value: bundled_by },
-        { key: 'bundled_item_title', value: this.extractText(bundled_item_title) },
+        { key: 'bundled_by', value: bundled_by ? bundled_by : null },
+        { key: 'bundled_item_title', value: bundled_item_title ? this.extractText(bundled_item_title) : null },
         { key: 'parent_name', value: parent_name },
         { key: 'taxes', value: taxes.length > 0 ? JSON.stringify(taxes) : null },
-        { key: 'bundled_items', value: bundled_items.length > 0 ? bundled_items.join(',') : null },
+        { key: 'bundled_items', value: bundled_items && bundled_items.length > 0 ? bundled_items.join(',') : null },
       ];
 
       for (const { key, value } of dataToUpdate) {
@@ -102,7 +102,7 @@ export default class LineItemService implements ILineItemService {
   }
 
   private extractText(htmlText: string): string {
-    const textInsideTags = htmlText.match(/<a [^>]*>(.*?)<\/a>/);
+    const textInsideTags = htmlText && htmlText.match(/<a [^>]*>(.*?)<\/a>/);
 
     return textInsideTags && textInsideTags.length > 1 ? textInsideTags[1].replace(/<img[^>]*>/g, '').trim() : htmlText.replace(/<\/?[^>]+(>|$)/g, '').trim();
   }

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 
 import { IWebhookService } from '../interfaces';
-import { AttributeService, CategoryService, ProductImageService, ProductService, TagService } from '.';
+import { AttributeService, CategoryImageService, CategoryService, ProductImageService, ProductService, TagService } from '.';
 
 @Injectable()
 export default class WebhookService implements IWebhookService {
@@ -13,6 +13,7 @@ export default class WebhookService implements IWebhookService {
     private readonly categoryService: CategoryService,
     private readonly attributeService: AttributeService,
     private readonly productImageService: ProductImageService,
+    private readonly categoryImageService: CategoryImageService,
   ) {}
 
   async productCreated(payload: any): Promise<any> {
@@ -24,7 +25,10 @@ export default class WebhookService implements IWebhookService {
 
       const categories = payload.categories;
       for (const category of categories) {
-        await this.categoryService.insert(queryRunner, category);
+        const categoryId = await this.categoryService.insert(queryRunner, category);
+
+        const categoryImage = category?.image;
+        if (categoryImage) await this.categoryImageService.insert(queryRunner, categoryImage, categoryId);
       }
 
       const tags = payload.tags;
