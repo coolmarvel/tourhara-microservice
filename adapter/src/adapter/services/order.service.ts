@@ -25,13 +25,10 @@ export default class OrderService implements IOrderService {
     await queryRunner.connect();
 
     try {
-      // const afterDate = this.toKSTAfterDate(after);
-      // const beforeDate = this.toKSTBeforeDate(before);
       const orders = await queryRunner.manager.query(
         `SELECT id, status, currency, currency_symbol, date_created, date_created_gmt,
           date_modified, date_modified_gmt, date_completed, date_completed_gmt
         FROM \`order\` WHERE date_created_gmt>=? AND date_created_gmt<=?;`,
-        // [afterDate, beforeDate],
         [after, before],
       );
 
@@ -93,63 +90,66 @@ export default class OrderService implements IOrderService {
 
   private async aggregateLineItems(queryRunner: QueryRunner, orderId: number, product_id: string): Promise<any[]> {
     const productIds = product_id.split(',');
-    const relevantLineItems = [];
 
-    for (const productId of productIds) {
-      const lineItems = await queryRunner.manager.query(
-        `SELECT li.line_item_id, li.id, li.\`key\`, li.value FROM \`line_item\` li 
-        JOIN \`line_item\` product_id_li ON li.order_id=product_id_li.order_id AND li.id=product_id_li.id
-        WHERE li.order_id=? AND product_id_li.\`key\`='product_id' AND product_id_li.value=?;`,
-        [orderId, productId],
-      );
+    // 모든 관련 line_item_ids를 한 번에 가져옵니다.
+    const lineItems = await queryRunner.manager.query(
+      `SELECT li.id, li.\`key\`, li.value FROM \`line_item\` li
+    JOIN \`line_item\` product_id_li ON li.order_id=product_id_li.order_id AND li.id=product_id_li.id
+    WHERE li.order_id=? AND product_id_li.\`key\`='product_id' AND product_id_li.value IN (?);`,
+      [orderId, productIds],
+    );
 
-      const lineItemMap = {};
-      const bundledItemsMap = {};
-      lineItems.forEach((item: any) => {
-        if (!lineItemMap[item.id]) lineItemMap[item.id] = { id: item.id };
-        lineItemMap[item.id][item.key] = item.value;
+    const lineItemMap = {};
+    const bundledItemsMap = {};
 
-        if (item.key.includes('bundled_items')) bundledItemsMap[item.id] = item.value.split(',').map((id: string) => parseInt(id, 10));
-      });
-
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      for (const [lineItemId, bundledIds] of Object.entries(bundledItemsMap)) {
-        if (Array.isArray(bundledIds)) {
-          for (const bundledId of bundledIds) {
-            const bundledItems = await queryRunner.manager.query(`SELECT li.id, li.\`key\`, li.value FROM \`line_item\` li WHERE li.id=? AND li.order_id=?;`, [bundledId, orderId]);
-
-            bundledItems.forEach((item: any) => {
-              if (!lineItemMap[item.id]) lineItemMap[item.id] = { id: item.id };
-              lineItemMap[item.id][item.key] = item.value;
-            });
-          }
-        }
+    // lineItems을 처리하여 lineItemMap 및 bundledItemsMap을 구성합니다.
+    lineItems.forEach((item) => {
+      if (!lineItemMap[item.id]) {
+        lineItemMap[item.id] = { id: item.id };
       }
+      lineItemMap[item.id][item.key] = item.value;
 
-      relevantLineItems.push(...Object.values(lineItemMap));
+      // 'bundled_items' 키를 확인하고 맵에 저장합니다.
+      if (item.key.includes('bundled_items') && item.value) {
+        bundledItemsMap[item.id] = item.value.split(',').map(Number);
+      }
+    });
+
+    // bundledItemsMap에 있는 모든 bundled IDs에 대해 상세 정보를 가져옵니다.
+    const allBundledIds = Object.values(bundledItemsMap).flat();
+    if (allBundledIds.length > 0) {
+      const bundledItemsDetails = await queryRunner.manager.query(`SELECT li.id, li.\`key\`, li.value FROM \`line_item\` li WHERE li.id IN (?) AND li.order_id=?;`, [allBundledIds, orderId]);
+
+      // 결과를 처리하여 lineItemMap에 추가합니다.
+      bundledItemsDetails.forEach((item) => {
+        if (!lineItemMap[item.id]) {
+          lineItemMap[item.id] = { id: item.id };
+        }
+        lineItemMap[item.id][item.key] = item.value;
+      });
     }
 
-    return relevantLineItems;
+    return Object.values(lineItemMap);
   }
 
   private async aggregateOrderDetails(queryRunner: QueryRunner, orderId: number): Promise<any> {
-    try {
-      const categories = ['order_metadata', 'billing', 'shipping', 'guest_house', 'jfk_oneway', 'jfk_shuttle_rt', 'h2o_usim', 'usim_info', 'snap_info', 'tour', 'tour_info'];
-      const details = {};
+    const categories = ['order_metadata', 'billing', 'shipping', 'guest_house', 'jfk_oneway', 'jfk_shuttle_rt', 'h2o_usim', 'usim_info', 'snap_info', 'tour', 'tour_info'];
+    const details = {};
 
-      for (const category of categories) {
-        const results = await queryRunner.manager.query(`SELECT \`key\`, value FROM \`${category}\` WHERE order_id=?;`, [orderId]);
-        details[category] = results.reduce((acc, item) => {
-          acc[item.key] = item.value;
+    // 모든 카테고리에 대한 데이터를 한 번의 쿼리로 가져옵니다.
+    const results = await queryRunner.manager.query(
+      `SELECT category, \`key\`, value FROM (
+      ${categories.map((category) => `SELECT '${category}' as category, \`key\`, value FROM \`${category}\` WHERE order_id=${orderId}`).join(' UNION ALL ')}
+    ) as combined`,
+    );
 
-          return acc;
-        }, {});
-      }
+    // 결과를 기반으로 각 카테고리별로 데이터를 매핑합니다.
+    results.forEach(({ category, key, value }) => {
+      if (!details[category]) details[category] = {};
+      details[category][key] = value;
+    });
 
-      return details;
-    } catch (error: any) {
-      throw error;
-    }
+    return details;
   }
 
   private async aggregateLineItemDetails(queryRunner: QueryRunner, lineItemId: number): Promise<any> {

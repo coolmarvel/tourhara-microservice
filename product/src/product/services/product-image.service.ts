@@ -61,7 +61,7 @@ export default class ProductImageService implements IProductImageService {
 
       return BigInt(productImage.id);
     } catch (error: any) {
-      logger.error('Product Image Service Select Error');
+      logger.error('Product Image Service Insert Error');
       throw error;
     }
   }
@@ -87,7 +87,7 @@ export default class ProductImageService implements IProductImageService {
 
       return BigInt(productImage.id);
     } catch (error: any) {
-      logger.error('Product Image Service Select Error');
+      logger.error('Product Image Service Update Error');
       throw error;
     }
   }

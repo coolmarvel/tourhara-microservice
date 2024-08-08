@@ -64,6 +64,35 @@ export default class WebhookService implements IWebhookService {
     await queryRunner.connect();
 
     try {
+      await queryRunner.startTransaction();
+
+      const categories = payload.categories;
+      for (const category of categories) {
+        const categoryId = await this.categoryService.update(queryRunner, category);
+
+        const categoryImage = category?.image;
+        if (categoryImage) await this.categoryImageService.update(queryRunner, categoryImage, categoryId);
+      }
+
+      const tags = payload.tags;
+      for (const tag of tags) {
+        await this.tagService.update(queryRunner, tag);
+      }
+
+      const attributes = payload.attributes;
+      for (const attribute of attributes) {
+        await this.attributeService.update(queryRunner, attribute);
+      }
+
+      const images = payload.images;
+      for (const image of images) {
+        await this.productImageService.update(queryRunner, image);
+      }
+
+      await this.productService.update(queryRunner, payload);
+
+      await queryRunner.commitTransaction();
+
       return true;
     } catch (error) {
       await queryRunner.rollbackTransaction();

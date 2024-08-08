@@ -40,7 +40,7 @@ export default class TagService implements ITagService {
 
       return BigInt(tag.id);
     } catch (error: any) {
-      logger.error('Tag Service Select Error');
+      logger.error('Tag Service Insert Error');
       throw error;
     }
   }
@@ -56,7 +56,7 @@ export default class TagService implements ITagService {
 
       return BigInt(tag.id);
     } catch (error: any) {
-      logger.error('Tag Service Select Error');
+      logger.error('Tag Service Update Error');
       throw error;
     }
   }

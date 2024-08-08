@@ -1,10 +1,9 @@
-import { Body, Controller, Delete, Get, Headers, HttpStatus, Param, Post, Put, Query, VERSION_NEUTRAL } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Public } from 'src/common/decorators/public.decorator';
-import { PageReqDto } from 'src/common/dtos/req.dto';
-import { CreateProductReqDto, DeleteProductReqDto, RetrieveProductReqDto, UpdateProductBodyReqDto, UpdateProductParamReqDto } from 'src/product/dtos/req.dto';
-import { WebhookHeaderReqDto } from 'src/product/dtos/webhook-req.dto';
+
+import { CreateProductReqDto, DeleteProductReqDto, RetrieveProductReqDto, UpdateProductBodyReqDto, UpdateProductParamReqDto } from '../dtos/req.dto';
 import { ProductService } from '../services/product.service';
+import { PageReqDto, Public } from '../../common';
 
 @ApiTags('Product')
 @Controller({ path: 'api/product', version: VERSION_NEUTRAL })
@@ -44,49 +43,5 @@ export class ProductController {
   @ApiOperation({ summary: '단일 상품 삭제 API' })
   async deleteAProduct(@Param() { product_id }: DeleteProductReqDto) {
     return await this.productService.deleteAProduct(product_id);
-  }
-
-  @Public()
-  @Post('created')
-  @ApiOperation({ summary: '단일 상품 생성 WEBHOOK' })
-  async productCreated(@Headers() header: WebhookHeaderReqDto, @Body() data: any) {
-    if (header['x-wc-webhook-topic'] !== 'product.created') return HttpStatus.OK;
-    console.log(header);
-
-    const result = await this.productService.productCreated(data);
-
-    if (result) return HttpStatus.OK;
-    else return HttpStatus.BAD_REQUEST;
-  }
-
-  @Public()
-  @Post('updated')
-  @ApiOperation({ summary: '단일 상품 갱신 WEBHOOK' })
-  async productUpdated(@Headers() header: WebhookHeaderReqDto, @Body() data: any) {
-    if (header['x-wc-webhook-topic'] !== 'product.updated') return HttpStatus.OK;
-    console.log(header);
-
-    const result = await this.productService.productUpdated(data);
-    if (result) return HttpStatus.OK;
-  }
-
-  @Public()
-  @Post('deleted')
-  @ApiOperation({ summary: '단일 상품 삭제 WEBHOOK' })
-  async productDeleted(@Headers() header: WebhookHeaderReqDto, @Body() data: any) {
-    if (header['x-wc-webhook-topic'] !== 'product.deleted') return HttpStatus.OK;
-    console.log(header);
-
-    return await this.productService.productDeleted(data);
-  }
-
-  @Public()
-  @Post('restored')
-  @ApiOperation({ summary: '단일 상품 복원 WEBHOOK' })
-  async productRestored(@Headers() header: WebhookHeaderReqDto, @Body() data: any) {
-    if (header['x-wc-webhook-topic'] !== 'product.restored') return HttpStatus.OK;
-    console.log(header);
-
-    return await this.productService.productRestored(data);
   }
 }

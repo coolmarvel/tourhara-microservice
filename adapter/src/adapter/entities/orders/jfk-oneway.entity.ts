@@ -3,7 +3,7 @@ import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, Update
 @Entity()
 @Index(['orderId', 'key'])
 export class JfkOneway {
-  @PrimaryGeneratedColumn({ type: 'bigint', name: 'jfk_oneway__id' })
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'jfk_oneway_id' })
   jfk_oneway_Id!: bigint;
 
   @Column({ type: 'bigint', name: 'order_id' })

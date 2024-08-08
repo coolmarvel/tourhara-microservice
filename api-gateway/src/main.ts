@@ -2,6 +2,7 @@ import { ClassSerializerInterceptor, ValidationPipe, VersioningType } from '@nes
 import { DocumentBuilder, SwaggerCustomOptions, SwaggerModule } from '@nestjs/swagger';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
+import { json, urlencoded } from 'express';
 
 import { AppModule } from './app.module';
 
@@ -25,6 +26,8 @@ async function bootstrap() {
   app.enableShutdownHooks();
   app.enableVersioning({ type: VersioningType.URI });
 
+  app.use(json({ limit: '50mb' }));
+  app.use(urlencoded({ extended: true, limit: '50mb' }));
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
@@ -41,4 +44,5 @@ async function bootstrap() {
   console.log(`🚀 Server is listening on http://localhost:${port}`);
   console.log(`📚 Swagger API documentation available at http://localhost:${port}/docs`);
 }
+
 bootstrap();

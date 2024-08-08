@@ -2,6 +2,7 @@ import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, Update
 
 @Entity()
 @Index(['orderId', 'key'])
+@Index(['orderId', 'key', 'value'])
 export class LineItem {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'line_item_id' })
   lineItemId!: bigint;
@@ -11,6 +12,7 @@ export class LineItem {
   orderId!: bigint;
 
   @Column({ type: 'bigint' })
+  @Index()
   id!: bigint;
 
   @Column()
