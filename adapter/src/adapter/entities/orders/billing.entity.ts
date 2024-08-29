@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Order } from './order.entity';
 
 @Entity()
 @Index(['orderId', 'key'])
@@ -6,15 +7,13 @@ export class Billing {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'billing_id' })
   billingId!: bigint;
 
-  @Column({ type: 'bigint', name: 'order_id' })
-  @Index()
+  @Column({ type: 'bigint', name: 'order_id', nullable: true })
   orderId!: bigint;
 
-  @Column()
-  @Index()
+  @Column({ nullable: true })
   key!: string;
 
-  @Column()
+  @Column({ nullable: true })
   value!: string;
 
   @CreateDateColumn({ name: 'created_at' })
@@ -22,4 +21,8 @@ export class Billing {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt!: Date;
+
+  @ManyToOne(() => Order, (order) => order.billings)
+  @JoinColumn({ name: 'order_id', referencedColumnName: 'id' })
+  order!: Order;
 }
