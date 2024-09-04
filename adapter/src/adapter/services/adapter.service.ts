@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { DataSource, QueryRunner } from 'typeorm';
 
 import { IAdapterService } from '../interfaces';
+import { ActivityStatus } from '../constants';
 
 @Injectable()
 export default class AdapterService implements IAdapterService {
@@ -144,8 +145,53 @@ export default class AdapterService implements IAdapterService {
     }, {});
   }
 
-  updateOrder() {
-    throw new Error('Method not implemented.');
+  async updateOrder(order_id: string, double_checked?: boolean, memo?: string) {
+    console.log(order_id, double_checked, memo);
+
+    const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+
+    try {
+      await queryRunner.startTransaction();
+
+      if (double_checked !== undefined) {
+        await queryRunner.manager.query(
+          `UPDATE \`order\` SET
+            double_checked=?, updated_at=NOW()
+          WHERE id=?;`,
+          [!!double_checked, order_id],
+        );
+
+        await queryRunner.manager.query(
+          `INSERT INTO \`activity_log\` (
+            order_id, user_id, activity, created_at, updated_at
+          ) VALUES (?, ?, ?, NOW(), NOW());`,
+          [order_id, 'seonghyunlee', ActivityStatus['CheckOrder']],
+        );
+      } else if (memo !== undefined) {
+        await queryRunner.manager.query(
+          `UPDATE \`order\` SET
+            memo=?, updated_at=NOW()
+          WHERE id=?;`,
+          [memo, order_id],
+        );
+
+        // const existMemo = await queryRunner.manager.query(
+        //   `SELECT 1 FROM \`activity_log\`
+        //   WHERE id=? AND activity=?;`,
+        //   [order_id, ActivityStatus['CreateMemo']],
+        // );
+      }
+
+      await queryRunner.commitTransaction();
+
+      return true;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   getActivityLogs() {

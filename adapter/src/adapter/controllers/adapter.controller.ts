@@ -11,4 +11,9 @@ export default class AdapterController {
   async getOrders({ product_id, after, before }): Promise<any> {
     return await this.adapterService.getOrders(product_id, after, before);
   }
+
+  @MessagePattern({ cmd: 'updateOrder' })
+  async updateOrder({ order_id, double_check, memo }): Promise<any> {
+    return await this.adapterService.updateOrder(order_id, double_check, memo);
+  }
 }

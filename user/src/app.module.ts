@@ -12,6 +12,7 @@ import { AppService } from './app.service';
 
 import { UserModule } from './user/user.module';
 import config from './config';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import config from './config';
         synchronize: true,
       }),
     }),
+    AuthModule,
     UserModule,
   ],
   controllers: [AppController],

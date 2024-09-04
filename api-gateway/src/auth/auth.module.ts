@@ -1,9 +1,3 @@
-/**
- * 인증 모듈
- * - Passport와 JWT 설정
- *
- * @author 이성현
- */
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
@@ -17,8 +11,17 @@ import { AuthService } from './services/auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { JwtAuthStrategy } from './guards/jwt-auth.strategy';
 import { AuthController } from './controllers/auth.controller';
+import { UserService } from '../user/services/user.service';
+import { ClientProxyFactory, Transport } from '@nestjs/microservices';
+import { SessionController } from './controllers/session.controller';
+import { SessionService } from './services/session.service';
 
-// PassportModule.register({ defaultStrategy: 'jwt' }),
+/**
+ * 인증 모듈
+ * - Passport 와 JWT 설정
+ *
+ * @author 이성현
+ */
 @Module({
   imports: [
     UserModule,
@@ -31,7 +34,22 @@ import { AuthController } from './controllers/auth.controller';
       },
     }),
   ],
-  providers: [AuthService, JwtAuthStrategy, { provide: APP_GUARD, useClass: JwtAuthGuard }],
-  controllers: [AuthController],
+  providers: [
+    AuthService,
+    UserService,
+    SessionService,
+    JwtAuthStrategy,
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+    {
+      provide: 'USER_SERVICE',
+      useFactory: () => {
+        return ClientProxyFactory.create({
+          transport: Transport.TCP,
+          options: { host: process.env.USER_HOST ?? 'localhost', port: parseInt(process.env.USER_PORT, 10) },
+        });
+      },
+    },
+  ],
+  controllers: [AuthController, SessionController],
 })
 export class AuthModule {}

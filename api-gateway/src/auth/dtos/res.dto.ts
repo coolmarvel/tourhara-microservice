@@ -1,8 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class SignupResDto {
+/**
+ * 로그인 Response DTO
+ */
+export class SigninResDto {
   @ApiProperty({ required: true })
-  id: string;
+  userName: string;
 
   @ApiProperty({ required: true })
   accessToken: string;
@@ -11,7 +14,18 @@ export class SignupResDto {
   refreshToken: string;
 }
 
-export class SigninResDto {
+/**
+ * Me API Response DTO
+ */
+export class MeResDto {
+  @ApiProperty({ required: true })
+  userId: string;
+}
+
+export class SignupResDto {
+  @ApiProperty({ required: true })
+  id: string;
+
   @ApiProperty({ required: true })
   accessToken: string;
 

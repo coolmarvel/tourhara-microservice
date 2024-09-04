@@ -1,9 +1,8 @@
-import { Controller, Get, UseGuards, VERSION_NEUTRAL } from '@nestjs/common';
+import { Controller, Get, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { UserService } from '../services/user.service';
 import { UserResDto } from '../dtos';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { Public } from '../../common';
 
 /**
@@ -11,7 +10,6 @@ import { Public } from '../../common';
  *
  * @author 김이안
  */
-@UseGuards(JwtAuthGuard)
 @ApiTags('System')
 @Controller({ path: 'api/system', version: VERSION_NEUTRAL })
 export class UserApiController {

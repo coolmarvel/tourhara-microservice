@@ -12,6 +12,9 @@ import { useContainer } from 'class-validator';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 
+import * as session from 'express-session';
+import * as cookieParser from 'cookie-parser';
+
 dotenv.config({ path: path.resolve(process.env.NODE_ENV === 'production' ? '.env.production' : process.env.NODE_ENV === 'staging' ? '.env.staging' : '.env') });
 
 async function bootstrap() {
@@ -22,7 +25,28 @@ async function bootstrap() {
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
-  app.enableCors({ origin: true, methods: 'GET,HEAD,PUT,PATH,POST,DELETE,OPTIONS', credentials: true });
+  app.enableCors({
+    origin: 'http://localhost:8080',
+    credentials: true,
+    methods: 'GET,HEAD,PUT,PATH,POST,DELETE,OPTIONS',
+  });
+
+  app.use(cookieParser());
+
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET,
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        maxAge: Number(process.env.COOKIE_MAX_AGE),
+        httpOnly: true,
+        secure: false,
+        sameSite: 'none',
+      },
+    }),
+  );
+
   app.enableShutdownHooks();
   app.enableVersioning({ type: VersioningType.URI });
 
@@ -31,9 +55,16 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
-  app.use(['/docs', '/docs-json'], basicAuth({ challenge: true, users: { [configService.get('swagger.username')]: configService.get('swagger.password') } }));
+  app.use(
+    ['/docs', '/docs-json'],
+    basicAuth({
+      challenge: true,
+      users: { [configService.get('swagger.username')]: configService.get('swagger.password') },
+    }),
+  );
 
   const config = new DocumentBuilder().setTitle('MSA PROJECT').setDescription('BackOffcie with WooCommerce').setVersion('2.0.0').addBearerAuth().build();
+
   const customOptions: SwaggerCustomOptions = { swaggerOptions: { persistAuthorization: true } };
   const document = SwaggerModule.createDocument(app, config);
 

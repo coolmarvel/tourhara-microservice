@@ -8,76 +8,21 @@ import { IAdapterService } from '../interfaces/adapter.interface';
 export class AdapterService implements IAdapterService {
   constructor(@Inject('ADAPTER_SERVICE') private client: ClientProxy) {}
 
-  async getAllTypes(): Promise<any> {
-    try {
-      const pattern = { cmd: 'getAllTypes' };
-      const payload = {};
-
-      return await firstValueFrom(this.client.send(pattern, payload));
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getAllNotDeclaredCategories(): Promise<any> {
-    try {
-      const pattern = { cmd: 'getAllNotDeclaredCategories' };
-      const payload = {};
-
-      return await firstValueFrom(this.client.send(pattern, payload));
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getAllDeclaredCategories(type_id: number): Promise<any> {
-    try {
-      const pattern = { cmd: 'getAllDeclaredCategories' };
-      const payload = { type_id };
-
-      return await firstValueFrom(this.client.send(pattern, payload));
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async updateCategoryByType(type_id: number, category_id: number): Promise<any> {
-    try {
-      const pattern = { cmd: 'updateCategoryByType' };
-      const payload = { type_id, category_id };
-
-      return await firstValueFrom(this.client.send(pattern, payload));
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getOrdersByProductId(product_id: string, after: string, before: string): Promise<any> {
-    try {
-      const pattern = { cmd: 'getOrdersByProductId' };
-      const payload = { product_id, after, before };
-
-      return await firstValueFrom(this.client.send(pattern, payload));
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getOrderByProductIdAndOrderId(product_id: string, order_id: string): Promise<any> {
-    try {
-      const pattern = { cmd: 'getOrderByProductIdAndOrderId' };
-      const payload = { product_id, order_id };
-
-      return await firstValueFrom(this.client.send(pattern, payload));
-    } catch (error) {
-      throw error;
-    }
-  }
-
   async getOrders(product_id: string, after: string, before: string): Promise<any> {
     try {
       const pattern = { cmd: 'getOrders' };
       const payload = { product_id, after, before };
+
+      return await firstValueFrom(this.client.send(pattern, payload));
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateOrder(order_id: string, double_check?: boolean, memo?: string): Promise<any> {
+    try {
+      const pattern = { cmd: 'updateOrder' };
+      const payload = { order_id, double_check, memo };
 
       return await firstValueFrom(this.client.send(pattern, payload));
     } catch (error) {
