@@ -1,15 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Public } from 'src/common/decorators/public.decorator';
-import { PageReqDto } from 'src/common/dtos/req.dto';
-import {
-  CreateProductAttributeReqDto,
-  DeleteProductAttributeReqDto,
-  RetrieveProductAttributeReqDto,
-  UpdateProductAttributeBodyReqDto,
-  UpdateProductAttributeParamReqDto,
-} from 'src/product/dtos/req.dto';
+
+import { CreateProductAttributeReqDto, DeleteProductAttributeReqDto, RetrieveProductAttributeReqDto, UpdateProductAttributeBodyReqDto, UpdateProductAttributeParamReqDto } from '../dtos/req.dto';
 import { AttributeService } from '../services/attribute.service';
+import { PageReqDto, Public } from '../../common';
 
 @ApiTags('Product-Attribute')
 @Controller({ path: 'api/product/attribute', version: VERSION_NEUTRAL })

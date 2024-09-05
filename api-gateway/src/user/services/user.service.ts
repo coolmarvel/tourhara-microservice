@@ -4,9 +4,10 @@ import { firstValueFrom } from 'rxjs';
 
 import { IUserService } from '../interfaces';
 import { UserResDto } from '../dtos';
+import { SignupReqDto } from '../../auth/dtos/req.dto';
 
 /**
- * 유저 서비스
+ * 유저 관리 서비스
  *
  * @author 이성현
  */
@@ -28,27 +29,15 @@ export class UserService implements IUserService {
     }
   }
 
-  // TODO 하위 코드들은 사용하는 로직인지 확인 필요
-  async checkUserIsAdmin(uuid: string): Promise<boolean> {
+  /**
+   * userId로 단건 조회
+   *
+   * @param userId
+   */
+  async findOneByUserId(userId: string): Promise<string> {
     try {
-      const pattern = { cmd: 'checkUserIsAdmin' };
-      const payload = { uuid };
-      const { isAdmin } = await firstValueFrom<{ isAdmin: boolean }>(
-        this.client.send<{
-          isAdmin: boolean;
-        }>(pattern, payload),
-      );
-
-      return isAdmin;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async findOneByEmail(email: string): Promise<string> {
-    try {
-      const pattern = { cmd: 'findOneByEmail' };
-      const payload = { email };
+      const pattern = { cmd: 'findOneByUserId' };
+      const payload = { userId };
       const { id } = await firstValueFrom<{ id: string }>(this.client.send<{ id: string }>(pattern, payload));
 
       return id;
@@ -57,25 +46,16 @@ export class UserService implements IUserService {
     }
   }
 
-  async signup(email: string, password: string): Promise<string> {
+  /**
+   * 유저 등록
+   *
+   * @param reqDto
+   */
+  async signup(reqDto: SignupReqDto): Promise<string> {
     try {
       const pattern = { cmd: 'signup' };
-      const payload = { email, password };
-      const { id } = await firstValueFrom<{ id: string }>(this.client.send<{ id: string }>(pattern, payload));
-
-      return id;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async validateUser(email: string, password: string): Promise<string> {
-    try {
-      const pattern = { cmd: 'validateUser' };
-      const payload = { email, password };
-      const { id } = await firstValueFrom<{ id: string }>(this.client.send<{ id: string }>(pattern, payload));
-
-      return id;
+      const payload = reqDto;
+      return await firstValueFrom(this.client.send(pattern, payload));
     } catch (error) {
       throw error;
     }

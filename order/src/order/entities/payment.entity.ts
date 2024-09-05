@@ -1,12 +1,14 @@
-import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+
+import { Order } from './order.entity';
 
 @Entity()
+@Index(['orderId'])
 export class Payment {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'payment_id' })
   paymentId!: bigint;
 
-  @Column({ type: 'bigint', name: 'order_id' })
-  @Index()
+  @Column({ type: 'bigint', name: 'order_id', nullable: true })
   orderId!: bigint;
 
   @Column({ name: 'payment_method', nullable: true })
@@ -29,4 +31,8 @@ export class Payment {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt!: Date;
+
+  @OneToOne(() => Order, (order) => order.payment)
+  @JoinColumn({ name: 'order_id', referencedColumnName: 'id' })
+  order!: Order;
 }

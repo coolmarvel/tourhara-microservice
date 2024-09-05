@@ -7,33 +7,13 @@ import { AdapterService } from '../services';
 export default class AdapterController {
   constructor(private readonly adapterService: AdapterService) {}
 
-  @MessagePattern({ cmd: 'getAllTypes' })
-  async getAllTypes() {
-    return await this.adapterService.getAllTypes();
+  @MessagePattern({ cmd: 'getOrders' })
+  async getOrders({ product_id, after, before }): Promise<any> {
+    return await this.adapterService.getOrders(product_id, after, before);
   }
 
-  @MessagePattern({ cmd: 'getAllNotDeclaredCategories' })
-  async getAllNotDeclaredCategories() {
-    return await this.adapterService.getAllNotDeclaredCategories();
-  }
-
-  @MessagePattern({ cmd: 'getAllDeclaredCategories' })
-  async getAllDeclaredCategories({ type_id }: { type_id: number }) {
-    return await this.adapterService.getAllDeclaredCategories(type_id);
-  }
-
-  @MessagePattern({ cmd: 'updateCategoryByType' })
-  async updateCategoryByType({ type_id, category_id }: { type_id: number; category_id: number }) {
-    return await this.adapterService.updateCategoryByType(type_id, category_id);
-  }
-
-  @MessagePattern({ cmd: 'getOrdersByProductId' })
-  async getOrdersByProductId({ product_id, after, before }: { product_id: string; after: string; before: string }) {
-    return await this.adapterService.getOrdersByProductId(product_id, after, before);
-  }
-
-  @MessagePattern({ cmd: 'getOrderByProductIdAndOrderId' })
-  async getOrderByProductIdAndOrderId({ product_id, order_id }: { product_id: string; order_id: string }) {
-    return await this.adapterService.getOrderByProductIdAndOrderId(product_id, order_id);
+  @MessagePattern({ cmd: 'updateOrder' })
+  async updateOrder({ order_id, double_check, memo }): Promise<any> {
+    return await this.adapterService.updateOrder(order_id, double_check, memo);
   }
 }

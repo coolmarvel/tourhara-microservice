@@ -1,13 +1,17 @@
-import { Module } from '@nestjs/common';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
+import { Module } from '@nestjs/common';
+
 import { AttributeService } from './services/attribute.service';
 import { CategoryService } from './services/category.service';
-import { TagService } from './services/tag.service';
 import { ProductService } from './services/product.service';
+import { TagService } from './services/tag.service';
+import { WebhookService } from './services/webhook.service';
+
 import { AttributeController } from './controllers/attribute.controller';
 import { CategoryController } from './controllers/category.controller';
-import { TagController } from './controllers/tag.controller';
 import { ProductController } from './controllers/product.controller';
+import { TagController } from './controllers/tag.controller';
+import { WebhookController } from './controllers/webhook.controller';
 
 @Module({
   providers: [
@@ -21,7 +25,8 @@ import { ProductController } from './controllers/product.controller';
     CategoryService,
     ProductService,
     TagService,
+    WebhookService,
   ],
-  controllers: [AttributeController, CategoryController, TagController, ProductController],
+  controllers: [AttributeController, CategoryController, TagController, ProductController, WebhookController],
 })
 export class ProductModule {}

@@ -1,9 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Public } from 'src/common/decorators/public.decorator';
-import { PageReqDto } from 'src/common/dtos/req.dto';
-import { CreateProductTagReqDto, DeleteProductTagReqDto, RetrieveProductTagReqDto, UpdateProductTagBodyReqDto, UpdateProductTagParamReqDto } from 'src/product/dtos/req.dto';
+
+import { CreateProductTagReqDto, DeleteProductTagReqDto, RetrieveProductTagReqDto, UpdateProductTagBodyReqDto, UpdateProductTagParamReqDto } from '../dtos/req.dto';
 import { TagService } from '../services/tag.service';
+import { PageReqDto, Public } from '../../common';
 
 @ApiTags('Product-Tag')
 @Controller({ path: 'api/product/tag', version: VERSION_NEUTRAL })

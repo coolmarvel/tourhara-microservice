@@ -1,10 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Public } from 'src/common/decorators/public.decorator';
-import { PageReqDto } from 'src/common/dtos/req.dto';
-import { CreateProductCategoryReqDto, DeleteProductCateogryReqDto, RetrieveProductCategoryReqDto, UpdateCategoryBodyReqDto, UpdateCategoryParamReqDto } from 'src/product/dtos/req.dto';
 
+import { CreateProductCategoryReqDto, DeleteProductCateogryReqDto, RetrieveProductCategoryReqDto, UpdateCategoryBodyReqDto, UpdateCategoryParamReqDto } from '../dtos/req.dto';
 import { CategoryService } from '../services/category.service';
+import { PageReqDto, Public } from '../../common';
 
 @ApiTags('Product-Category')
 @Controller({ path: 'api/product/category', version: VERSION_NEUTRAL })

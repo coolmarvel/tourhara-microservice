@@ -35,7 +35,7 @@ export class RoleService implements IRoleService {
   async getRolesAllByUserId(reqDto: UserRoleReqDto): Promise<UserRoleResDto[]> {
     try {
       const pattern: any = { cmd: 'getRolesAllByUserId' };
-      const payload = { reqDto };
+      const payload = reqDto;
 
       return await firstValueFrom(this.client.send<UserRoleResDto[]>(pattern, payload));
     } catch (error) {

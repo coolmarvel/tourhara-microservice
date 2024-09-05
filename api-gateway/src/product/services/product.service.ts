@@ -61,44 +61,4 @@ export class ProductService implements IProductService {
       throw error;
     }
   }
-
-  async productCreated(payload: any): Promise<any> {
-    try {
-      const pattern = { cmd: 'productCreated' };
-
-      return await firstValueFrom(this.client.send(pattern, payload));
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async productUpdated(payload: any): Promise<any> {
-    try {
-      const pattern = { cmd: 'productUpdated' };
-
-      return await firstValueFrom(this.client.send(pattern, payload));
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async productDeleted(payload: any): Promise<any> {
-    try {
-      const pattern = { cmd: 'productDeleted' };
-
-      return await firstValueFrom(this.client.send(pattern, payload));
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async productRestored(payload: any): Promise<any> {
-    try {
-      const pattern = { cmd: 'productRestored' };
-
-      return await firstValueFrom(this.client.send(pattern, payload));
-    } catch (error) {
-      throw error;
-    }
-  }
 }

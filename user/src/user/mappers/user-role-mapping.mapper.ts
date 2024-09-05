@@ -15,7 +15,7 @@ export class UserRoleMappingMapper {
    */
   toUserRoleResDto(row): UserRoleResDto {
     const resDto = new UserRoleResDto();
-    resDto.roleCode = row.roleCode;
+    resDto.roleCode = row.role_code;
     return resDto;
   }
 }

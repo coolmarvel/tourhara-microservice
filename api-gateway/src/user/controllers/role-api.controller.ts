@@ -1,7 +1,7 @@
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { Controller, Get, UseGuards, VERSION_NEUTRAL } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Public, Roles } from '../../common';
+import { Public } from '../../common';
 import { RoleService } from '../services/role.service';
 import { RoleResDto, UserRoleReqDto, UserRoleResDto } from '../dtos';
 
@@ -34,7 +34,7 @@ export class RoleApiController {
   @Get('user-roles')
   @Public()
   @ApiOperation({ summary: 'getRolesAllByUserId' })
-  async getRolesAllByUserId(reqDto: UserRoleReqDto): Promise<UserRoleResDto[]> {
+  async getRolesAllByUserId(@Query() reqDto: UserRoleReqDto): Promise<UserRoleResDto[]> {
     return this.roleService.getRolesAllByUserId(reqDto);
   }
 }

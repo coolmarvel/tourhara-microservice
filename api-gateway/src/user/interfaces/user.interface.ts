@@ -1,19 +1,15 @@
 /**
- * 유저 인터페이스
+ * 유저 관리 인터페이스
  *
  * @author 이성현
  */
 import { UserResDto } from '../dtos';
+import { SignupReqDto } from '../../auth/dtos/req.dto';
 
 export interface IUserService {
   getUsersAll(): Promise<UserResDto[]>;
 
-  // TODO 하위 코드들은 사용하는 로직들인지 확인 필요
-  checkUserIsAdmin(uuid: string): Promise<boolean>;
+  findOneByUserId(email: string): Promise<string>;
 
-  findOneByEmail(email: string): Promise<string>;
-
-  signup(email: string, password: string): Promise<string>;
-
-  validateUser(email: string, password: string): Promise<string>;
+  signup(reqDto: SignupReqDto): Promise<string>;
 }
