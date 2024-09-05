@@ -159,7 +159,7 @@ export default class AdapterService implements IAdapterService {
           `UPDATE \`order\` SET
             double_checked=?, updated_at=NOW()
           WHERE id=?;`,
-          [!!double_checked, order_id],
+          [double_checked, order_id],
         );
 
         await queryRunner.manager.query(
@@ -168,7 +168,9 @@ export default class AdapterService implements IAdapterService {
           ) VALUES (?, ?, ?, NOW(), NOW());`,
           [order_id, 'seonghyunlee', ActivityStatus['CheckOrder']],
         );
-      } else if (memo !== undefined) {
+      }
+
+      if (memo !== undefined) {
         await queryRunner.manager.query(
           `UPDATE \`order\` SET
             memo=?, updated_at=NOW()
@@ -176,11 +178,26 @@ export default class AdapterService implements IAdapterService {
           [memo, order_id],
         );
 
-        // const existMemo = await queryRunner.manager.query(
-        //   `SELECT 1 FROM \`activity_log\`
-        //   WHERE id=? AND activity=?;`,
-        //   [order_id, ActivityStatus['CreateMemo']],
-        // );
+        const existMemo = await queryRunner.manager.query(
+          `SELECT 1 FROM \`activity_log\`
+          WHERE order_id=? AND activity=?;`,
+          [order_id, ActivityStatus['CreateMemo']],
+        );
+        if (existMemo.length === 0) {
+          await queryRunner.manager.query(
+            `INSERT INTO \`activity_log\` (
+            order_id, user_id, activity, created_at, updated_at
+          ) VALUES (?, ?, ?, NOW(), NOW());`,
+            [order_id, 'seonghyunlee', ActivityStatus['CreateMemo']],
+          );
+        } else if (existMemo.length > 0) {
+          await queryRunner.manager.query(
+            `INSERT INTO \`activity_log\` (
+            order_id, user_id, activity, created_at, updated_at
+          ) VALUES (?, ?, ?, NOW(), NOW());`,
+            [order_id, 'seonghyunlee', ActivityStatus['UpdateMemo']],
+          );
+        }
       }
 
       await queryRunner.commitTransaction();

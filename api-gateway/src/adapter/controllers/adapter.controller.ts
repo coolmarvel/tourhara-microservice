@@ -21,6 +21,6 @@ export class AdapterController {
   @Put('order')
   @ApiOperation({ summary: '주문 리스트 조회 API' })
   async updateOrder(@Query() { order_id, double_check, memo }) {
-    return await this.adapterService.updateOrder(order_id, double_check, memo);
+    return await this.adapterService.updateOrder(order_id, double_check === 'undefined' ? undefined : !!double_check, memo === 'undefined' ? undefined : decodeURI(memo));
   }
 }
