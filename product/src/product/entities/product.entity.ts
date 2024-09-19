@@ -1,12 +1,12 @@
 import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
+@Index(['id', 'categoryId'])
 export class Product {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'product_id' })
   productId!: bigint;
 
   @Column({ type: 'bigint' })
-  @Index()
   id!: bigint;
 
   @Column({ nullable: true })
@@ -55,7 +55,6 @@ export class Product {
   dateModifiedGmt!: Date;
 
   @Column({ name: 'category_id', nullable: true })
-  @Index()
   categoryId!: string;
 
   @Column({ name: 'tag_id', nullable: true })

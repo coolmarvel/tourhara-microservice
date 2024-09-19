@@ -1,12 +1,12 @@
 import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
+@Index(['id'])
 export class ProductImage {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'image_id' })
   imageId!: bigint;
 
   @Column({ type: 'bigint' })
-  @Index()
   id!: bigint;
 
   @Column({ nullable: true })

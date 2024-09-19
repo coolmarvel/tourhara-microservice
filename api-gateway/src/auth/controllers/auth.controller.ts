@@ -1,8 +1,8 @@
 import { BadRequestException, Body, Controller, Headers, Post, Res, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiBearerAuth, ApiExtraModels, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { ApiGetResponse, ApiPostResponse, Public, User, UserAfterAuth } from '../../common';
-import { MeResDto, RefreshResDto, SigninResDto, SignupResDto } from '../dtos/res.dto';
+import { ApiGetResponse, Public, User, UserAfterAuth } from '../../common';
+import { RefreshResDto, SigninResDto, SignupResDto } from '../dtos/res.dto';
 import { SigninReqDto, SignupReqDto } from '../dtos/req.dto';
 import { AuthService } from '../services/auth.service';
 import { Response } from 'express';

@@ -146,8 +146,6 @@ export default class AdapterService implements IAdapterService {
   }
 
   async updateOrder(order_id: string, double_checked?: boolean, memo?: string) {
-    console.log(order_id, double_checked, memo);
-
     const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
 

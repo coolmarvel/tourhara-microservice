@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, Entity, Index, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
-import { OrderStatus } from '../constants';
+import { OrderStatus } from '../../constants';
 
 import { Tour } from './tour.entity';
 import { Billing } from './billing.entity';
@@ -13,6 +13,7 @@ import { SnapInfo } from './snap-info.entity';
 import { UsimInfo } from './usim-info.entity';
 import { JfkOneway } from './jfk-oneway.entity';
 import { GuestHouse } from './guest-house.entity';
+import { ActivityLog } from './activity-log.entity';
 import { JfkShuttleRt } from './jfk-shuttle-rt.entity';
 import { OrderMetadata } from './order-metadata.entity';
 
@@ -52,6 +53,12 @@ export class Order {
 
   @Column({ name: 'date_completed_gmt', nullable: true })
   dateCompletedGmt!: Date;
+
+  @Column('text', { name: 'memo', nullable: true })
+  memo!: string;
+
+  @Column('boolean', { name: 'double_checked', nullable: true })
+  doubleChecked!: boolean;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
@@ -97,4 +104,7 @@ export class Order {
 
   @OneToMany(() => JfkShuttleRt, (jfkShuttleRt) => jfkShuttleRt.order)
   jfkShuttleRts!: JfkShuttleRt[];
+
+  @OneToMany(() => ActivityLog, (activityLog) => activityLog.order)
+  activityLogs!: ActivityLog[];
 }

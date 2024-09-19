@@ -1,16 +1,15 @@
 import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
+@Index(['id', 'parent'])
 export class Category {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'category_id' })
   categoryId!: bigint;
 
   @Column({ type: 'bigint' })
-  @Index()
   id!: bigint;
 
   @Column({ nullable: true })
-  @Index()
   parent!: string;
 
   @Column({ nullable: true })
