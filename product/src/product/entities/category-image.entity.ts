@@ -1,12 +1,12 @@
 import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
+@Index(['id', 'categoryId'])
 export class CategoryImage {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'category_image_id' })
   categoryImageId!: bigint;
 
   @Column({ type: 'bigint' })
-  @Index()
   id!: bigint;
 
   @Column({ nullable: true })
@@ -31,7 +31,6 @@ export class CategoryImage {
   dateModifiedGmt!: Date;
 
   @Column({ type: 'bigint', name: 'category_id', nullable: true })
-  @Index()
   categoryId!: bigint;
 
   @CreateDateColumn({ name: 'created_at' })

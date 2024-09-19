@@ -44,7 +44,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
     const requiredRoles = this.reflector.getAllAndOverride<RoleGroup[]>(ROLES_KEY, [context.getHandler(), context.getClass()]);
     if (requiredRoles) {
-      const userId = decoded['sub'];
+      // const userId = decoded['sub'];
       // TODO 해당 부분 권한 적용 작업 시 수정이 필요한 부분이기 때문에 주석 처리
       // return this.userService.checkUserIsAdmin(userId);
     }

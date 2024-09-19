@@ -9,7 +9,6 @@ import { RefreshToken } from '../entities/refresh-token.entity';
 import { firstValueFrom } from 'rxjs';
 import { UserService } from '../../user/services/user.service';
 import { SigninReqDto, SignupReqDto } from '../dtos/req.dto';
-import { MeResDto } from '../dtos/res.dto';
 import { v4 as uuidv4 } from 'uuid';
 
 /**

@@ -1,5 +1,4 @@
 import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-
 import { Order } from './order.entity';
 
 @Entity()
