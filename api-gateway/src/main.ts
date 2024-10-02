@@ -6,14 +6,16 @@ import { json, urlencoded } from 'express';
 
 import { AppModule } from './app.module';
 
-import * as basicAuth from 'express-basic-auth';
+import session from 'express-session';
+
+import basicAuth from 'express-basic-auth';
 import { useContainer } from 'class-validator';
 
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 
-import * as session from 'express-session';
-import * as cookieParser from 'cookie-parser';
+import passport from 'passport';
+import { Transport } from '@nestjs/microservices';
 
 dotenv.config({ path: path.resolve(process.env.NODE_ENV === 'production' ? '.env.production' : process.env.NODE_ENV === 'staging' ? '.env.staging' : '.env') });
 
@@ -23,6 +25,15 @@ async function bootstrap() {
   const configService: ConfigService = app.get(ConfigService);
   const port = configService.get<number>('PORT') || parseInt(process.env.PORT, 10);
 
+  app.connectMicroservice({
+    transport: Transport.REDIS,
+    options: {
+      host: configService.get(process.env.REDIS_HOST) || 'localhost',
+      port: +configService.get(process.env.REDIS_PORT) || 6379,
+      password: configService.get('REDIS_PASSWORD'),
+    },
+  });
+
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   app.enableCors({
@@ -30,8 +41,6 @@ async function bootstrap() {
     credentials: true,
     methods: 'GET,HEAD,PUT,PATH,POST,DELETE,OPTIONS',
   });
-
-  app.use(cookieParser());
 
   app.use(
     session({
@@ -46,6 +55,10 @@ async function bootstrap() {
       },
     }),
   );
+
+  // NestJS Passport 권장 설정
+  app.use(passport.initialize());
+  app.use(passport.session());
 
   app.enableShutdownHooks();
   app.enableVersioning({ type: VersioningType.URI });

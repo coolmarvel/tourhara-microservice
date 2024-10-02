@@ -1,15 +1,17 @@
-import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { InjectDataSource } from '@nestjs/typeorm';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
+import { ClientProxy } from '@nestjs/microservices';
+import { InjectRedis } from '@nestjs-modules/ioredis';
 
 import { IAuthService, RefreshResponse, SigninResponse, SignupResponse } from '../interfaces/auth.interface';
-import { ClientProxy } from '@nestjs/microservices';
 import { RefreshToken } from '../entities/refresh-token.entity';
 import { firstValueFrom } from 'rxjs';
 import { UserService } from '../../user/services/user.service';
 import { SigninReqDto, SignupReqDto } from '../dtos/req.dto';
 import { v4 as uuidv4 } from 'uuid';
+import { Redis } from 'ioredis';
 
 /**
  * Auth Service
@@ -23,7 +25,7 @@ export class AuthService implements IAuthService {
     private jwtService: JwtService,
     private userService: UserService,
     @InjectDataSource() private dataSource: DataSource,
-    @InjectRepository(RefreshToken) private refreshTokenRepository: Repository<RefreshToken>,
+    @InjectRedis() private redis: Redis,
   ) {}
 
   /**
@@ -38,13 +40,14 @@ export class AuthService implements IAuthService {
 
       const refreshToken = this.generateRefreshToken(validateUserId);
 
-      await this.generateRefreshTokenUsingByUser(validateUserId, refreshToken);
+      // await this.generateRefreshTokenUsingByUser(validateUserId, refreshToken);
 
       const accessToken = this.generateAccessToken(validateUserId);
 
       const sessionId = this.generateSessionId();
 
       return {
+        userId: validateUserId,
         userName: validateUser.userName,
         accessToken,
         refreshToken,
@@ -90,15 +93,19 @@ export class AuthService implements IAuthService {
    * @param refreshToken
    */
   async generateRefreshTokenUsingByUser(userId: string, refreshToken: string): Promise<void> {
-    try {
-      let refreshTokenEntity = await this.refreshTokenRepository.findOneBy({ userId });
-      if (refreshTokenEntity) {
-        refreshTokenEntity.token = refreshToken;
-      } else {
-        refreshTokenEntity = this.refreshTokenRepository.create({ userId, token: refreshToken });
-      }
+    const refreshTokenEntity = await this.redis.get(userId);
+    if (!refreshTokenEntity) throw new BadRequestException();
 
-      await this.refreshTokenRepository.save(refreshTokenEntity);
+    const rawData = JSON.parse(refreshTokenEntity);
+
+    try {
+      const userData = {
+        userId: userId,
+        accessToken: rawData.accessToken,
+        refreshToken: refreshToken,
+      };
+
+      await this.redis.set(userId, JSON.stringify(userData));
     } catch (error) {
       console.error('Error generating refresh token:', error);
       throw new Error('Failed to save refresh token'); // Customize or handle this error
@@ -106,7 +113,7 @@ export class AuthService implements IAuthService {
   }
 
   /**
-   * Access 토큰 생성
+   * AccessToken 생성
    *
    * @param userId
    */
@@ -150,15 +157,28 @@ export class AuthService implements IAuthService {
     }
   }
 
+  /**
+   * 토큰 재발급
+   *
+   * @param token
+   * @param userId
+   */
   async refresh(token: string, userId: string): Promise<RefreshResponse> {
-    const refreshTokenEntity = await this.refreshTokenRepository.findOneBy({ token });
+    const refreshTokenEntity = await this.redis.get(userId);
     if (!refreshTokenEntity) throw new BadRequestException();
 
-    const accessToken = this.generateAccessToken(userId);
-    const refreshToken = this.generateRefreshToken(userId);
-    refreshTokenEntity.token = refreshToken;
+    const rawData = JSON.parse(refreshTokenEntity);
 
-    await this.refreshTokenRepository.save(refreshTokenEntity);
+    const accessToken = this.generateAccessToken(rawData.userId);
+    const refreshToken = this.generateRefreshToken(rawData.userId);
+
+    const userData = {
+      userId: userId,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    };
+
+    await this.redis.set(userId, JSON.stringify(userData));
 
     return { accessToken, refreshToken };
   }

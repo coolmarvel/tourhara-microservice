@@ -28,8 +28,8 @@ export class AuthService implements IAuthService {
       const foundUser = await this.findOneByUserId(reqDto.userId);
       if (!foundUser) throw new UnauthorizedException();
 
-      const isMatch = await bcrypt.compare(reqDto.password, foundUser.password);
-      if (!isMatch) throw new UnauthorizedException();
+      const passwordIsValid = await bcrypt.compare(reqDto.password, foundUser.password);
+      if (!passwordIsValid) throw new UnauthorizedException();
 
       return UserResDto.toAuthResDto(foundUser);
     } catch (error) {

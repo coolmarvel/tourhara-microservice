@@ -24,6 +24,7 @@ export interface IAuthService {
 }
 
 export type SigninResponse = {
+  userId: string;
   userName: string;
   accessToken: string;
   refreshToken: string;

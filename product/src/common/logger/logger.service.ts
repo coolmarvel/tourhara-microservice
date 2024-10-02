@@ -1,5 +1,5 @@
 import * as winston from 'winston';
-import * as moment from 'moment-timezone';
+import moment from 'moment-timezone';
 import * as DailyRotateFile from 'winston-daily-rotate-file';
 
 const { combine, printf } = winston.format;

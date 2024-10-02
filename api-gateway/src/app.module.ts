@@ -1,6 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RedisModule } from '@nestjs-modules/ioredis';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -29,6 +30,10 @@ import { AdapterModule } from './adapter/adapter.module';
         synchronize: true,
       }),
     }),
+    RedisModule.forRoot({
+      type: 'single',
+      url: `${process.env.REDIS_HOST}:${Number(process.env.REDIS_PORT)}`,
+    }),
     UserModule,
     AuthModule,
     OrderModule,
@@ -37,6 +42,7 @@ import { AdapterModule } from './adapter/adapter.module';
   ],
   controllers: [AppController],
   providers: [AppService],
+  exports: [RedisModule], // test
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
